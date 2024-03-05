@@ -1,0 +1,42 @@
+object Form1: TForm1
+  Left = 339
+  Height = 525
+  Top = 176
+  Width = 1140
+  Caption = 'Form1'
+  ClientHeight = 525
+  ClientWidth = 1140
+  LCLVersion = '3.2.0.0'
+  object TreeView1: TTreeView
+    Left = 19
+    Height = 84
+    Top = 6
+    Width = 115
+    TabOrder = 0
+    OnChange = TreeView1Change
+    Items.Data = {
+      F9FFFFFF020002000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF010000000000
+      00000115000000D093D0BBD183D185D0BED0B520D0BED0BAD0BDD0BEFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFF00000000000000000009000000D09ED0BAD0BDD0
+      BE32FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000E000000D0
+      A1D182D0B2D0BED180D0BAD0B0
+    }
+  end
+  object ScrollBox1: TScrollBox
+    Left = 19
+    Height = 582
+    Top = 122
+    Width = 1338
+    HorzScrollBar.Page = 1317
+    VertScrollBar.Page = 561
+    ClientHeight = 561
+    ClientWidth = 1317
+    TabOrder = 1
+    object Image1: TImage
+      Left = 0
+      Height = 1600
+      Top = 0
+      Width = 2800
+    end
+  end
+end

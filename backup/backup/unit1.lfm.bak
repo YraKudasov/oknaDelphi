@@ -1,11 +1,11 @@
 object Form1: TForm1
-  Left = 339
-  Height = 525
-  Top = 176
-  Width = 1140
+  Left = 632
+  Height = 604
+  Top = 232
+  Width = 1193
   Caption = 'Form1'
-  ClientHeight = 525
-  ClientWidth = 1140
+  ClientHeight = 604
+  ClientWidth = 1193
   LCLVersion = '3.2.0.0'
   object TreeView1: TTreeView
     Left = 19
@@ -24,19 +24,48 @@ object Form1: TForm1
   end
   object ScrollBox1: TScrollBox
     Left = 19
-    Height = 582
+    Height = 500
     Top = 122
-    Width = 1338
-    HorzScrollBar.Page = 1317
-    VertScrollBar.Page = 561
-    ClientHeight = 561
-    ClientWidth = 1317
+    Width = 875
+    HorzScrollBar.Page = 854
+    VertScrollBar.Page = 479
+    ClientHeight = 479
+    ClientWidth = 854
     TabOrder = 1
     object Image1: TImage
       Left = 0
-      Height = 1600
+      Height = 500
       Top = 0
-      Width = 2800
+      Width = 875
     end
+  end
+  object Bevel1: TBevel
+    Left = 920
+    Height = 126
+    Top = 122
+    Width = 208
+    Style = bsRaised
+  end
+  object LabeledEdit1: TLabeledEdit
+    Left = 936
+    Height = 23
+    Top = 192
+    Width = 80
+    EditLabel.Height = 15
+    EditLabel.Width = 80
+    EditLabel.Caption = 'LabeledEdit1'
+    TabOrder = 2
+    Text = 'LabeledEdit1'
+  end
+  object LabeledEdit2: TLabeledEdit
+    Left = 1032
+    Height = 23
+    Top = 192
+    Width = 80
+    EditLabel.Height = 15
+    EditLabel.Width = 80
+    EditLabel.Caption = 'LabeledEdit2'
+    TabOrder = 3
+    Text = 'LabeledEdit2'
   end
 end

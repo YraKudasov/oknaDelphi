@@ -6,16 +6,23 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ComCtrls, RectWindow;
+  ComCtrls, Buttons, RectWindow;
 
 type
   { TForm1 }
   TForm1 = class(TForm)
+    BitBtn1: TBitBtn;
+    BitBtn2: TBitBtn;
+    Edit1: TEdit;
+    Edit2: TEdit;
     Image1: TImage;
+    Label3: TLabel;
+    Label4: TLabel;
+    Panel1: TPanel;
     ScrollBox1: TScrollBox;
     TreeView1: TTreeView;
-    Edit1: TEdit;
 
+    procedure FormCreate(Sender: TObject);
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
     procedure EditKeyPress(Sender: TObject; var Key: Char);
     procedure EditChange(Sender: TObject);
@@ -42,7 +49,7 @@ begin
   inherited Create(AOwner);
 end;
 
-constructor TForm1.Create(AOwner: TComponent; RectW, RectH: Integer; Image2: TImage);
+constructor TForm1.CreateWithParams(AOwner: TComponent; RectW, RectH: Integer; Image2: TImage);
 begin
   inherited Create(AOwner);
   RectWindow := TRectWindow.Create(RectW, RectH, Image2);
@@ -52,7 +59,10 @@ end;
 
 { TForm1 }
 
-
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  Panel1.Enabled := True;
+end;
 
 procedure TForm1.TreeView1Change(Sender: TObject; Node: TTreeNode);
 var
@@ -61,6 +71,9 @@ var
   RectWidth, RectHeight: Integer;
   NewRectWindow: TRectWindow;
 begin
+
+  Panel1.Enabled := False;
+
   if Assigned(Node) then
   begin
     // Создание формы для ввода данных
@@ -118,10 +131,10 @@ begin
       RectWidth := StrToInt(WidthEdit.Text);
       RectHeight := StrToInt(HeightEdit.Text);
 
+      // Инициализация окна
       NewRectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1);
-      NewRectWindow.DrawWindow;
 
-      // Отрисовка прямоугольника на изображении
+      // Отрисовка окна на изображении
       NewRectWindow.DrawWindow;
 
     end;
@@ -136,6 +149,7 @@ begin
     InputForm.Free;
   end;
 end;
+
 
 
 procedure TForm1.EditKeyPress(Sender: TObject; var Key: Char);

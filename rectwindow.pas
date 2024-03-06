@@ -39,17 +39,17 @@ begin
   ScaleFactorX := ScreenWidth / 3500; // Замените 3500 на ширину вашего прямоугольника
   ScaleFactorY := ScreenHeight / 2000; // Замените 2000 на высоту вашего прямоугольника
 
-  // Вычисление масштабированных размеров прямоугольника
+  // Вычисление масштабированных размеров окна
   ScaledRectWidth := Round(FRectW * ScaleFactorX);
   ScaledRectHeight := Round(FRectH * ScaleFactorY);
 
-  // Отрисовка прямоугольника с учетом коэффициентов пропорциональности
+  // Отрисовка окна с учетом коэффициентов пропорциональности
   FImage.Canvas.Brush.Color := clWhite;
   FImage.Canvas.FillRect(FImage.ClientRect);
   FImage.Canvas.Pen.Width := 3;
   FImage.Canvas.Rectangle(4, 4, ScaledRectWidth, ScaledRectHeight);
 
-  // Отрисовка меньшего синего прямоугольника сверху
+  // Отрисовка меньшего синего окна внутри
   FImage.Canvas.Brush.Color := clSkyBlue;
   FImage.Canvas.Rectangle(24, 24, ScaledRectWidth-20, ScaledRectHeight-20);
 

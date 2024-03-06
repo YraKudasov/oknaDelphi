@@ -12,7 +12,6 @@ type
     FRectH, FRectW: Integer;
     FImage: TImage;
   public
-    constructor Create(AOwner: TComponent); overload;
     constructor Create(ARectH, ARectW: Integer; AImage: TImage);
     procedure DrawWindow;
   end;

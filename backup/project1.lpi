@@ -42,6 +42,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
       </Unit>
+      <Unit>
+        <Filename Value="rectwindow.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="RectWindow"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

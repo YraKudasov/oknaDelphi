@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ComCtrls;
+  ComCtrls, RectWindow;
 
 type
   { TForm1 }
@@ -19,16 +19,17 @@ type
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
     procedure EditKeyPress(Sender: TObject; var Key: Char);
     procedure EditChange(Sender: TObject);
-    procedure DrawWindow(RectWidth, RectHeight: Integer; ScreenWidth, ScreenHeight: Integer);
 
   private
     { Private declarations }
     WidthEdit, HeightEdit: TEdit;
     OKButton: TButton; // Declare OKButton as a member of the class
+    RectWindow: TRectWindow; // Создание экземпляра класса TRectWindow
 
   public
     { Public declarations }
-
+    constructor Create(AOwner: TComponent); override;
+    constructor CreateWithParams(AOwner: TComponent; RectW, RectH: Integer; Image2: TImage);
   end;
 
 var
@@ -36,7 +37,16 @@ var
 
 implementation
 
+constructor TForm1.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
 
+constructor TForm1.CreateWithParams(AOwner: TComponent; RectW, RectH: Integer; Image2: TImage);
+begin
+  inherited Create(AOwner);
+  RectWindow := TRectWindow.Create(RectW, RectH, Image2);
+end;
 
 {$R *.lfm}
 
@@ -49,7 +59,7 @@ var
   WidthLabel, HeightLabel: TLabel;
   InputForm: TForm;
   RectWidth, RectHeight: Integer;
-  ScreenWidth, ScreenHeight: Integer;
+  NewRectWindow: TRectWindow;
 begin
   if Assigned(Node) then
   begin
@@ -103,20 +113,24 @@ begin
     // Отображение формы и ожидание ввода данных
     if InputForm.ShowModal = mrOk then
     begin
+
       // Получение введенных значений
       RectWidth := StrToInt(WidthEdit.Text);
       RectHeight := StrToInt(HeightEdit.Text);
 
-      ScreenWidth := Image1.Width;
-      ScreenHeight := Image1.Height;
+      NewRectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1);
+      NewRectWindow.DrawWindow;
 
       // Отрисовка прямоугольника на изображении
-      DrawWindow(RectWidth, RectHeight, ScreenWidth, ScreenHeight);
+      NewRectWindow.DrawWindow;
 
     end;
 
     // Отключение события изменения значения для списка после закрытия окна
     Node.Selected := False;
+
+    // Освобождение памяти, занятой экземпляром окна
+    NewRectWindow.Free;
 
     // Освобождение памяти, занятой формой и компонентами
     InputForm.Free;
@@ -149,45 +163,7 @@ begin
 end;
 
 
-procedure TForm1.DrawWindow(RectWidth, RectHeight: Integer; ScreenWidth, ScreenHeight: Integer);
-var
-  ArrowLength: Integer;
-  ScaleFactorX, ScaleFactorY: Double;
-  ScaledRectWidth, ScaledRectHeight: Integer;
-begin
 
-  // Вычисление коэффициентов пропорциональности
-  ScaleFactorX := ScreenWidth / 3500; // Замените 3500 на ширину вашего прямоугольника
-  ScaleFactorY := ScreenHeight / 2000; // Замените 2000 на высоту вашего прямоугольника
-
-  // Вычисление масштабированных размеров прямоугольника
-  ScaledRectWidth := Round(RectWidth * ScaleFactorX);
-  ScaledRectHeight := Round(RectHeight * ScaleFactorY);
-
-  // Отрисовка прямоугольника с учетом коэффициентов пропорциональности
-  Image1.Canvas.Brush.Color := clWhite;
-  Image1.Canvas.FillRect(Image1.ClientRect);
-  Image1.Canvas.Pen.Width := 3;
-  Image1.Canvas.Rectangle(4, 4, ScaledRectWidth, ScaledRectHeight);
-
-  // Отрисовка меньшего синего прямоугольника сверху
-  Image1.Canvas.Brush.Color := clSkyBlue;
-  Image1.Canvas.Rectangle(24, 24, ScaledRectWidth-20, ScaledRectHeight-20);
-
-  //Отрисовка размеров
-  {
-  ArrowLength := 50;
-  Image1.Canvas.MoveTo(RectWidth, 3);
-  Image1.Canvas.LineTo(RectWidth + ArrowLength, 3);
-  Image1.Canvas.MoveTo(RectWidth, RectHeight);
-  Image1.Canvas.LineTo(RectWidth + ArrowLength,RectHeight);
-  Image1.Canvas.MoveTo(RectWidth, RectHeight);
-  Image1.Canvas.LineTo(RectWidth, RectHeight + ArrowLength);
-  Image1.Canvas.MoveTo(3, RectHeight);
-  Image1.Canvas.LineTo(3, RectHeight + ArrowLength);
-  }
-
-end;
 
 
 

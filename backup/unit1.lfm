@@ -59,8 +59,8 @@ object Form1: TForm1
       Left = 152
       Height = 15
       Top = 16
-      Width = 74
-      Caption = 'Ширина (мм)'
+      Width = 69
+      Caption = 'Высота (мм)'
     end
     object Edit1: TEdit
       Left = 40
@@ -68,6 +68,7 @@ object Form1: TForm1
       Top = 48
       Width = 80
       TabOrder = 0
+      Text = '0'
     end
     object Edit2: TEdit
       Left = 152
@@ -75,6 +76,7 @@ object Form1: TForm1
       Top = 48
       Width = 80
       TabOrder = 1
+      Text = '0'
     end
     object BitBtn1: TBitBtn
       Left = 40
@@ -136,6 +138,7 @@ object Form1: TForm1
         0000000000000000000000000000000000000000000000000000000000000000
         0000000000000000000000000000000000000000000000000000
       }
+      OnClick = BitBtn1Click
       TabOrder = 2
     end
     object BitBtn2: TBitBtn
@@ -176,6 +179,7 @@ object Form1: TForm1
         F4D3353CF3D13646F4BA3544F60C3645F6003645F6003645F6003645F6003645
         F6003545F5003645F5003645F5003645F5003546F50A3642F4B73445F5D4
       }
+      OnClick = BitBtn2Click
       TabOrder = 3
     end
   end

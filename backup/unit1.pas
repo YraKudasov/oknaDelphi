@@ -22,21 +22,27 @@ type
     ScrollBox1: TScrollBox;
     TreeView1: TTreeView;
 
+    procedure BitBtn1Click(Sender: TObject);
+    procedure BitBtn2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
-    procedure EditKeyPress(Sender: TObject; var Key: Char);
+    procedure EditKeyPress(Sender: TObject; var Key: char);
     procedure EditChange(Sender: TObject);
+
+
+
 
   private
     { Private declarations }
-    WidthEdit, HeightEdit: TEdit;
-    OKButton: TButton; // Declare OKButton as a member of the class
-    RectWindow: TRectWindow; // Создание экземпляра класса TRectWindow
+    RectWindow: TRectWindow;
+    FRectHeight, FRectWidth: integer;
+    // Создание экземпляра класса TRectWindow
 
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
-    constructor CreateWithParams(AOwner: TComponent; RectW, RectH: Integer; Image2: TImage);
+    constructor CreateWithParams(AOwner: TComponent; RectW, RectH: integer;
+      Image2: TImage);
   end;
 
 var
@@ -49,7 +55,8 @@ begin
   inherited Create(AOwner);
 end;
 
-constructor TForm1.CreateWithParams(AOwner: TComponent; RectW, RectH: Integer; Image2: TImage);
+constructor TForm1.CreateWithParams(AOwner: TComponent; RectW, RectH: integer;
+  Image2: TImage);
 begin
   inherited Create(AOwner);
   RectWindow := TRectWindow.Create(RectW, RectH, Image2);
@@ -59,100 +66,76 @@ end;
 
 { TForm1 }
 
-procedure TForm1.FormCreate(Sender: TObject);
-begin
-  Panel1.Enabled := True;
-end;
-
-procedure TForm1.TreeView1Change(Sender: TObject; Node: TTreeNode);
+procedure TForm1.BitBtn1Click(Sender: TObject);
 var
-  WidthLabel, HeightLabel: TLabel;
-  InputForm: TForm;
-  RectWidth, RectHeight: Integer;
+  RectWidth, RectHeight: integer;
   NewRectWindow: TRectWindow;
 begin
+  // Получение значений из Edit1 и Edit2
+  RectWidth := StrToInt(Edit1.Text);
+  RectHeight := StrToInt(Edit2.Text);
 
+  FRectWidth := RectWidth;
+  FRectHeight := RectHeight;
+  // Инициализация окна
+  NewRectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1);
+
+  // Отрисовка окна на изображении
+  NewRectWindow.DrawWindow;
+
+  // Очистка памяти от экземпляра окна
+  NewRectWindow.Free;
+end;
+
+procedure TForm1.BitBtn2Click(Sender: TObject);
+begin
+  Edit1.Text := IntToStr(FRectWidth);
+  Edit2.Text := IntToStr(FRectHeight);
+end;
+
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
   Panel1.Enabled := False;
+end;
+
+
+procedure TForm1.TreeView1Change(Sender: TObject; Node: TTreeNode);
+begin
 
   if Assigned(Node) then
   begin
-    // Создание формы для ввода данных
-    InputForm := TForm.Create(nil);
-    InputForm.Caption := 'Введите размеры окна';
-    InputForm.Width := 300;
-    InputForm.Height := 150;
+    Panel1.Enabled := True;
+    Bitbtn1.Enabled := False;
 
-    // Определение координат для размещения формы
-    InputForm.Left := Node.DisplayRect(False).Right + 10; // Расположение справа от элемента списка
-    InputForm.Top := Node.DisplayRect(False).Top; // Расположение на уровне элемента списка
+    Image1.Canvas.Brush.Color := clWhite;
+    Image1.Canvas.FillRect(Image1.ClientRect);
 
-    HeightEdit := TEdit.Create(InputForm);
-    HeightEdit.Parent := InputForm;
-    HeightEdit.Left := 10;
-    HeightEdit.Top := 10;
-    HeightEdit.Width := 100;
-    HeightLabel := TLabel.Create(InputForm);
-    HeightLabel.Parent := InputForm;
-    HeightLabel.Caption := 'Высота (мм)';
-    HeightLabel.Left := 120;
-    HeightLabel.Top := 15;
-    HeightEdit.OnKeyPress := @EditKeyPress; // Обработчик события нажатия клавиши
-    HeightEdit.OnChange := @EditChange; // Обработчик события изменения значения
+    // Сохраните старые значения
+    FRectHeight := 0;
+    FRectWidth := 0;
 
-    // Создание компонентов на форме
-    WidthEdit := TEdit.Create(InputForm);
-    WidthEdit.Parent := InputForm;
-    WidthEdit.Left := 10;
-    WidthEdit.Top := 40;
-    WidthEdit.Width := 100;
-    WidthLabel := TLabel.Create(InputForm);
-    WidthLabel.Parent := InputForm;
-    WidthLabel.Caption := 'Ширина (мм)';
-    WidthLabel.Left := 120;
-    WidthLabel.Top := 45;
+    Edit1.Text := IntToStr(FRectWidth);
+    Edit2.Text := IntToStr(FRectHeight);
 
-    WidthEdit.OnKeyPress := @EditKeyPress; // Обработчик события нажатия клавиши
-    WidthEdit.OnChange := @EditChange; // Обработчик события изменения значения
+    Edit1.OnKeyPress := @EditKeyPress;
+    // Обработчик события нажатия клавиши
+    Edit1.OnChange := @EditChange;
+    // Обработчик события изменения значения
 
-    OKButton := TButton.Create(InputForm);
-    OKButton.Parent := InputForm;
-    OKButton.Left := 10;
-    OKButton.Top := 70;
-    OKButton.Caption := 'OK';
-    OKButton.ModalResult := mrOk;
-    OKButton.Enabled := False; // Изначально кнопка OK неактивна
-
-
-    // Отображение формы и ожидание ввода данных
-    if InputForm.ShowModal = mrOk then
-    begin
-
-      // Получение введенных значений
-      RectWidth := StrToInt(WidthEdit.Text);
-      RectHeight := StrToInt(HeightEdit.Text);
-
-      // Инициализация окна
-      NewRectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1);
-
-      // Отрисовка окна на изображении
-      NewRectWindow.DrawWindow;
-
-    end;
+    Edit2.OnKeyPress := @EditKeyPress;
+    // Обработчик события нажатия клавиши
+    Edit2.OnChange := @EditChange;
+    // Обработчик события изменения значения
 
     // Отключение события изменения значения для списка после закрытия окна
     Node.Selected := False;
-
-    // Освобождение памяти, занятой экземпляром окна
-    NewRectWindow.Free;
-
-    // Освобождение памяти, занятой формой и компонентами
-    InputForm.Free;
   end;
 end;
 
 
 
-procedure TForm1.EditKeyPress(Sender: TObject; var Key: Char);
+procedure TForm1.EditKeyPress(Sender: TObject; var Key: char);
 begin
   // Allow only digits and control keys (e.g., backspace, delete)
   if not (Key in ['0'..'9', #8, #127]) then
@@ -161,26 +144,22 @@ end;
 
 procedure TForm1.EditChange(Sender: TObject);
 var
-  WidthValue, HeightValue: Integer;
+  WidthValue, HeightValue: integer;
 begin
   // Проверка на ввод корректных значений
-  if TryStrToInt(WidthEdit.Text, WidthValue) and TryStrToInt(HeightEdit.Text, HeightValue) then
+  if TryStrToInt(Edit1.Text, WidthValue) and TryStrToInt(Edit2.Text, HeightValue) then
   begin
     // Проверка на минимальное и максимальное значение для длины и ширины
-    if (WidthValue >= 450) and (WidthValue <= 3500) and (HeightValue >= 450) and (HeightValue <= 2000) then
-      OKButton.Enabled := True
+    if (WidthValue >= 450) and (WidthValue <= 3500) and (HeightValue >= 450) and
+      (HeightValue <= 2000) then
+      BitBtn1.Enabled := True
     else
-      OKButton.Enabled := False;
+      BitBtn1.Enabled := False;
   end
   else
-    OKButton.Enabled := False;
+    BitBtn1.Enabled := False;
 end;
 
 
 
-
-
-
-
 end.
-

@@ -69,7 +69,6 @@ end;
 procedure TForm1.BitBtn1Click(Sender: TObject);
 var
   RectWidth, RectHeight: integer;
-  NewRectWindow: TRectWindow;
 begin
   // Получение значений из Edit1 и Edit2
   RectWidth := StrToInt(Edit1.Text);
@@ -78,13 +77,10 @@ begin
   FRectWidth := RectWidth;
   FRectHeight := RectHeight;
   // Инициализация окна
-  NewRectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1);
+  RectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1);
 
   // Отрисовка окна на изображении
-  NewRectWindow.DrawWindow;
-
-  // Очистка памяти от экземпляра окна
-  NewRectWindow.Free;
+  RectWindow.DrawWindow;
 end;
 
 procedure TForm1.BitBtn2Click(Sender: TObject);
@@ -97,7 +93,9 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   Panel1.Enabled := False;
+  Image1.OnClick := @RectWindow.CanvasClickHandler;
 end;
+
 
 
 procedure TForm1.TreeView1Change(Sender: TObject; Node: TTreeNode);
@@ -130,6 +128,12 @@ begin
 
     // Отключение события изменения значения для списка после закрытия окна
     Node.Selected := False;
+
+    if Assigned(RectWindow) then
+    begin
+      RectWindow.Free;
+      RectWindow := nil;
+    end;
   end;
 end;
 

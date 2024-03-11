@@ -11,9 +11,14 @@ type
   private
     FRectH, FRectW: Integer;
     FImage: TImage;
+    FSelected: Boolean;
+    ScaledRectWidth, ScaledRectHeight: Integer;
   public
     constructor Create(ARectH, ARectW: Integer; AImage: TImage);
     procedure DrawWindow;
+    procedure DrawSelectionBorder(ScaledRW, ScaledRH: Integer);
+    procedure CanvasClickHandler(Sender: TObject);
+    property Selected: Boolean read FSelected write FSelected; // Добавляем свойство для доступа к выделению окна
   end;
 
 implementation
@@ -25,12 +30,57 @@ begin
   FImage := AImage;
 end;
 
+procedure TRectWindow.DrawSelectionBorder(ScaledRW, ScaledRH: Integer);
+begin
+  if FSelected then
+  begin
+    FImage.Canvas.Brush.Style := bsClear;
+    // Изменение обводки окна при выделении
+    FImage.Canvas.Pen.Color := clRed;
+    // Можете выбрать любой другой цвет
+    FImage.Canvas.Pen.Width := 2;
+    FImage.Canvas.Rectangle(2, 2, ScaledRW+3, ScaledRH+3);
+  end;
+end;
+
+procedure TRectWindow.CanvasClickHandler(Sender: TObject);
+var
+  ClickX, ClickY: Integer;
+begin
+    ClickX := Mouse.CursorPos.X;
+    ClickY := Mouse.CursorPos.Y;
+
+    // Преобразуем абсолютные координаты в координаты клиента
+    ClickX := FImage.ScreenToClient(Point(ClickX, ClickY)).X;
+    ClickY := FImage.ScreenToClient(Point(ClickX, ClickY)).Y;
+
+
+  // Проверяем, находится ли клик внутри области окна
+   if (ClickX >= 4) and
+      (ClickX <= ScaledRectWidth) and
+      (ClickY >= 4) and (ClickY <= ScaledRectHeight) then
+   begin
+     if FSelected then
+     begin
+       FSelected := False;
+       FImage.Canvas.Brush.Color := clWhite;
+       FImage.Canvas.FillRect(FImage.ClientRect);
+       DrawWindow;
+     end
+     else begin
+       FSelected := True; // Устанавливаем значение FSelected в true
+       DrawSelectionBorder(ScaledRectWidth, ScaledRectHeight);  // Перерисовываем окно для отображения выделения
+     end;
+   end;
+ end;
+
+
 procedure TRectWindow.DrawWindow;
 var
   ArrowLength: Integer;
   ScreenWidth, ScreenHeight: Integer;
   ScaleFactorX, ScaleFactorY: Double;
-  ScaledRectWidth, ScaledRectHeight: Integer;
+
 begin
 
   ScreenWidth := FImage.Width;
@@ -46,6 +96,7 @@ begin
   // Отрисовка окна с учетом коэффициентов пропорциональности
   FImage.Canvas.Brush.Color := clWhite;
   FImage.Canvas.FillRect(FImage.ClientRect);
+  FImage.Canvas.Pen.Color := clBlack;
   FImage.Canvas.Pen.Width := 3;
   FImage.Canvas.Rectangle(4, 4, ScaledRectWidth, ScaledRectHeight);
 

@@ -4,21 +4,22 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ComCtrls; // Убедитесь, что используемый модуль совпадает с указанным здесь
+  ComCtrls, AbstractWindow; // Убедитесь, что используемый модуль совпадает с указанным здесь
 
 type
-  TRectWindow = class
+  TRectWindow = class(TAbstractWindow)
   private
     FRectH, FRectW: Integer;
     FImage: TImage;
     FSelected: Boolean;
+    FOnWindowSelected: TNotifyEvent;
     ScaledRectWidth, ScaledRectHeight: Integer;
   public
     constructor Create(ARectH, ARectW: Integer; AImage: TImage);
-    procedure DrawWindow;
-    procedure DrawSelectionBorder(ScaledRW, ScaledRH: Integer);
-    procedure CanvasClickHandler(Sender: TObject);
-    property Selected: Boolean read FSelected write FSelected; // Добавляем свойство для доступа к выделению окна
+    procedure DrawWindow override;
+    procedure DrawSelectionBorder(ScaledRW, ScaledRH: Integer) override;
+    procedure CanvasClickHandler(Sender: TObject) override;
+    property OnWindowSelected: TNotifyEvent read FOnWindowSelected write FOnWindowSelected;
   end;
 
 implementation
@@ -56,8 +57,7 @@ begin
 
 
   // Проверяем, находится ли клик внутри области окна
-   if (ClickX >= 4) and
-      (ClickX <= ScaledRectWidth) and
+   if (ClickX >= 4) and  (ClickX <= ScaledRectWidth) and
       (ClickY >= 4) and (ClickY <= ScaledRectHeight) then
    begin
      if FSelected then
@@ -70,6 +70,10 @@ begin
      else begin
        FSelected := True; // Устанавливаем значение FSelected в true
        DrawSelectionBorder(ScaledRectWidth, ScaledRectHeight);  // Перерисовываем окно для отображения выделения
+
+        if Assigned(OnWindowSelected) then
+        OnWindowSelected(Self);
+
      end;
    end;
  end;
@@ -103,6 +107,8 @@ begin
   // Отрисовка меньшего синего окна внутри
   FImage.Canvas.Brush.Color := clSkyBlue;
   FImage.Canvas.Rectangle(24, 24, ScaledRectWidth-20, ScaledRectHeight-20);
+
+
 
   //Отрисовка размеров
   {

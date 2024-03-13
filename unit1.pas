@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ComCtrls, Buttons, RectWindow;
+  ComCtrls, Buttons, RectWindow, WindowContainer;
 
 type
   { TForm1 }
@@ -28,7 +28,7 @@ type
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
     procedure EditKeyPress(Sender: TObject; var Key: char);
     procedure EditChange(Sender: TObject);
-
+    procedure RectWindowWindowSelected(Sender: TObject);
 
 
 
@@ -36,7 +36,8 @@ type
     { Private declarations }
     RectWindow: TRectWindow;
     FRectHeight, FRectWidth: integer;
-    // Создание экземпляра класса TRectWindow
+    WindowContainer: TWindowContainer; // Добавляем экземпляр WindowContainer
+
 
   public
     { Public declarations }
@@ -53,6 +54,7 @@ implementation
 constructor TForm1.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  WindowContainer := TWindowContainer.Create; // Создаем экземпляр WindowContainer
 end;
 
 constructor TForm1.CreateWithParams(AOwner: TComponent; RectW, RectH: integer;
@@ -78,11 +80,23 @@ begin
   FRectHeight := RectHeight;
   // Инициализация окна
   RectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1);
+  WindowContainer.AddWindow(RectWindow);
+
+  // Присоединяем обработчик события OnWindowSelected
+  RectWindow.OnWindowSelected := @RectWindowWindowSelected;
 
   // Отрисовка окна на изображении
   RectWindow.DrawWindow;
   Image1.OnClick := @RectWindow.CanvasClickHandler;
 end;
+
+
+procedure TForm1.RectWindowWindowSelected(Sender: TObject);
+begin
+  Edit1.Text := IntToStr(FRectWidth);
+  Edit2.Text := IntToStr(FRectHeight);
+end;
+
 
 procedure TForm1.BitBtn2Click(Sender: TObject);
 begin
@@ -95,7 +109,6 @@ procedure TForm1.FormCreate(Sender: TObject);
 begin
   Panel1.Enabled := False;
 end;
-
 
 
 procedure TForm1.TreeView1Change(Sender: TObject; Node: TTreeNode);
@@ -125,6 +138,7 @@ begin
     // Обработчик события нажатия клавиши
     Edit2.OnChange := @EditChange;
     // Обработчик события изменения значения
+
 
     // Отключение события изменения значения для списка после закрытия окна
     Node.Selected := False;

@@ -47,6 +47,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="RectWindow"/>
       </Unit>
+      <Unit>
+        <Filename Value="abstractwindow.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="AbstractWindow"/>
+      </Unit>
+      <Unit>
+        <Filename Value="windowcontainer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="WindowContainer"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

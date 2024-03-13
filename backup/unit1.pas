@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ComCtrls, Buttons, RectWindow, WindowContainer;
+  ComCtrls, Buttons, Menus, RectWindow, WindowContainer;
 
 type
   { TForm1 }
@@ -18,7 +18,11 @@ type
     Image1: TImage;
     Label3: TLabel;
     Label4: TLabel;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
     Panel1: TPanel;
+    PopupMenu1: TPopupMenu;
     ScrollBox1: TScrollBox;
     TreeView1: TTreeView;
 
@@ -28,7 +32,9 @@ type
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
     procedure EditKeyPress(Sender: TObject; var Key: char);
     procedure EditChange(Sender: TObject);
-    procedure RectWindowWindowSelected(Sender: TObject);
+    procedure RectWindowSelected(Sender: TObject);
+
+
 
 
 
@@ -68,6 +74,8 @@ end;
 
 { TForm1 }
 
+
+
 procedure TForm1.BitBtn1Click(Sender: TObject);
 var
   RectWidth, RectHeight: integer;
@@ -82,20 +90,24 @@ begin
   RectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1);
   WindowContainer.AddWindow(RectWindow);
 
+
   // Присоединяем обработчик события OnWindowSelected
-  RectWindow.OnWindowSelected := @RectWindowWindowSelected;
+  RectWindow.OnWindowSelected := @RectWindowSelected;
 
   // Отрисовка окна на изображении
   RectWindow.DrawWindow;
   Image1.OnClick := @RectWindow.CanvasClickHandler;
+
 end;
 
 
-procedure TForm1.RectWindowWindowSelected(Sender: TObject);
+procedure TForm1.RectWindowSelected(Sender: TObject);
 begin
-  Edit1.Text := IntToStr(RectWindow.Width);
-  Edit2.Text := IntToStr(RectWindow.Height);
+  Edit1.Text := IntToStr(FRectWidth);
+  Edit2.Text := IntToStr(FRectHeight);
+  MenuItem2.Enabled := True;
 end;
+
 
 
 procedure TForm1.BitBtn2Click(Sender: TObject);
@@ -108,6 +120,7 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   Panel1.Enabled := False;
+  MenuItem2.Enabled := False;
 end;
 
 
@@ -116,6 +129,7 @@ begin
 
   if Assigned(Node) then
   begin
+    MenuItem2.Enabled := False;
     Panel1.Enabled := True;
     Bitbtn1.Enabled := False;
 
@@ -139,12 +153,14 @@ begin
     Edit2.OnChange := @EditChange;
     // Обработчик события изменения значения
 
-
     // Отключение события изменения значения для списка после закрытия окна
     Node.Selected := False;
 
     if Assigned(RectWindow) then
     begin
+      if not RectWindow.FSelected then
+      MenuItem2.Enabled := False;
+
       RectWindow.Free;
       RectWindow := nil;
     end;

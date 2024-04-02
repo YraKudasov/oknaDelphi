@@ -95,17 +95,14 @@ begin
   // Отрисовка окна на изображении
   RectWindow.DrawWindow;
 
+  if Assigned(RectWindow) then
   Image1.OnClick := @RectWindow.CanvasClickHandler;
 
 
-   // Присоединяем обработчик события OnWindowSelected
+  // Присоединяем обработчик события OnWindowSelected
 
-      RectWindow.OnWindowDeselected := @RectWindowDeselected;
-
-
-      RectWindow.OnWindowSelected := @RectWindowSelected;
-
-
+  RectWindow.OnWindowDeselected := @RectWindowDeselected;
+  RectWindow.OnWindowSelected := @RectWindowSelected;
 
 end;
 
@@ -161,10 +158,12 @@ begin
     Edit1.OnChange := @EditChange;
     // Обработчик события изменения значения
 
-    Edit2.OnKeyPress := @EditKeyPress;
     // Обработчик события нажатия клавиши
-    Edit2.OnChange := @EditChange;
+    Edit2.OnKeyPress := @EditKeyPress;
     // Обработчик события изменения значения
+    Edit2.OnChange := @EditChange;
+
+
 
     // Отключение события изменения значения для списка после закрытия окна
     Node.Selected := False;
@@ -175,6 +174,8 @@ begin
       RectWindow.Free;
       RectWindow := nil;
     end;
+     // Сброс обработчика событий
+    Image1.OnClick := nil;
   end;
 end;
 

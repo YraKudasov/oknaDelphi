@@ -11,8 +11,8 @@ type
   private
     FRectH, FRectW: Integer;
     FImage: TImage;
-    FSelected: Boolean;
     FOnWindowSelected: TNotifyEvent;
+    FOnWindowDeselected: TNotifyEvent;
     ScaledRectWidth, ScaledRectHeight: Integer;
   public
     FSelected: Boolean;
@@ -24,6 +24,7 @@ type
     procedure DrawSelectionBorder(ScaledRW, ScaledRH: Integer) override;
     procedure CanvasClickHandler(Sender: TObject) override;
     property OnWindowSelected: TNotifyEvent read FOnWindowSelected write FOnWindowSelected;
+    property OnWindowDeselected: TNotifyEvent read FOnWindowDeselected write FOnWindowDeselected;
   end;
 
 implementation
@@ -70,6 +71,9 @@ begin
        FImage.Canvas.Brush.Color := clWhite;
        FImage.Canvas.FillRect(FImage.ClientRect);
        DrawWindow;
+
+       if Assigned(OnWindowDeselected) then
+       OnWindowDeselected(Self)
      end
      else begin
        FSelected := True; // Устанавливаем значение FSelected в true

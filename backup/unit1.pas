@@ -33,6 +33,7 @@ type
     procedure EditKeyPress(Sender: TObject; var Key: char);
     procedure EditChange(Sender: TObject);
     procedure RectWindowSelected(Sender: TObject);
+    procedure RectWindowDeselected(Sender: TObject);
 
 
 
@@ -91,12 +92,20 @@ begin
   WindowContainer.AddWindow(RectWindow);
 
 
-  // Присоединяем обработчик события OnWindowSelected
-  RectWindow.OnWindowSelected := @RectWindowSelected;
-
   // Отрисовка окна на изображении
   RectWindow.DrawWindow;
+
   Image1.OnClick := @RectWindow.CanvasClickHandler;
+
+
+   // Присоединяем обработчик события OnWindowSelected
+
+      RectWindow.OnWindowDeselected := @RectWindowDeselected;
+
+
+      RectWindow.OnWindowSelected := @RectWindowSelected;
+
+
 
 end;
 
@@ -108,6 +117,10 @@ begin
   MenuItem2.Enabled := True;
 end;
 
+procedure TForm1.RectWindowDeselected(Sender: TObject);
+begin
+  MenuItem2.Enabled := False;
+end;
 
 
 procedure TForm1.BitBtn2Click(Sender: TObject);
@@ -158,8 +171,6 @@ begin
 
     if Assigned(RectWindow) then
     begin
-      if not RectWindow.FSelected then
-      MenuItem2.Enabled := False;
 
       RectWindow.Free;
       RectWindow := nil;

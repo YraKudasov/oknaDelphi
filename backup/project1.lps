@@ -10,7 +10,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="4"/>
         <CursorPos X="50" Y="18"/>
-        <UsageCount Value="160"/>
+        <UsageCount Value="174"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -21,9 +21,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="79"/>
-        <CursorPos X="31" Y="94"/>
-        <UsageCount Value="160"/>
+        <TopLine Value="87"/>
+        <CursorPos Y="102"/>
+        <UsageCount Value="174"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -32,83 +32,10 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="RectWindow"/>
         <EditorIndex Value="1"/>
-        <CursorPos X="5" Y="14"/>
-        <UsageCount Value="86"/>
+        <TopLine Value="37"/>
+        <CursorPos Y="68"/>
+        <UsageCount Value="100"/>
         <Loaded Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="C:\lazarus\lcl\include\control.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="3600"/>
-        <CursorPos Y="3612"/>
-        <UsageCount Value="33"/>
-      </Unit>
-      <Unit>
-        <Filename Value="C:\lazarus\lcl\include\customimage.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="34"/>
-        <CursorPos Y="46"/>
-        <UsageCount Value="8"/>
-      </Unit>
-      <Unit>
-        <Filename Value="C:\lazarus\lcl\include\treeview.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="4473"/>
-        <CursorPos Y="4485"/>
-        <UsageCount Value="12"/>
-      </Unit>
-      <Unit>
-        <Filename Value="C:\lazarus\lcl\controls.pp"/>
-        <UnitName Value="Controls"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="2800"/>
-        <CursorPos Y="2811"/>
-        <UsageCount Value="3"/>
-      </Unit>
-      <Unit>
-        <Filename Value="C:\lazarus\lcl\customtimer.pas"/>
-        <UnitName Value="CustomTimer"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="138"/>
-        <CursorPos Y="150"/>
-        <UsageCount Value="9"/>
-      </Unit>
-      <Unit>
-        <Filename Value="C:\lazarus\lcl\interfaces\win32\win32callback.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="2962"/>
-        <CursorPos Y="2976"/>
-        <UsageCount Value="9"/>
-      </Unit>
-      <Unit>
-        <Filename Value="C:\lazarus\lcl\include\application.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1414"/>
-        <CursorPos Y="1426"/>
-        <UsageCount Value="9"/>
-      </Unit>
-      <Unit>
-        <Filename Value="C:\lazarus\lcl\include\wincontrol.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="6476"/>
-        <CursorPos Y="6488"/>
-        <UsageCount Value="5"/>
-      </Unit>
-      <Unit>
-        <Filename Value="backup\unit1.lfm"/>
-        <HasResources Value="True"/>
-        <EditorIndex Value="5"/>
-        <CursorPos X="36" Y="15"/>
-        <UsageCount Value="48"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="LFM"/>
-      </Unit>
-      <Unit>
-        <Filename Value="D:\lazarus\lcl\include\control.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="3612"/>
-        <CursorPos X="46" Y="3612"/>
-        <UsageCount Value="22"/>
       </Unit>
       <Unit>
         <Filename Value="abstractwindow.pas"/>
@@ -116,7 +43,7 @@
         <UnitName Value="AbstractWindow"/>
         <EditorIndex Value="2"/>
         <CursorPos X="70" Y="13"/>
-        <UsageCount Value="36"/>
+        <UsageCount Value="50"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -125,39 +52,85 @@
         <UnitName Value="WindowContainer"/>
         <EditorIndex Value="3"/>
         <CursorPos Y="36"/>
-        <UsageCount Value="36"/>
+        <UsageCount Value="50"/>
         <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\lcl\include\control.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="3600"/>
+        <CursorPos Y="3612"/>
+        <UsageCount Value="32"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\lcl\include\customimage.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="34"/>
+        <CursorPos Y="46"/>
+        <UsageCount Value="7"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\lcl\include\treeview.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="4473"/>
+        <CursorPos Y="4485"/>
+        <UsageCount Value="11"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\lcl\controls.pp"/>
+        <UnitName Value="Controls"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2800"/>
+        <CursorPos Y="2811"/>
+        <UsageCount Value="2"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\lcl\customtimer.pas"/>
+        <UnitName Value="CustomTimer"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="138"/>
+        <CursorPos Y="150"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\lcl\interfaces\win32\win32callback.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2962"/>
+        <CursorPos Y="2976"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\lcl\include\application.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1414"/>
+        <CursorPos Y="1426"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\lcl\include\wincontrol.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="6476"/>
+        <CursorPos Y="6488"/>
+        <UsageCount Value="4"/>
+      </Unit>
+      <Unit>
+        <Filename Value="backup\unit1.lfm"/>
+        <HasResources Value="True"/>
+        <EditorIndex Value="5"/>
+        <CursorPos X="36" Y="15"/>
+        <UsageCount Value="55"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="D:\lazarus\lcl\include\control.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="3612"/>
+        <CursorPos X="46" Y="3612"/>
+        <UsageCount Value="21"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="101" Column="12" TopLine="94"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="100" Column="12" TopLine="93"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="101" Column="12" TopLine="94"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="102" Column="12" TopLine="95"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="103" Column="12" TopLine="96"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="102" Column="12" TopLine="95"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="101" Column="12" TopLine="94"/>
-      </Position>
       <Position>
         <Filename Value="unit1.pas"/>
         <Caret Line="100" Column="12" TopLine="93"/>
@@ -249,6 +222,34 @@
       <Position>
         <Filename Value="rectwindow.pas"/>
         <Caret Line="18" Column="24"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="92" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="99" Column="54" TopLine="65"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="97" Column="55" TopLine="81"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="103" Column="9" TopLine="79"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="166" Column="10" TopLine="137"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="72" Column="31" TopLine="62"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="73" Column="4" TopLine="59"/>
       </Position>
     </JumpHistory>
     <RunParams>

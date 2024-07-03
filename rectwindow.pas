@@ -34,6 +34,8 @@ type
     procedure SetSize(const NewSize: TPoint); override;
     function GetIsRight: Boolean;
     function GetOtstup: Integer;
+    function GetSelection: Boolean;
+    procedure SetSelection(Value: Boolean);
     function Contains(CurrentClickX, CurrentClickY: Integer): Boolean; override;
 
 
@@ -228,6 +230,16 @@ end;
   function TRectWindow.GetOtstup: Integer;
 begin
   Result := FOtstup;
+end;
+
+  function TRectWindow.GetSelection: Boolean;
+begin
+  Result := FSelected;
+end;
+
+  procedure TRectWindow.SetSelection(Value: Boolean);
+begin
+  FSelected := Value;
 end;
 
 end.

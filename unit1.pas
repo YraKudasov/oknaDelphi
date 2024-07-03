@@ -37,6 +37,7 @@ type
     procedure VerticalImpost(Sender: TObject);
     procedure CanvasClickHandler(Sender: TObject);
     procedure DrawWindows;
+    function CheckSelectionWindows: Boolean;
 
 
 
@@ -269,6 +270,7 @@ begin
        Image1.Canvas.FillRect(Image1.ClientRect);
        DrawWindows;
 
+
       // Перерисовываем окна
       Window1.DrawWindow;
       Window2.DrawWindow;
@@ -296,16 +298,18 @@ begin
 // Проверяем, принадлежит ли клик какому-либо окну в контейнере
 WindowIndex := WindowContainer.FindWindow(ClickX, ClickY);
 // Если клик попадает в окно
-if WindowIndex >= 0 then
+if (WindowIndex >= 0) then
 begin
 // Получаем выбранное окно
 Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
+if (CheckSelectionWindows = False or Window.GetSelection = True) then
+begin
 // Устанавливаем новое выбранное окно
 // Вызываем обработчик события OnWindowSelected
 RectWindowSelected(Window);
 Window.Select(Self);
 DrawWindows;
-
+ end;
 end
 else
 begin
@@ -326,5 +330,22 @@ begin
  end;
 end;
 
+function TForm1.CheckSelectionWindows: Boolean;
+var
+  i: Integer;
+  Window: TRectWindow;
+begin
+  Result := False; // Initialize the result to False
+
+  for i := 0 to WindowContainer.Count - 1 do
+  begin
+    Window := TRectWindow(WindowContainer.GetWindow(i));
+    if Window.GetSelection then // Use the getter method to check if the window is selected
+    begin
+      Result := True; // Set the result to True if any window is selected
+      Exit; // Exit the loop since we found a selected window
+    end;
+  end;
+end;
 
 end.

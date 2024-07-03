@@ -34,6 +34,7 @@ type
     procedure SetSize(const NewSize: TPoint); override;
     function GetIsRight: Boolean;
     function GetOtstup: Integer;
+    function GetSelection: Boolean;
     function Contains(CurrentClickX, CurrentClickY: Integer): Boolean; override;
 
 
@@ -134,7 +135,7 @@ begin
   FImage.Canvas.Brush.Color := clWhite; // Задайте цвет фона окна
   if (GetIsRight = False) then
   begin
-  FImage.Canvas.FillRect(Rect(ScaledOtstup+4, 4, ScaledRectWidth+ScaledOtstup+2, ScaledRectHeight)); // Очистите всю область окна
+  FImage.Canvas.FillRect(Rect(ScaledOtstup+4, 4, ScaledRectWidth+ScaledOtstup+1, ScaledRectHeight)); // Очистите всю область окна
   end
   else
   begin
@@ -228,6 +229,16 @@ end;
   function TRectWindow.GetOtstup: Integer;
 begin
   Result := FOtstup;
+end;
+
+  function TRectWindow.GetSelection: Boolean;
+begin
+  Result := FSelected;
+end;
+
+  procedure TRectWindow.SetSelection(Value: Boolean);
+begin
+  FSelected := Value;
 end;
 
 end.

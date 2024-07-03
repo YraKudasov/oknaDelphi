@@ -178,7 +178,6 @@ object Form1: TForm1
         F4D3353CF3D13646F4BA3544F60C3645F6003645F6003645F6003645F6003645
         F6003545F5003645F5003645F5003645F5003546F50A3642F4B73445F5D4
       }
-      OnClick = BitBtn2Click
       TabOrder = 3
     end
   end
@@ -189,6 +188,7 @@ object Form1: TForm1
       Caption = 'Добавить'
       object MenuItem2: TMenuItem
         Caption = 'Вертикальный импост'
+        OnClick = VerticalImpost
       end
       object MenuItem3: TMenuItem
         Caption = 'Горизонтальный импост'

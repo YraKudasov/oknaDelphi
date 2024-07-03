@@ -36,6 +36,8 @@ type
     function GetOtstup: Integer;
     function GetSelection: Boolean;
     procedure SetSelection(Value: Boolean);
+    function GetHeight: Integer;
+    function GetWidth: Integer;
     function Contains(CurrentClickX, CurrentClickY: Integer): Boolean; override;
 
 
@@ -240,6 +242,16 @@ end;
   procedure TRectWindow.SetSelection(Value: Boolean);
 begin
   FSelected := Value;
+end;
+
+  function TRectWindow.GetHeight: Integer;
+begin
+  Result := FRectH;
+end;
+
+  function TRectWindow.GetWidth: Integer;
+begin
+  Result := FRectW;
 end;
 
 end.

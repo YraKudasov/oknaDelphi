@@ -113,9 +113,9 @@ begin
 
   // Присоединяем обработчик события OnWindowSelected
 
-  RectWindow.OnWindowDeselected := @RectWindowDeselected;
+  RectWindowDeselected(Self);
   RectWindow.OnWindowSelected := @RectWindowSelected;
-
+  RectWindow.OnWindowDeselected := @RectWindowDeselected;
 
   MenuItem3.OnClick := @RectWindow.AddHorizontalImpost;
 
@@ -123,19 +123,25 @@ end;
 
 
 procedure TForm1.RectWindowSelected(Sender: TObject);
+var
+  Window: TRectWindow;
 begin
-  Edit1.Text := IntToStr(FRectWidth);
-  Edit2.Text := IntToStr(FRectHeight);
-  MenuItem2.Enabled := True;
-  MenuItem3.Enabled := True;
+  Window := TRectWindow(Sender);
+  if Assigned(Window) then
+  begin
+    Edit1.Text := IntToStr(Window.GetHeight);
+    Edit2.Text := IntToStr(Window.GetWidth);
+    MenuItem2.Enabled := True;
+    MenuItem3.Enabled := True;
+  end;
 end;
 
 procedure TForm1.RectWindowDeselected(Sender: TObject);
 begin
+  Edit1.Text := '0';
+  Edit2.Text := '0';
   MenuItem2.Enabled := False;
   MenuItem3.Enabled := False;
-
-
 end;
 
 
@@ -155,6 +161,8 @@ begin
   MenuItem2.Enabled := False;
   MenuItem3.Enabled := False;
 end;
+
+
 
 
 
@@ -262,9 +270,11 @@ begin
      ShowMessage('Контейнер пустой');
   end;
 
-      // Привязываем события к новым окнам
+      RectWindowDeselected(Self);
       Window1.OnWindowSelected := @RectWindowSelected;
       Window2.OnWindowSelected := @RectWindowSelected;
+      Window1.OnWindowDeselected := @RectWindowDeselected;
+      Window2.OnWindowDeselected := @RectWindowDeselected;
 
        Image1.Canvas.Brush.Color := clWhite;
        Image1.Canvas.FillRect(Image1.ClientRect);
@@ -306,15 +316,11 @@ if (CheckSelectionWindows = False or Window.GetSelection = True) then
 begin
 // Устанавливаем новое выбранное окно
 // Вызываем обработчик события OnWindowSelected
-RectWindowSelected(Window);
 Window.Select(Self);
+Window.OnWindowSelected := @RectWindowSelected;
+Window.OnWindowDeselected := @RectWindowDeselected;
 DrawWindows;
  end;
-end
-else
-begin
-// Если клик не попадает в окно, сбрасываем выделение
-RectWindowDeselected(nil);
 end;
 end;
 

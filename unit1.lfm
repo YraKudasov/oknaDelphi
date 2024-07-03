@@ -53,15 +53,15 @@ object Form1: TForm1
       Left = 40
       Height = 15
       Top = 16
-      Width = 64
-      Caption = 'Длина (мм)'
+      Width = 69
+      Caption = 'Высота (мм)'
     end
     object Label4: TLabel
       Left = 152
       Height = 15
       Top = 16
-      Width = 69
-      Caption = 'Высота (мм)'
+      Width = 64
+      Caption = 'Длина (мм)'
     end
     object Edit1: TEdit
       Left = 40

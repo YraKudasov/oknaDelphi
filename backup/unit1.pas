@@ -36,6 +36,7 @@ type
     procedure RectWindowDeselected(Sender: TObject);
     procedure VerticalImpost(Sender: TObject);
     procedure CanvasClickHandler(Sender: TObject);
+    procedure DrawWindows;
 
 
 
@@ -225,7 +226,7 @@ end;
 
 procedure TForm1.VerticalImpost(Sender: TObject);
 var
-  WindowIndex, Otstup: Integer;
+  WindowIndex, Otstup, i: Integer;
   Window, Window1, Window2: TRectWindow;
 begin
   // Находим индекс окна, которое нужно разделить
@@ -266,6 +267,8 @@ begin
 
        Image1.Canvas.Brush.Color := clWhite;
        Image1.Canvas.FillRect(Image1.ClientRect);
+       DrawWindows;
+
       // Перерисовываем окна
       Window1.DrawWindow;
       Window2.DrawWindow;
@@ -301,11 +304,7 @@ Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
 // Вызываем обработчик события OnWindowSelected
 RectWindowSelected(Window);
 Window.Select(Self);
-for i := 0 to WindowContainer.Count - 1 do
- begin
-   Window := TRectWindow(WindowContainer.GetWindow(i));
-   Window.DrawWindow;
- end;
+DrawWindows;
 
 end
 else
@@ -314,5 +313,18 @@ begin
 RectWindowDeselected(nil);
 end;
 end;
+
+procedure TForm1.DrawWindows;
+var
+i: Integer;
+Window: TRectWindow;
+begin
+     for i := 0 to WindowContainer.Count - 1 do
+ begin
+   Window := TRectWindow(WindowContainer.GetWindow(i));
+   Window.DrawWindow;
+ end;
+end;
+
 
 end.

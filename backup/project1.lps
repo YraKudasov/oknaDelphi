@@ -3,7 +3,7 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="12"/>
-    <BuildModes Active="Debug"/>
+    <BuildModes Active="Default"/>
     <Units>
       <Unit>
         <Filename Value="project1.lpr"/>
@@ -20,8 +20,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <TopLine Value="291"/>
-        <CursorPos X="11" Y="322"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="247"/>
+        <CursorPos X="23" Y="270"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -30,8 +31,8 @@
         <Filename Value="rectwindow.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RectWindow"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="69"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="60"/>
         <CursorPos X="52" Y="95"/>
         <UsageCount Value="163"/>
         <Loaded Value="True"/>
@@ -40,7 +41,7 @@
         <Filename Value="abstractwindow.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="AbstractWindow"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="3"/>
         <CursorPos X="19" Y="18"/>
         <UsageCount Value="113"/>
         <Loaded Value="True"/>
@@ -49,7 +50,7 @@
         <Filename Value="windowcontainer.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="WindowContainer"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="4"/>
         <TopLine Value="80"/>
         <CursorPos X="19" Y="106"/>
         <UsageCount Value="113"/>
@@ -129,12 +130,10 @@
       </Unit>
       <Unit>
         <Filename Value="D:\lazarus\lcl\include\customimage.inc"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="64"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="63"/>
         <CursorPos Y="46"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="D:\lazarus\lcl\controls.pp"/>
@@ -146,10 +145,6 @@
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="290" Column="3" TopLine="272"/>
-      </Position>
       <Position>
         <Filename Value="unit1.pas"/>
         <Caret Line="294" Column="19" TopLine="276"/>
@@ -265,6 +260,10 @@
       <Position>
         <Filename Value="project1.lpr"/>
         <Caret Line="23"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="333" Column="8" TopLine="299"/>
       </Position>
     </JumpHistory>
     <RunParams>

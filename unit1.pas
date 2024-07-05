@@ -8,6 +8,10 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
   ComCtrls, Buttons, Menus, RectWindow, WindowContainer, LCLType;
 
+const
+  tfInputMask = 'InputMask';
+  // Пример определения константы, если она не найдена
+
 type
   { TForm1 }
   TForm1 = class(TForm)
@@ -35,6 +39,8 @@ type
     ScrollBox1: TScrollBox;
     TreeView1: TTreeView;
 
+
+
     procedure BitBtn3Click(Sender: TObject);
     procedure BitBtn4Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -43,11 +49,11 @@ type
     procedure EditChange(Sender: TObject);
     procedure RectWindowSelected(Sender: TObject);
     procedure RectWindowDeselected(Sender: TObject);
-    procedure VerticalImpost(Sender: TObject);
+    procedure VerticalImpost(VertImpost: integer);
     procedure CanvasClickHandler(Sender: TObject);
     procedure DrawWindows;
-    function CheckSelectionWindows: Boolean;
-
+    function CheckSelectionWindows: boolean;
+    procedure InputVerticalImpost(Sender: TObject);
 
 
 
@@ -56,7 +62,8 @@ type
     { Private declarations }
     RectWindow: TRectWindow;
     FRectHeight, FRectWidth: integer;
-    WindowContainer: TWindowContainer; // Добавляем экземпляр WindowContainer
+    WindowContainer: TWindowContainer;
+    // Добавляем экземпляр WindowContainer
 
 
   public
@@ -67,6 +74,7 @@ type
 
 var
   Form1: TForm1;
+
 
 implementation
 
@@ -88,10 +96,11 @@ end;
 
 procedure TForm1.BitBtn3Click(Sender: TObject);
 var
-  RectWidth, RectHeight: Integer;
+  RectWidth, RectHeight: integer;
 begin
 
-  WindowContainer := TWindowContainer.Create; // Создаем экземпляр WindowContainer
+  WindowContainer := TWindowContainer.Create;
+  // Создаем экземпляр WindowContainer
 
   // Получение значений из Edit1 и Edit2
   RectHeight := StrToInt(Edit3.Text);
@@ -105,11 +114,12 @@ begin
 
   if WindowContainer.Count > 0 then
   begin
-     ShowMessage('Экземпляр окна был добавлен в контейнер.' + IntToStr(WindowContainer.Count));
+    ShowMessage('Экземпляр окна был добавлен в контейнер.'
+      + IntToStr(WindowContainer.Count));
   end;
   if WindowContainer.Count = 0 then
   begin
-     ShowMessage('Контейнер пустой');
+    ShowMessage('Контейнер пустой');
   end;
 
   RectWindow.SetSize(TPoint.Create(RectHeight, RectWidth));
@@ -138,7 +148,7 @@ begin
   Window := TRectWindow(Sender);
   if Assigned(Window) then
   begin
-     Panel1.Enabled := True;
+    Panel1.Enabled := True;
     Edit1.Text := IntToStr(Window.GetHeight);
     Edit2.Text := IntToStr(Window.GetWidth);
     MenuItem2.Enabled := True;
@@ -165,7 +175,6 @@ end;
 
 
 
-
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   Panel1.Enabled := False;
@@ -173,8 +182,6 @@ begin
   MenuItem2.Enabled := False;
   MenuItem3.Enabled := False;
 end;
-
-
 
 
 
@@ -196,6 +203,10 @@ begin
     FRectHeight := 0;
     FRectWidth := 0;
 
+    Panel1.Enabled := False;
+    Edit1.Text := '0';
+    Edit2.Text := '0';
+
     Edit3.Text := IntToStr(FRectWidth);
     Edit4.Text := IntToStr(FRectHeight);
 
@@ -214,7 +225,7 @@ begin
     // Отключение события изменения значения для списка после закрытия окна
     Node.Selected := False;
 
-     // Сброс обработчика событий
+    // Сброс обработчика событий
     Image1.OnClick := nil;
   end;
 end;
@@ -246,10 +257,29 @@ begin
     BitBtn3.Enabled := False;
 end;
 
-
-procedure TForm1.VerticalImpost(Sender: TObject);
+procedure TForm1.InputVerticalImpost(Sender: TObject);
 var
-  WindowIndex, Otstup: Integer;
+  Number: string;
+  VertImpost: integer;
+begin
+  // Создаем диалог для ввода числа
+  if InputQuery('Размер вертикального импоста', 'Расстояние от левой стороны окна:', Number) then
+  begin
+    if TryStrToInt(Number, VertImpost) then
+  begin
+       VerticalImpost(VertImpost);
+  end
+  else
+  begin
+    ShowMessage('Некорректный ввод числа');
+  end;
+
+  end;
+end;
+
+procedure TForm1.VerticalImpost(VertImpost: integer);
+var
+  WindowIndex, Otstup: integer;
   Window, Window1, Window2: TRectWindow;
 begin
   // Находим индекс окна, которое нужно разделить
@@ -257,15 +287,22 @@ begin
   if WindowIndex >= 0 then
   begin
     // Получаем экземпляр окна
-   Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
+    Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
     if Assigned(Window) then
     begin
 
       Otstup := Window.GetOtstup;
-
+      if ((VertImpost >= (Window.GetSize.Y - 450)) or (VertImpost <= 450)) then
+      begin
+        ShowMessage('Размеры импоста больше или меньше критически допустимых');
+      end
+      else
+      begin
       // Разделяем окно на два новых экземпляра
-      Window1 := TRectWindow.Create(Window.GetSize.X, Window.GetSize.Y div 2, Image1, False, Otstup);
-      Window2 := TRectWindow.Create(Window.GetSize.X, Window.GetSize.Y div 2, Image1, True, Otstup + Window.GetSize.Y div 2);
+      Window1 := TRectWindow.Create(Window.GetSize.X, VertImpost,
+        Image1, False, Otstup);
+      Window2 := TRectWindow.Create(Window.GetSize.X, Window.GetSize.Y - VertImpost,
+        Image1, True, Otstup + VertImpost);
 
 
       // Удаляем исходное окно из контейнера
@@ -275,14 +312,15 @@ begin
       WindowContainer.AddWindow(Window1);
       WindowContainer.AddWindow(Window2);
 
-        if WindowContainer.Count > 0 then
-  begin
-     ShowMessage('Экземпляр окна был добавлен в контейнер.' + IntToStr(WindowContainer.Count));
-  end;
-  if WindowContainer.Count = 0 then
-  begin
-     ShowMessage('Контейнер пустой');
-  end;
+      if WindowContainer.Count > 0 then
+      begin
+        ShowMessage('Экземпляр окна был добавлен в контейнер.'
+          + IntToStr(WindowContainer.Count));
+      end;
+      if WindowContainer.Count = 0 then
+      begin
+        ShowMessage('Контейнер пустой');
+      end;
 
       RectWindowDeselected(Self);
       Window1.OnWindowSelected := @RectWindowSelected;
@@ -290,15 +328,15 @@ begin
       Window1.OnWindowDeselected := @RectWindowDeselected;
       Window2.OnWindowDeselected := @RectWindowDeselected;
 
-       Image1.Canvas.Brush.Color := clWhite;
-       Image1.Canvas.FillRect(Image1.ClientRect);
-       DrawWindows;
+      Image1.Canvas.Brush.Color := clWhite;
+      Image1.Canvas.FillRect(Image1.ClientRect);
+      DrawWindows;
 
 
       // Перерисовываем окна
       Window1.DrawWindow;
       Window2.DrawWindow;
-
+      end;
     end;
   end;
 end;
@@ -306,9 +344,9 @@ end;
 // Обработчик клика на изображении
 procedure TForm1.CanvasClickHandler(Sender: TObject);
 var
-ClickX, ClickY: Integer;
-Window: TRectWindow;
-WindowIndex: Integer;
+  ClickX, ClickY: integer;
+  Window: TRectWindow;
+  WindowIndex: integer;
 begin
 
   ClickX := Mouse.CursorPos.X;
@@ -319,40 +357,40 @@ begin
   ClickY := Image1.ScreenToClient(Point(ClickX, ClickY)).Y;
 
 
-// Проверяем, принадлежит ли клик какому-либо окну в контейнере
-WindowIndex := WindowContainer.FindWindow(ClickX, ClickY);
-// Если клик попадает в окно
-if (WindowIndex >= 0) then
-begin
-// Получаем выбранное окно
-Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
-if (CheckSelectionWindows = False or Window.GetSelection = True) then
-begin
-// Устанавливаем новое выбранное окно
-// Вызываем обработчик события OnWindowSelected
-Window.Select(Self);
-Window.OnWindowSelected := @RectWindowSelected;
-Window.OnWindowDeselected := @RectWindowDeselected;
-DrawWindows;
- end;
-end;
+  // Проверяем, принадлежит ли клик какому-либо окну в контейнере
+  WindowIndex := WindowContainer.FindWindow(ClickX, ClickY);
+  // Если клик попадает в окно
+  if (WindowIndex >= 0) then
+  begin
+    // Получаем выбранное окно
+    Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
+    if (CheckSelectionWindows = False or Window.GetSelection = True) then
+    begin
+      // Устанавливаем новое выбранное окно
+      // Вызываем обработчик события OnWindowSelected
+      Window.Select(Self);
+      Window.OnWindowSelected := @RectWindowSelected;
+      Window.OnWindowDeselected := @RectWindowDeselected;
+      DrawWindows;
+    end;
+  end;
 end;
 
 procedure TForm1.DrawWindows;
 var
-i: Integer;
-Window: TRectWindow;
+  i: integer;
+  Window: TRectWindow;
 begin
-     for i := 0 to WindowContainer.Count - 1 do
- begin
-   Window := TRectWindow(WindowContainer.GetWindow(i));
-   Window.DrawWindow;
- end;
+  for i := 0 to WindowContainer.Count - 1 do
+  begin
+    Window := TRectWindow(WindowContainer.GetWindow(i));
+    Window.DrawWindow;
+  end;
 end;
 
-function TForm1.CheckSelectionWindows: Boolean;
+function TForm1.CheckSelectionWindows: boolean;
 var
-  i: Integer;
+  i: integer;
   Window: TRectWindow;
 begin
   Result := False; // Initialize the result to False
@@ -360,7 +398,8 @@ begin
   for i := 0 to WindowContainer.Count - 1 do
   begin
     Window := TRectWindow(WindowContainer.GetWindow(i));
-    if Window.GetSelection then // Use the getter method to check if the window is selected
+    if Window.GetSelection then
+      // Use the getter method to check if the window is selected
     begin
       Result := True; // Set the result to True if any window is selected
       Exit; // Exit the loop since we found a selected window

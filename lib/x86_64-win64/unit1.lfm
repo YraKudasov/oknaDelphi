@@ -342,7 +342,7 @@ object Form1: TForm1
       Caption = 'Добавить'
       object MenuItem2: TMenuItem
         Caption = 'Вертикальный импост'
-        OnClick = VerticalImpost
+        OnClick = InputVerticalImpost
       end
       object MenuItem3: TMenuItem
         Caption = 'Горизонтальный импост'

@@ -13,23 +13,31 @@ type
   TForm1 = class(TForm)
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
+    BitBtn3: TBitBtn;
+    BitBtn4: TBitBtn;
     Edit1: TEdit;
     Edit2: TEdit;
+    Edit3: TEdit;
+    Edit4: TEdit;
     Image1: TImage;
+    Label1: TLabel;
+    Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     Panel1: TPanel;
+    Panel2: TPanel;
     PopupMenu1: TPopupMenu;
     ScrollBox1: TScrollBox;
     TreeView1: TTreeView;
 
-    procedure BitBtn1Click(Sender: TObject);
-    procedure BitBtn2Click(Sender: TObject);
+    procedure BitBtn3Click(Sender: TObject);
+    procedure BitBtn4Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure Label3Click(Sender: TObject);
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
     procedure EditKeyPress(Sender: TObject; var Key: char);
     procedure EditChange(Sender: TObject);
@@ -78,7 +86,7 @@ end;
 
 
 
-procedure TForm1.BitBtn1Click(Sender: TObject);
+procedure TForm1.BitBtn3Click(Sender: TObject);
 var
   RectWidth, RectHeight: Integer;
 begin
@@ -86,8 +94,8 @@ begin
   WindowContainer := TWindowContainer.Create; // Создаем экземпляр WindowContainer
 
   // Получение значений из Edit1 и Edit2
-  RectWidth := StrToInt(Edit1.Text);
-  RectHeight := StrToInt(Edit2.Text);
+  RectHeight := StrToInt(Edit3.Text);
+  RectWidth := StrToInt(Edit4.Text);
 
   FRectWidth := RectWidth;
   FRectHeight := RectHeight;
@@ -134,6 +142,10 @@ begin
     Edit2.Text := IntToStr(Window.GetWidth);
     MenuItem2.Enabled := True;
     MenuItem3.Enabled := True;
+    BitBtn1.Enabled := True;
+    BitBtn2.Enabled := True;
+    Edit1.Enabled := True;
+    Edit2.Enabled := True;
   end;
 end;
 
@@ -143,13 +155,17 @@ begin
   Edit2.Text := '0';
   MenuItem2.Enabled := False;
   MenuItem3.Enabled := False;
+  Edit1.Enabled := False;
+  Edit2.Enabled := False;
+  BitBtn1.Enabled := False;
+  BitBtn2.Enabled := False;
 end;
 
 
-procedure TForm1.BitBtn2Click(Sender: TObject);
+procedure TForm1.BitBtn4Click(Sender: TObject);
 begin
-  Edit1.Text := IntToStr(FRectWidth);
-  Edit2.Text := IntToStr(FRectHeight);
+  Edit3.Text := IntToStr(FRectHeight);
+  Edit4.Text := IntToStr(FRectWidth);
 end;
 
 
@@ -159,9 +175,11 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   Panel1.Enabled := False;
+  Panel2.Enabled := False;
   MenuItem2.Enabled := False;
   MenuItem3.Enabled := False;
 end;
+
 
 
 
@@ -172,9 +190,10 @@ begin
 
   if Assigned(Node) then
   begin
+
     MenuItem2.Enabled := False;
-    Panel1.Enabled := True;
-    Bitbtn1.Enabled := False;
+    Panel2.Enabled := True;
+    Bitbtn3.Enabled := False;
 
     Image1.Canvas.Brush.Color := clWhite;
     Image1.Canvas.FillRect(Image1.ClientRect);
@@ -183,18 +202,18 @@ begin
     FRectHeight := 0;
     FRectWidth := 0;
 
-    Edit1.Text := IntToStr(FRectWidth);
-    Edit2.Text := IntToStr(FRectHeight);
+    Edit3.Text := IntToStr(FRectWidth);
+    Edit4.Text := IntToStr(FRectHeight);
 
-    Edit1.OnKeyPress := @EditKeyPress;
+    Edit3.OnKeyPress := @EditKeyPress;
     // Обработчик события нажатия клавиши
-    Edit1.OnChange := @EditChange;
+    Edit3.OnChange := @EditChange;
     // Обработчик события изменения значения
 
     // Обработчик события нажатия клавиши
-    Edit2.OnKeyPress := @EditKeyPress;
+    Edit4.OnKeyPress := @EditKeyPress;
     // Обработчик события изменения значения
-    Edit2.OnChange := @EditChange;
+    Edit4.OnChange := @EditChange;
 
 
 
@@ -220,17 +239,17 @@ var
   WidthValue, HeightValue: integer;
 begin
   // Проверка на ввод корректных значений
-  if TryStrToInt(Edit1.Text, WidthValue) and TryStrToInt(Edit2.Text, HeightValue) then
+  if TryStrToInt(Edit3.Text, HeightValue) and TryStrToInt(Edit4.Text, WidthValue) then
   begin
     // Проверка на минимальное и максимальное значение для длины и ширины
     if (WidthValue >= 450) and (WidthValue <= 3500) and (HeightValue >= 450) and
       (HeightValue <= 2000) then
-      BitBtn1.Enabled := True
+      BitBtn3.Enabled := True
     else
-      BitBtn1.Enabled := False;
+      BitBtn3.Enabled := False;
   end
   else
-    BitBtn1.Enabled := False;
+    BitBtn3.Enabled := False;
 end;
 
 

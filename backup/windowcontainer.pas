@@ -13,14 +13,14 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure AddWindow(Window: TAbstractWindow);
-    procedure RemoveWindow(Index: Integer);
+    procedure RemoveWindow(Index: integer);
     procedure Clear;
-    function GetWindow(index: Integer): TAbstractWindow;
-    function Count: Integer;
+    function GetWindow(index: integer): TAbstractWindow;
+    function Count: integer;
     function GetWindows: TObjectList;
-    function IndexOf(const AWindow: TAbstractWindow): Integer;
-    function GetSelectedIndex: Integer;
-    function FindWindow(const ClickX, ClickY: Integer): Integer;
+    function IndexOf(const AWindow: TAbstractWindow): integer;
+    function GetSelectedIndex: integer;
+    function FindWindow(const ClickX, ClickY: integer): integer;
     // Другие методы, если необходимо
   end;
 
@@ -42,12 +42,12 @@ begin
   FWindows.Add(Window);
 end;
 
-function TWindowContainer.GetWindow(index: Integer): TAbstractWindow;
+function TWindowContainer.GetWindow(index: integer): TAbstractWindow;
 begin
   Result := TAbstractWindow(FWindows[index]);
 end;
 
-function TWindowContainer.Count: Integer;
+function TWindowContainer.Count: integer;
 begin
   Result := FWindows.Count;
 end;
@@ -58,11 +58,14 @@ begin
 end;
 
 procedure TWindowContainer.RemoveWindow(Index: Integer);
+var
+  i: Integer;
 begin
   if (Index >= 0) and (Index < FWindows.Count) then
   begin
     FWindows.Delete(Index);
-  end;
+
+
 end;
 
 procedure TWindowContainer.Clear;
@@ -70,45 +73,54 @@ begin
   FWindows.Clear;
 end;
 
-function TWindowContainer.IndexOf(const AWindow: TAbstractWindow): Integer;
+function TWindowContainer.IndexOf(const AWindow: TAbstractWindow): integer;
 begin
   Result := FWindows.IndexOf(AWindow);
 end;
 
-function TWindowContainer.GetSelectedIndex: Integer;
+function TWindowContainer.GetSelectedIndex: integer;
 var
-  Index: Integer;
+  Index: integer;
 begin
-  Result := -1; // Инициализируем результат, если ничего не выбрано
+  Result := -1;
+  // Инициализируем результат, если ничего не выбрано
   for Index := 0 to Count - 1 do
   begin
     if FWindows[Index] is TRectWindow then
     begin
       if TRectWindow(FWindows[Index]).FSelected then
       begin
-        Result := Index; // Возвращаем индекс выбранного экземпляра
-        Break; // Прерываем цикл, так как нашли выбранный экземпляр
+        Result := Index;
+        // Возвращаем индекс выбранного экземпляра
+        Break;
+        // Прерываем цикл, так как нашли выбранный экземпляр
       end;
     end;
   end;
 end;
 // Другие методы, если необходимо
 
-function TWindowContainer.FindWindow(const ClickX, ClickY: Integer): Integer;
+function TWindowContainer.FindWindow(const ClickX, ClickY: integer): integer;
 var
-  Index: Integer;
+  Index: integer;
   Window: TAbstractWindow;
 begin
-  Result := -1; // Инициализируем результат, если ничего не найдено
+  Result := -1;
+  // Инициализируем результат, если ничего не найдено
   for Index := 0 to Count - 1 do
   begin
     Window := GetWindow(Index);
-    if Assigned(Window) and Window.Contains(APoint) then
+    if Assigned(Window) and Window.Contains(ClickX, ClickY) then
     begin
-      Result := Index; // Возвращаем индекс окна, содержащего точку клика
+      Result := Index;
+      // Возвращаем индекс окна, содержащего точку клика
       Break; // Прерываем цикл, так как нашли нужное окно
     end;
   end;
 end;
+
+
+
+
 
 end.

@@ -165,6 +165,9 @@
       <Item>
         <Name Value="RunError(219)"/>
       </Item>
+      <Item>
+        <Name Value="EListError"/>
+      </Item>
     </Exceptions>
   </Debugging>
 </CONFIG>

@@ -4,51 +4,59 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ComCtrls, AbstractWindow, Contnrs ; // Убедитесь, что используемый модуль совпадает с указанным здесь
+  ComCtrls, AbstractWindow, Contnrs;
+  // Убедитесь, что используемый модуль совпадает с указанным здесь
 
 type
   TRectWindow = class(TAbstractWindow)
   private
-    FRectH, FRectW, FOtstup: Integer;
+    FRectH, FRectW, FOtstup: integer;
     FImage: TImage;
-    FIsRight: Boolean;
+    FIsRight: boolean;
     FOnWindowSelected: TNotifyEvent;
     FOnWindowDeselected: TNotifyEvent;
-    ScaledRectWidth, ScaledRectHeight, ScaledOtstup: Integer;
-    FVerticalImpost: Boolean;
-    FHorizontalImpost: Boolean;
+    ScaledRectWidth, ScaledRectHeight, ScaledOtstup: integer;
+    FVerticalImpost: boolean;
+    FHorizontalImpost: boolean;
   public
-    FSelected: Boolean;
+    FSelected: boolean;
 
 
   public
-    constructor Create(ARectH, ARectW: Integer; AImage: TImage; IsRight: Boolean; AOtstup:Integer);
+    constructor Create(ARectH, ARectW: integer; AImage: TImage;
+      IsRight: boolean; AOtstup: integer);
     procedure DrawWindow; override;
-    procedure DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOt: Integer); override;
+    procedure DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOt: integer); override;
     procedure Select(Sender: TObject); override;
-    procedure AddVerticalImpost (Sender: TObject); override;
+    procedure AddVerticalImpost(Sender: TObject); override;
     procedure AddHorizontalImpost(Sender: TObject); override;
-    property OnWindowSelected: TNotifyEvent read FOnWindowSelected write FOnWindowSelected;
-    property OnWindowDeselected: TNotifyEvent read FOnWindowDeselected write FOnWindowDeselected;
+    property OnWindowSelected: TNotifyEvent read FOnWindowSelected
+      write FOnWindowSelected;
+    property OnWindowDeselected: TNotifyEvent
+      read FOnWindowDeselected write FOnWindowDeselected;
     function GetSize: TPoint; override;
     procedure SetSize(const NewSize: TPoint); override;
-    function GetIsRight: Boolean;
-    function GetOtstup: Integer;
-    function GetSelection: Boolean;
-    procedure SetSelection(Value: Boolean);
-    function GetHeight: Integer;
-    function GetWidth: Integer;
-    function Contains(CurrentClickX, CurrentClickY: Integer): Boolean; override;
+    procedure SetWidth(Value: Integer);
 
 
-    property VerticalImpost: Boolean read FVerticalImpost write FVerticalImpost;
-    property HorizontalImpost: Boolean read FHorizontalImpost write FHorizontalImpost;
+    function GetIsRight: boolean;
+    function GetOtstup: integer;
+    function GetSelection: boolean;
+    procedure SetSelection(Value: boolean);
+    function GetHeight: integer;
+    function GetWidth: integer;
+    function Contains(CurrentClickX, CurrentClickY: integer): boolean; override;
+
+
+    property VerticalImpost: boolean read FVerticalImpost write FVerticalImpost;
+    property HorizontalImpost: boolean read FHorizontalImpost write FHorizontalImpost;
 
   end;
 
 implementation
 
-constructor TRectWindow.Create(ARectH, ARectW: Integer; AImage: TImage; IsRight: Boolean; AOtstup:Integer);
+constructor TRectWindow.Create(ARectH, ARectW: integer; AImage: TImage;
+  IsRight: boolean; AOtstup: integer);
 begin
   FRectH := ARectH;
   FRectW := ARectW;
@@ -57,7 +65,7 @@ begin
   FOtstup := AOtstup;
 end;
 
-procedure TRectWindow.DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOt: Integer);
+procedure TRectWindow.DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOt: integer);
 begin
   if FSelected then
   begin
@@ -66,7 +74,7 @@ begin
     FImage.Canvas.Pen.Color := clRed;
     // Можете выбрать любой другой цвет
     FImage.Canvas.Pen.Width := 2;
-    FImage.Canvas.Rectangle(2+ScaledOt, 2, ScaledRW+3+ScaledOt, ScaledRH+3);
+    FImage.Canvas.Rectangle(2 + ScaledOt, 2, ScaledRW + 3 + ScaledOt, ScaledRH + 3);
   end;
 end;
 
@@ -89,44 +97,48 @@ begin
    if (ClickX >= 4+ScaledOtstup) and  (ClickX <= ScaledRectWidth+ScaledOtstup) and
       (ClickY >= 4) and (ClickY <= ScaledRectHeight) then
       }
-   begin
+begin
 
-     if FSelected then
-     begin
-       FSelected := False;
+  if FSelected then
+  begin
+    FSelected := False;
 
-       FImage.Canvas.Brush.Color := clWhite;
-       FImage.Canvas.FillRect(FImage.ClientRect);
-       DrawWindow;
+    FImage.Canvas.Brush.Color := clWhite;
+    FImage.Canvas.FillRect(FImage.ClientRect);
+    DrawWindow;
 
-       if Assigned(OnWindowDeselected) then
-       OnWindowDeselected(Self);
-     end
-     else begin
-       FSelected := True; // Устанавливаем значение FSelected в true
-       DrawSelectionBorder(ScaledRectWidth, ScaledRectHeight, ScaledOtstup);  // Перерисовываем окно для отображения выделения
+    if Assigned(OnWindowDeselected) then
+      OnWindowDeselected(Self);
+  end
+  else
+  begin
+    FSelected := True;
+    // Устанавливаем значение FSelected в true
+    DrawSelectionBorder(ScaledRectWidth, ScaledRectHeight, ScaledOtstup);
+    // Перерисовываем окно для отображения выделения
 
-       if Assigned(OnWindowSelected) then
-       OnWindowSelected(Self);
+    if Assigned(OnWindowSelected) then
+      OnWindowSelected(Self);
 
-     end;
-   end;
- //end;
+  end;
+end;
+//end;
 
 
 procedure TRectWindow.DrawWindow;
 var
-  ArrowLength: Integer;
-  ScreenWidth, ScreenHeight: Integer;
-  ScaleFactorX, ScaleFactorY: Double;
-
+  ArrowLength: integer;
+  ScreenWidth, ScreenHeight: integer;
+  ScaleFactorX, ScaleFactorY: double;
 begin
 
   ScreenWidth := FImage.Width;
   ScreenHeight := FImage.Height;
   // Вычисление коэффициентов пропорциональности
-  ScaleFactorX := ScreenWidth / 3500; // Замените 3500 на ширину вашего прямоугольника
-  ScaleFactorY := ScreenHeight / 2000; // Замените 2000 на высоту вашего прямоугольника
+  ScaleFactorX := ScreenWidth / 3500;
+  // Замените 3500 на ширину вашего прямоугольника
+  ScaleFactorY := ScreenHeight / 2000;
+  // Замените 2000 на высоту вашего прямоугольника
 
   // Вычисление масштабированных размеров окна
   ScaledRectWidth := Round(FRectW * ScaleFactorX);
@@ -138,19 +150,25 @@ begin
   FImage.Canvas.Brush.Color := clWhite; // Задайте цвет фона окна
   if (GetIsRight = False) then
   begin
-  FImage.Canvas.FillRect(Rect(ScaledOtstup+4, 4, ScaledRectWidth+ScaledOtstup+1, ScaledRectHeight)); // Очистите всю область окна
+    FImage.Canvas.FillRect(Rect(ScaledOtstup + 4, 4, ScaledRectWidth +
+      ScaledOtstup + 1, ScaledRectHeight));
+    // Очистите всю область окна
   end
   else
   begin
-  FImage.Canvas.FillRect(Rect(ScaledOtstup+4, 4, ScaledRectWidth+ScaledOtstup, ScaledRectHeight)); // Очистите всю область окна
+    FImage.Canvas.FillRect(Rect(ScaledOtstup + 4, 4, ScaledRectWidth +
+      ScaledOtstup, ScaledRectHeight));
+    // Очистите всю область окна
   end;
   FImage.Canvas.Pen.Color := clBlack;
   FImage.Canvas.Pen.Width := 3;
-  FImage.Canvas.Rectangle(ScaledOtstup+4, 4, ScaledRectWidth+ScaledOtstup, ScaledRectHeight);
+  FImage.Canvas.Rectangle(ScaledOtstup + 4, 4, ScaledRectWidth + ScaledOtstup,
+    ScaledRectHeight);
 
   // Отрисовка меньшего синего окна внутри
   FImage.Canvas.Brush.Color := clSkyBlue;
-  FImage.Canvas.Rectangle(ScaledOtstup+24, 24, ScaledRectWidth-20+ScaledOtstup, ScaledRectHeight-20);
+  FImage.Canvas.Rectangle(ScaledOtstup + 24, 24, ScaledRectWidth - 20 + ScaledOtstup,
+    ScaledRectHeight - 20);
 
 
   //Отрисовка размеров
@@ -168,19 +186,18 @@ begin
 end;
 
 procedure TRectWindow.AddVerticalImpost(Sender: TObject);
- begin
+begin
 
+  if not FVerticalImpost then
+  begin
+    FVerticalImpost := True;
 
-   if not FVerticalImpost then
-   begin
-     FVerticalImpost := True;
+  end
+  else
+  begin
+    FVerticalImpost := False;
 
-   end
-   else
-   begin
-     FVerticalImpost := False;
-
-   end;
+  end;
   // Рисуем разделитель между окнами
    {
   FImage.Canvas.Pen.Color := clBlack;
@@ -190,24 +207,26 @@ procedure TRectWindow.AddVerticalImpost(Sender: TObject);
     }
 end;
 
-  function TRectWindow.Contains(CurrentClickX, CurrentClickY: Integer): Boolean;
+function TRectWindow.Contains(CurrentClickX, CurrentClickY: integer): boolean;
 begin
   // Проверяем, находится ли клик внутри области окна
-   if (CurrentClickX >= 4+ScaledOtstup) and  (CurrentClickX <= ScaledRectWidth+ScaledOtstup) and
-      (CurrentClickY >= 4) and (CurrentClickY <= ScaledRectHeight) then
-   begin
-  Result := True;
+  if (CurrentClickX >= 4 + ScaledOtstup) and (CurrentClickX <=
+    ScaledRectWidth + ScaledOtstup) and (CurrentClickY >= 4) and
+    (CurrentClickY <= ScaledRectHeight) then
+  begin
+    Result := True;
   end
-   else
-   Result := False;
+  else
+    Result := False;
 end;
 
 procedure TRectWindow.AddHorizontalImpost(Sender: TObject);
-  begin
-    FImage.Canvas.Pen.Color := clBlack;
-    FImage.Canvas.Pen.Width := 3;
-    FImage.Canvas.Brush.Color := clWhite;
-    FImage.Canvas.Rectangle(24, Trunc((ScaledRectHeight/2)-8), Trunc(ScaledRectWidth - 20), Trunc(ScaledRectHeight/2)+12);
+begin
+  FImage.Canvas.Pen.Color := clBlack;
+  FImage.Canvas.Pen.Width := 3;
+  FImage.Canvas.Brush.Color := clWhite;
+  FImage.Canvas.Rectangle(24, Trunc((ScaledRectHeight / 2) - 8),
+    Trunc(ScaledRectWidth - 20), Trunc(ScaledRectHeight / 2) + 12);
 end;
 
 
@@ -216,43 +235,49 @@ begin
   Result := TPoint.Create(FRectH, FRectW);
 end;
 
-  procedure TRectWindow.SetSize(const NewSize: TPoint);
+procedure TRectWindow.SetSize(const NewSize: TPoint);
 begin
   FRectH := NewSize.X;
   FRectW := NewSize.Y;
   DrawWindow; // Перерисовка окна с новыми размерами
 end;
 
-  function TRectWindow.GetIsRight: Boolean;
+function TRectWindow.GetIsRight: boolean;
 begin
   Result := FIsRight;
 end;
 
 
-  function TRectWindow.GetOtstup: Integer;
+function TRectWindow.GetOtstup: integer;
 begin
   Result := FOtstup;
 end;
 
-  function TRectWindow.GetSelection: Boolean;
+function TRectWindow.GetSelection: boolean;
 begin
   Result := FSelected;
 end;
 
-  procedure TRectWindow.SetSelection(Value: Boolean);
+procedure TRectWindow.SetSelection(Value: boolean);
 begin
   FSelected := Value;
 end;
 
-  function TRectWindow.GetHeight: Integer;
+procedure TRectWindow.SetWidth(Value: Integer);
+begin
+  FRectW := Value;
+end;
+
+function TRectWindow.GetHeight: integer;
 begin
   Result := FRectH;
 end;
 
-  function TRectWindow.GetWidth: Integer;
+function TRectWindow.GetWidth: integer;
 begin
   Result := FRectW;
 end;
 
-end.
 
+
+end.

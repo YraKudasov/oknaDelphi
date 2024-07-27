@@ -348,5 +348,15 @@ object Form1: TForm1
         Caption = 'Горизонтальный импост'
       end
     end
+    object MenuItem4: TMenuItem
+      Caption = 'Удалить'
+      object MenuItem5: TMenuItem
+        Caption = 'Вертикальный импост'
+        OnClick = DeleteVerticalImpost
+      end
+      object MenuItem6: TMenuItem
+        Caption = 'Горизонтальный импост'
+      end
+    end
   end
 end

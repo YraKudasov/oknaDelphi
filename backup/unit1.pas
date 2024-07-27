@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ComCtrls, Buttons, Menus, RectWindow, WindowContainer, LCLType;
+  ComCtrls, Buttons, Menus, RectWindow, AbstractWindow, WindowContainer, LCLType;
 
 const
   tfInputMask = 'InputMask';
@@ -33,6 +33,9 @@ type
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
     Panel1: TPanel;
     Panel2: TPanel;
     PopupMenu1: TPopupMenu;
@@ -44,6 +47,7 @@ type
     procedure BitBtn3Click(Sender: TObject);
     procedure BitBtn4Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure DeleteVerticalImpost(Sender: TObject);
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
     procedure EditKeyPress(Sender: TObject; var Key: char);
     procedure EditChange(Sender: TObject);
@@ -186,6 +190,8 @@ end;
 
 
 
+
+
 procedure TForm1.TreeView1Change(Sender: TObject; Node: TTreeNode);
 begin
 
@@ -203,6 +209,7 @@ begin
     FRectHeight := 0;
     FRectWidth := 0;
 
+    Panel1.Enabled := False;
     Edit1.Text := '0';
     Edit2.Text := '0';
 
@@ -262,16 +269,17 @@ var
   VertImpost: integer;
 begin
   // Создаем диалог для ввода числа
-  if InputQuery('Размер вертикального импоста', 'Расстояние от левой стороны окна:', Number) then
+  if InputQuery('Размер вертикального импоста',
+    'Расстояние от левой стороны окна:', Number) then
   begin
     if TryStrToInt(Number, VertImpost) then
-  begin
-       VerticalImpost(VertImpost);
-  end
-  else
-  begin
-    ShowMessage('Некорректный ввод числа');
-  end;
+    begin
+      VerticalImpost(VertImpost);
+    end
+    else
+    begin
+      ShowMessage('Некорректный ввод числа');
+    end;
 
   end;
 end;
@@ -289,52 +297,97 @@ begin
     Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
     if Assigned(Window) then
     begin
-
       Otstup := Window.GetOtstup;
       if ((VertImpost >= (Window.GetSize.Y - 450)) or (VertImpost <= 450)) then
       begin
-        ShowMessage('Размеры импоста больше или меньше критически допустимых');
+        ShowMessage(
+          'Размеры импоста больше или меньше критически допустимых');
       end
       else
       begin
-      // Разделяем окно на два новых экземпляра
-      Window1 := TRectWindow.Create(Window.GetSize.X, VertImpost,
-        Image1, False, Otstup);
-      Window2 := TRectWindow.Create(Window.GetSize.X, Window.GetSize.Y - VertImpost,
-        Image1, True, Otstup + VertImpost);
+        // Разделяем окно на два новых экземпляра
+        Window1 := TRectWindow.Create(Window.GetSize.X, VertImpost,
+           Image1, False, Otstup);
+        Window2 := TRectWindow.Create(Window.GetSize.X, Window.GetSize.Y -
+          VertImpost, Image1, True, Otstup + VertImpost);
 
 
-      // Удаляем исходное окно из контейнера
-      WindowContainer.RemoveWindow(WindowIndex);
 
-      // Добавляем два новых окна в контейнер
-      WindowContainer.AddWindow(Window1);
-      WindowContainer.AddWindow(Window2);
+        // Удаляем исходное окно из контейнера
+        WindowContainer.RemoveWindow(WindowIndex);
 
-      if WindowContainer.Count > 0 then
-      begin
-        ShowMessage('Экземпляр окна был добавлен в контейнер.'
-          + IntToStr(WindowContainer.Count));
+        // Добавляем два новых окна в контейнер
+        WindowContainer.AddWindow(Window1);
+        WindowContainer.AddWindow(Window2);
+
+        if WindowContainer.Count > 0 then
+        begin
+          ShowMessage('Экземпляр окна был добавлен в контейнер.'
+            + IntToStr(WindowContainer.Count));
+        end;
+        if WindowContainer.Count = 0 then
+        begin
+          ShowMessage('Контейнер пустой');
+        end;
+
+        RectWindowDeselected(Self);
+        Window1.OnWindowSelected := @RectWindowSelected;
+        Window2.OnWindowSelected := @RectWindowSelected;
+        Window1.OnWindowDeselected := @RectWindowDeselected;
+        Window2.OnWindowDeselected := @RectWindowDeselected;
+
+        Image1.Canvas.Brush.Color := clWhite;
+        Image1.Canvas.FillRect(Image1.ClientRect);
+        DrawWindows;
+
       end;
-      if WindowContainer.Count = 0 then
+    end;
+  end;
+end;
+
+procedure TForm1.DeleteVerticalImpost(Sender: TObject);
+var
+  Window: TRectWindow;
+  LeftWindow: TRectWindow;
+  WindowIndex, Index: integer;
+begin
+  // Находим индекс окна, которое нужно разделить
+  WindowIndex := WindowContainer.GetSelectedIndex;
+  if WindowIndex >= 0 then
+  begin
+    // Получаем экземпляр окна
+    Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
+    if Assigned(Window) then
+    begin
+      // Проверяем высоту окна
+      if (Window.GetOtstup > 0) and (Window.GetHeight = FRectHeight) then
       begin
-        ShowMessage('Контейнер пустой');
-      end;
+        for Index := 0 to WindowContainer.Count - 1 do
+        begin
+          LeftWindow := TRectWindow(WindowContainer.GetWindow(Index));
+          if Assigned(Window) and (LeftWindow.GetOtstup =
+            (Window.GetOtstup - LeftWindow.GetWidth)) and
+            (LeftWindow.GetHeight = FRectHeight) then
+          begin
 
-      RectWindowDeselected(Self);
-      Window1.OnWindowSelected := @RectWindowSelected;
-      Window2.OnWindowSelected := @RectWindowSelected;
-      Window1.OnWindowDeselected := @RectWindowDeselected;
-      Window2.OnWindowDeselected := @RectWindowDeselected;
+            // Удаляем 2 окна из контейнера, соблюдая порядок
+            LeftWindow.SetWidth(LeftWindow.GetWidth + Window.GetWidth);
+            WindowContainer.RemoveWindow(Index + 1);  // Удалить сначала окно с меньшим индексом
 
-      Image1.Canvas.Brush.Color := clWhite;
-      Image1.Canvas.FillRect(Image1.ClientRect);
-      DrawWindows;
+            RectWindowDeselected(Self);
+            Image1.Canvas.Brush.Color := clWhite;
+            Image1.Canvas.FillRect(Image1.ClientRect);
+            ShowMessage('Размер массива' + IntToStr(WindowContainer.Count));
+            DrawWindows;
+            Break;
 
-
-      // Перерисовываем окна
-      Window1.DrawWindow;
-      Window2.DrawWindow;
+          end;
+        end;
+      end
+      else
+      begin
+        // Если высота окна меньше 600, сообщаем об ошибке
+        ShowMessage('Высота окна должна быть меньше 600');
       end;
     end;
   end;
@@ -402,8 +455,11 @@ begin
     begin
       Result := True; // Set the result to True if any window is selected
       Exit; // Exit the loop since we found a selected window
+
     end;
   end;
 end;
+
+
 
 end.

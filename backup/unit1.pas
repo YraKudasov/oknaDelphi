@@ -48,6 +48,7 @@ type
     procedure BitBtn4Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure DeleteVerticalImpost(Sender: TObject);
+    procedure Label4Click(Sender: TObject);
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
     procedure EditKeyPress(Sender: TObject; var Key: char);
     procedure EditChange(Sender: TObject);
@@ -59,6 +60,8 @@ type
     function CheckSelectionWindows: boolean;
     procedure InputVerticalImpost(Sender: TObject);
     procedure InputHorizontalImpost(Sender: TObject);
+    procedure HorizontalImpost(HorizImpost: integer);
+    procedure DeleteHorizontalImpost(Sender: TObject);
 
 
 
@@ -114,7 +117,7 @@ begin
   FRectWidth := RectWidth;
   FRectHeight := RectHeight;
   // Инициализация окна
-  RectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1, False, 0,0);
+  RectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1, 0, 0);
   WindowContainer.AddWindow(RectWindow);
 
   if WindowContainer.Count > 0 then
@@ -185,8 +188,6 @@ begin
   MenuItem2.Enabled := False;
   MenuItem3.Enabled := False;
 end;
-
-
 
 
 
@@ -270,7 +271,7 @@ begin
   Number := '0';
   // Создаем диалог для ввода числа
   if InputQuery('Размер вертикального импоста',
-    'Расстояние от левой границы окна:', Number) then
+    'Расстояние от левой границы окна (мм):', Number) then
   begin
     if TryStrToInt(Number, VertImpost) then
     begin
@@ -292,11 +293,12 @@ begin
   Number := '0';
   // Создаем диалог для ввода числа
   if InputQuery('Размер горизонтального импоста',
-    'Расстояние от верхней границы окна:', Number) then
+    'Расстояние от верхней границы окна (мм):',
+    Number) then
   begin
     if TryStrToInt(Number, HorizImpost) then
     begin
-      //VerticalImpost(VertImpost);
+      HorizontalImpost(HorizImpost);
     end
     else
     begin
@@ -319,7 +321,7 @@ begin
     Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
     if Assigned(Window) then
     begin
-      Otstup := Window.GetOtstup;
+      Otstup := Window.GetXOtstup;
       if ((VertImpost >= (Window.GetSize.Y - 450)) or (VertImpost <= 450)) then
       begin
         ShowMessage(
@@ -329,9 +331,69 @@ begin
       begin
         // Разделяем окно на два новых экземпляра
         Window1 := TRectWindow.Create(Window.GetSize.X, VertImpost,
-           Image1, False, Otstup, Window.GetYOtstup);
+          Image1, Otstup, Window.GetYOtstup);
         Window2 := TRectWindow.Create(Window.GetSize.X, Window.GetSize.Y -
-          VertImpost, Image1, True, Otstup + VertImpost, Window.GetYOtstup);
+          VertImpost, Image1, Otstup + VertImpost, Window.GetYOtstup);
+
+
+
+        // Удаляем исходное окно из контейнера
+        WindowContainer.RemoveWindow(WindowIndex);
+
+        // Добавляем два новых окна в контейнер
+        WindowContainer.AddWindow(Window1);
+        WindowContainer.AddWindow(Window2);
+
+        if WindowContainer.Count > 0 then
+        begin
+          ShowMessage('Экземпляр окна был добавлен в контейнер.'
+            + IntToStr(WindowContainer.Count));
+        end;
+        if WindowContainer.Count = 0 then
+        begin
+          ShowMessage('Контейнер пустой');
+        end;
+
+        RectWindowDeselected(Self);
+        Window1.OnWindowSelected := @RectWindowSelected;
+        Window2.OnWindowSelected := @RectWindowSelected;
+        Window1.OnWindowDeselected := @RectWindowDeselected;
+        Window2.OnWindowDeselected := @RectWindowDeselected;
+
+        Image1.Canvas.Brush.Color := clWhite;
+        Image1.Canvas.FillRect(Image1.ClientRect);
+        DrawWindows;
+
+      end;
+    end;
+  end;
+end;
+
+procedure TForm1.HorizontalImpost(HorizImpost: integer);
+var
+  WindowIndex: integer;
+  Window, Window1, Window2: TRectWindow;
+begin
+  // Находим индекс окна, которое нужно разделить
+  WindowIndex := WindowContainer.GetSelectedIndex;
+  if WindowIndex >= 0 then
+  begin
+    // Получаем экземпляр окна
+    Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
+    if Assigned(Window) then
+    begin
+      if ((HorizImpost >= (Window.GetSize.X - 450)) or (HorizImpost <= 450)) then
+      begin
+        ShowMessage(
+          'Размеры импоста больше или меньше критически допустимых');
+      end
+      else
+      begin
+        // Разделяем окно на два новых экземпляра
+        Window1 := TRectWindow.Create(HorizImpost, Window.GetWidth,
+          Image1, Window.GetXOtstup, Window.GetYOtstup);
+        Window2 := TRectWindow.Create(Window.GetSize.X - HorizImpost,
+          Window.GetWidth, Image1, Window.GetXOtstup, Window.GetYOtstup + HorizImpost);
 
 
 
@@ -382,19 +444,20 @@ begin
     if Assigned(Window) then
     begin
       // Проверяем высоту окна
-      if (Window.GetOtstup > 0) then
+      if (Window.GetXOtstup > 0) then
       begin
         for Index := 0 to WindowContainer.Count - 1 do
         begin
           LeftWindow := TRectWindow(WindowContainer.GetWindow(Index));
-          if Assigned(Window) and (LeftWindow.GetOtstup =
-            (Window.GetOtstup - LeftWindow.GetWidth)) and
+          if Assigned(Window) and (LeftWindow.GetXOtstup =
+            (Window.GetXOtstup - LeftWindow.GetWidth)) and
             (LeftWindow.GetHeight = Window.GetHeight) then
           begin
 
             // Удаляем 2 окна из контейнера, соблюдая порядок
             LeftWindow.SetWidth(LeftWindow.GetWidth + Window.GetWidth);
-            WindowContainer.RemoveWindow(WindowContainer.IndexOf(Window));  // Удалить сначала окно с меньшим индексом
+            WindowContainer.RemoveWindow(WindowContainer.IndexOf(Window));
+            // Удалить сначала окно с меньшим индексом
 
             RectWindowDeselected(Self);
             Image1.Canvas.Brush.Color := clWhite;
@@ -409,11 +472,64 @@ begin
       else
       begin
         // Если высота окна меньше 600, сообщаем об ошибке
-        ShowMessage('Возможно вы выбрали крайнее левое окно или же у окна присутствует горизонтальный импост');
+        ShowMessage(
+          'Возможно вы выбрали крайнее левое окно или же у окна присутствует горизонтальный импост');
       end;
     end;
   end;
 end;
+
+
+
+procedure TForm1.DeleteHorizontalImpost(Sender: TObject);
+var
+  Window: TRectWindow;
+  UpWindow: TRectWindow;
+  WindowIndex, Index: integer;
+begin
+  // Находим индекс окна, которое нужно разделить
+  WindowIndex := WindowContainer.GetSelectedIndex;
+  if WindowIndex >= 0 then
+  begin
+    // Получаем экземпляр окна
+    Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
+    if Assigned(Window) then
+    begin
+      // Проверяем высоту окна
+      if (Window.GetYOtstup > 0) then
+      begin
+        for Index := 0 to WindowContainer.Count - 1 do
+        begin
+          UpWindow := TRectWindow(WindowContainer.GetWindow(Index));
+          if Assigned(Window) and (UpWindow.GetYOtstup =
+            (Window.GetYOtstup - UpWindow.GetHeight)) and
+            (UpWindow.GetWidth = Window.GetWidth) then
+          begin
+
+            // Удаляем 2 окна из контейнера, соблюдая порядок
+            UpWindow.SetHeight(UpWindow.GetHeight + Window.GetHeight);
+            WindowContainer.RemoveWindow(WindowContainer.IndexOf(Window));
+            // Удалить сначала окно с меньшим индексом
+
+            RectWindowDeselected(Self);
+            Image1.Canvas.Brush.Color := clWhite;
+            Image1.Canvas.FillRect(Image1.ClientRect);
+            ShowMessage('Размер массива' + IntToStr(WindowContainer.Count));
+            DrawWindows;
+            Break;
+
+          end;
+        end;
+      end
+      else
+      begin
+        ShowMessage(
+          'Возможно вы выбрали самое верхнее окно');
+      end;
+    end;
+  end;
+end;
+
 
 // Обработчик клика на изображении
 procedure TForm1.CanvasClickHandler(Sender: TObject);
@@ -476,7 +592,9 @@ begin
       // Use the getter method to check if the window is selected
     begin
       Result := True; // Set the result to True if any window is selected
-            ShowMessage('Индекс выбранного окна ' + IntToStr(WindowContainer.IndexOf(Window)));
+      {ShowMessage('Индекс выбранного окна ' +
+        IntToStr(WindowContainer.IndexOf(Window)));
+        }
       Exit; // Exit the loop since we found a selected window
 
     end;

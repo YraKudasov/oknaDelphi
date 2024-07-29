@@ -10,7 +10,7 @@ uses
 type
   TRectWindow = class(TAbstractWindow)
   private
-    FRectH, FRectW, FOtstup: integer;
+    FRectH, FRectW, FXOtstup, FYOtstup: integer;
     FImage: TImage;
     FIsRight: boolean;
     FOnWindowSelected: TNotifyEvent;
@@ -24,12 +24,11 @@ type
 
   public
     constructor Create(ARectH, ARectW: integer; AImage: TImage;
-      IsRight: boolean; AOtstup: integer);
+      IsRight: boolean; AXOtstup, AYOtstup: Integer);
     procedure DrawWindow; override;
     procedure DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOt: integer); override;
     procedure Select(Sender: TObject); override;
-    procedure AddVerticalImpost(Sender: TObject); override;
-    procedure AddHorizontalImpost(Sender: TObject); override;
+
     property OnWindowSelected: TNotifyEvent read FOnWindowSelected
       write FOnWindowSelected;
     property OnWindowDeselected: TNotifyEvent
@@ -37,6 +36,8 @@ type
     function GetSize: TPoint; override;
     procedure SetSize(const NewSize: TPoint); override;
     procedure SetWidth(Value: Integer);
+    procedure SetYOtstup(Value: Integer);
+
 
 
     function GetIsRight: boolean;
@@ -46,6 +47,8 @@ type
     function GetHeight: integer;
     function GetWidth: integer;
     function Contains(CurrentClickX, CurrentClickY: integer): boolean; override;
+    function GetYOtstup: Integer;
+
 
 
     property VerticalImpost: boolean read FVerticalImpost write FVerticalImpost;
@@ -56,13 +59,14 @@ type
 implementation
 
 constructor TRectWindow.Create(ARectH, ARectW: integer; AImage: TImage;
-  IsRight: boolean; AOtstup: integer);
+  IsRight: boolean; AXOtstup, AYOtstup: integer);
 begin
   FRectH := ARectH;
   FRectW := ARectW;
   FImage := AImage;
   FIsRight := IsRight;
-  FOtstup := AOtstup;
+  FXOtstup := AXOtstup;
+  FYOtstup := AYOtstup;
 end;
 
 procedure TRectWindow.DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOt: integer);
@@ -143,7 +147,7 @@ begin
   // Вычисление масштабированных размеров окна
   ScaledRectWidth := Round(FRectW * ScaleFactorX);
   ScaledRectHeight := Round(FRectH * ScaleFactorY);
-  ScaledOtstup := Round(FOtstup * ScaleFactorX);
+  ScaledOtstup := Round(FXOtstup * ScaleFactorX);
 
   // Отрисовка окна с учетом коэффициентов пропорциональности
 
@@ -185,27 +189,7 @@ begin
   }
 end;
 
-procedure TRectWindow.AddVerticalImpost(Sender: TObject);
-begin
 
-  if not FVerticalImpost then
-  begin
-    FVerticalImpost := True;
-
-  end
-  else
-  begin
-    FVerticalImpost := False;
-
-  end;
-  // Рисуем разделитель между окнами
-   {
-  FImage.Canvas.Pen.Color := clBlack;
-  FImage.Canvas.Pen.Width := 3;
-  FImage.Canvas.Brush.Color := clWhite;
-  FImage.Canvas.Rectangle(Trunc((ScaledRectWidth/2)-8), 24, Trunc((ScaledRectWidth/2)+12), ScaledRectHeight-20);
-    }
-end;
 
 function TRectWindow.Contains(CurrentClickX, CurrentClickY: integer): boolean;
 begin
@@ -220,14 +204,6 @@ begin
     Result := False;
 end;
 
-procedure TRectWindow.AddHorizontalImpost(Sender: TObject);
-begin
-  FImage.Canvas.Pen.Color := clBlack;
-  FImage.Canvas.Pen.Width := 3;
-  FImage.Canvas.Brush.Color := clWhite;
-  FImage.Canvas.Rectangle(24, Trunc((ScaledRectHeight / 2) - 8),
-    Trunc(ScaledRectWidth - 20), Trunc(ScaledRectHeight / 2) + 12);
-end;
 
 
 function TRectWindow.GetSize: TPoint;
@@ -250,7 +226,7 @@ end;
 
 function TRectWindow.GetOtstup: integer;
 begin
-  Result := FOtstup;
+  Result := FXOtstup;
 end;
 
 function TRectWindow.GetSelection: boolean;
@@ -268,14 +244,24 @@ begin
   FRectW := Value;
 end;
 
-function TRectWindow.GetHeight: integer;
+function TRectWindow.GetHeight: Integer;
 begin
   Result := FRectH;
 end;
 
-function TRectWindow.GetWidth: integer;
+function TRectWindow.GetWidth: Integer;
 begin
   Result := FRectW;
+end;
+
+function TRectWindow.GetYOtstup: Integer;
+begin
+  Result := FYOtstup;
+end;
+
+procedure TRectWindow.SetYOtstup(Value: Integer);
+begin
+  FYOtstup := Value;
 end;
 
 

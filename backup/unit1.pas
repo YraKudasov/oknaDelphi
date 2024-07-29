@@ -58,6 +58,7 @@ type
     procedure DrawWindows;
     function CheckSelectionWindows: boolean;
     procedure InputVerticalImpost(Sender: TObject);
+    procedure InputHorizontalImpost(Sender: TObject);
 
 
 
@@ -113,7 +114,7 @@ begin
   FRectWidth := RectWidth;
   FRectHeight := RectHeight;
   // Инициализация окна
-  RectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1, False, 0);
+  RectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1, False, 0,0);
   WindowContainer.AddWindow(RectWindow);
 
   if WindowContainer.Count > 0 then
@@ -139,8 +140,6 @@ begin
   RectWindowDeselected(Self);
   RectWindow.OnWindowSelected := @RectWindowSelected;
   RectWindow.OnWindowDeselected := @RectWindowDeselected;
-
-  MenuItem3.OnClick := @RectWindow.AddHorizontalImpost;
 
 end;
 
@@ -268,13 +267,36 @@ var
   Number: string;
   VertImpost: integer;
 begin
+  Number := '0';
   // Создаем диалог для ввода числа
   if InputQuery('Размер вертикального импоста',
-    'Расстояние от левой стороны окна:', Number) then
+    'Расстояние от левой границы окна:', Number) then
   begin
     if TryStrToInt(Number, VertImpost) then
     begin
       VerticalImpost(VertImpost);
+    end
+    else
+    begin
+      ShowMessage('Некорректный ввод числа');
+    end;
+
+  end;
+end;
+
+procedure TForm1.InputHorizontalImpost(Sender: TObject);
+var
+  Number: string;
+  HorizImpost: integer;
+begin
+  Number := '0';
+  // Создаем диалог для ввода числа
+  if InputQuery('Размер горизонтального импоста',
+    'Расстояние от верхней границы окна:', Number) then
+  begin
+    if TryStrToInt(Number, HorizImpost) then
+    begin
+      //VerticalImpost(VertImpost);
     end
     else
     begin
@@ -307,9 +329,9 @@ begin
       begin
         // Разделяем окно на два новых экземпляра
         Window1 := TRectWindow.Create(Window.GetSize.X, VertImpost,
-           Image1, False, Otstup);
+           Image1, False, Otstup, Window.GetYOtstup);
         Window2 := TRectWindow.Create(Window.GetSize.X, Window.GetSize.Y -
-          VertImpost, Image1, True, Otstup + VertImpost);
+          VertImpost, Image1, True, Otstup + VertImpost, Window.GetYOtstup);
 
 
 
@@ -360,19 +382,19 @@ begin
     if Assigned(Window) then
     begin
       // Проверяем высоту окна
-      if (Window.GetOtstup > 0) and (Window.GetHeight = FRectHeight) then
+      if (Window.GetOtstup > 0) then
       begin
         for Index := 0 to WindowContainer.Count - 1 do
         begin
           LeftWindow := TRectWindow(WindowContainer.GetWindow(Index));
           if Assigned(Window) and (LeftWindow.GetOtstup =
             (Window.GetOtstup - LeftWindow.GetWidth)) and
-            (LeftWindow.GetHeight = FRectHeight) then
+            (LeftWindow.GetHeight = Window.GetHeight) then
           begin
 
             // Удаляем 2 окна из контейнера, соблюдая порядок
             LeftWindow.SetWidth(LeftWindow.GetWidth + Window.GetWidth);
-            WindowContainer.RemoveWindow(Index + 1);  // Удалить сначала окно с меньшим индексом
+            WindowContainer.RemoveWindow(WindowContainer.IndexOf(Window));  // Удалить сначала окно с меньшим индексом
 
             RectWindowDeselected(Self);
             Image1.Canvas.Brush.Color := clWhite;
@@ -387,7 +409,7 @@ begin
       else
       begin
         // Если высота окна меньше 600, сообщаем об ошибке
-        ShowMessage('Высота окна должна быть меньше 600');
+        ShowMessage('Возможно вы выбрали крайнее левое окно или же у окна присутствует горизонтальный импост');
       end;
     end;
   end;
@@ -454,6 +476,7 @@ begin
       // Use the getter method to check if the window is selected
     begin
       Result := True; // Set the result to True if any window is selected
+            ShowMessage('Индекс выбранного окна ' + IntToStr(WindowContainer.IndexOf(Window)));
       Exit; // Exit the loop since we found a selected window
 
     end;

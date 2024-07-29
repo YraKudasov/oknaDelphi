@@ -346,6 +346,7 @@ object Form1: TForm1
       end
       object MenuItem3: TMenuItem
         Caption = 'Горизонтальный импост'
+        OnClick = InputHorizontalImpost
       end
     end
     object MenuItem4: TMenuItem

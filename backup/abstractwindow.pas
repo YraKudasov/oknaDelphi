@@ -15,7 +15,6 @@ type
     procedure AddHorizontalImpost(Sender: TObject);virtual; abstract;
     function GetSize: TPoint; virtual; abstract;
     procedure SetSize(const NewSize: TPoint); virtual; abstract;
-    function GetIndex: Integer; virtual; abstract;
     function Contains(CurrentClickX, CurrentClickY: Integer): Boolean; virtual; abstract;
   end;
 

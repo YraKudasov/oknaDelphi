@@ -34,6 +34,7 @@ type
     function GetSize: TPoint; override;
     procedure SetSize(const NewSize: TPoint); override;
     procedure SetWidth(Value: Integer);
+    procedure SetHeight(Value: Integer);
     procedure SetYOtstup(Value: Integer);
 
 
@@ -229,6 +230,11 @@ begin
   FRectW := Value;
 end;
 
+procedure TRectWindow.SetHeight(Value: Integer);
+begin
+  FRectH := Value;
+end;
+
 function TRectWindow.GetHeight: Integer;
 begin
   Result := FRectH;
@@ -249,6 +255,9 @@ begin
   FYOtstup := Value;
 end;
 
-
+procedure TRectWindow.SetXOtstup(Value: Integer);
+begin
+  FXOtstup := Value;
+end;
 
 end.

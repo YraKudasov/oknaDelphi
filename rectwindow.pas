@@ -36,6 +36,7 @@ type
     procedure SetWidth(Value: Integer);
     procedure SetHeight(Value: Integer);
     procedure SetYOtstup(Value: Integer);
+    procedure SetXOtstup(Value: Integer);
 
 
 
@@ -255,6 +256,9 @@ begin
   FYOtstup := Value;
 end;
 
-
+procedure TRectWindow.SetXOtstup(Value: Integer);
+begin
+  FXOtstup := Value;
+end;
 
 end.

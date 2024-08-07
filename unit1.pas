@@ -44,13 +44,15 @@ type
 
 
 
-    procedure BitBtn3Click(Sender: TObject);
+    procedure SizeConstruction(Sender: TObject);
+    //procedure SizeWindow(Sender: TObject);
     procedure BitBtn4Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure DeleteVerticalImpost(Sender: TObject);
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
     procedure EditKeyPress(Sender: TObject; var Key: char);
     procedure EditChange(Sender: TObject);
+    procedure EditChange2(Sender: TObject);
     procedure RectWindowSelected(Sender: TObject);
     procedure RectWindowDeselected(Sender: TObject);
     procedure VerticalImpost(VertImpost: integer);
@@ -61,6 +63,8 @@ type
     procedure InputHorizontalImpost(Sender: TObject);
     procedure HorizontalImpost(HorizImpost: integer);
     procedure DeleteHorizontalImpost(Sender: TObject);
+    function CheckHeightChange: boolean;
+    function CheckWidthChange: boolean;
 
 
 
@@ -101,51 +105,118 @@ end;
 
 
 
-procedure TForm1.BitBtn3Click(Sender: TObject);
+procedure TForm1.SizeConstruction(Sender: TObject);
 var
-  RectWidth, RectHeight: integer;
+  Window: TRectWindow;
+  RectWidth, RectHeight, I, DiffX, DiffY: integer;
 begin
-
-  WindowContainer := TWindowContainer.Create;
-  // Создаем экземпляр WindowContainer
-
-  // Получение значений из Edit1 и Edit2
-  RectHeight := StrToInt(Edit3.Text);
-  RectWidth := StrToInt(Edit4.Text);
-
-  FRectWidth := RectWidth;
-  FRectHeight := RectHeight;
-  // Инициализация окна
-  RectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1, 0, 0);
-  WindowContainer.AddWindow(RectWindow);
-
-  if WindowContainer.Count > 0 then
+  if (FRectHeight = 0) and (FRectWidth = 0) then
   begin
-    ShowMessage('Экземпляр окна был добавлен в контейнер.'
-      + IntToStr(WindowContainer.Count));
-  end;
-  if WindowContainer.Count = 0 then
+    WindowContainer := TWindowContainer.Create;
+
+    // Создаем экземпляр WindowContainer
+
+    // Получение значений из Edit1 и Edit2
+    RectHeight := StrToInt(Edit3.Text);
+    RectWidth := StrToInt(Edit4.Text);
+
+    FRectWidth := RectWidth;
+    FRectHeight := RectHeight;
+    // Инициализация окна
+    RectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1, 0, 0);
+    WindowContainer.AddWindow(RectWindow);
+
+    if WindowContainer.Count > 0 then
+    begin
+      ShowMessage('Экземпляр окна был добавлен в контейнер.'
+        + IntToStr(WindowContainer.Count));
+    end;
+    if WindowContainer.Count = 0 then
+    begin
+      ShowMessage('Контейнер пустой');
+    end;
+
+    RectWindow.SetSize(TPoint.Create(RectHeight, RectWidth));
+
+    // Отрисовка окна на изображении
+    RectWindow.DrawWindow;
+
+    Image1.OnClick := @CanvasClickHandler;
+
+
+    // Присоединяем обработчик события OnWindowSelected
+
+    RectWindowDeselected(Self);
+    RectWindow.OnWindowSelected := @RectWindowSelected;
+    RectWindow.OnWindowDeselected := @RectWindowDeselected;
+
+  end
+  else
   begin
-    ShowMessage('Контейнер пустой');
+
+    if ((StrToInt(Edit3.Text) <> FRectHeight) or (StrToInt(Edit4.Text) <> FRectWidth)) then
+    begin
+      if ((CheckHeightChange = False) or (CheckWidthChange = False)) then
+      begin
+        ShowMessage(
+          'После изменения размеров конструкции, размеры окна(окон) стали меньше минимально допустимых');
+        Edit3.Text := IntToStr(FRectHeight);
+        Edit4.Text := IntToStr(FRectWidth);
+      end
+      else
+      begin
+        for I := 0 to WindowContainer.Count - 1 do
+        begin
+          Window := TRectWindow(WindowContainer.GetWindow(I));
+          DiffY := StrToInt(Edit3.Text) - FRectHeight;
+          DiffX := StrToInt(Edit4.Text) - FRectWidth;
+          if (Window.GetYOtstup = 0) then
+          begin
+            Window.SetHeight(Window.GetHeight + DiffY);
+          end
+          else
+          begin
+            Window.SetYOtstup(Window.GetYOtstup + DiffY);
+          end;
+          if (Window.GetXOtstup = 0) then
+          begin
+            Window.SetWidth(Window.GetWidth + DiffX);
+          end
+          else
+          begin
+            Window.SetXOtstup(Window.GetXOtstup + DiffX);
+          end;
+        end;
+      end;
+        FRectHeight := StrToInt(Edit3.Text);
+        FRectWidth := StrToInt(Edit4.Text);
+    end;
+    Image1.Canvas.Brush.Color := clWhite;
+    Image1.Canvas.FillRect(0, 0, 2000, 3500);
+    DrawWindows;
+
   end;
-
-  RectWindow.SetSize(TPoint.Create(RectHeight, RectWidth));
-
-  // Отрисовка окна на изображении
-  RectWindow.DrawWindow;
-
-  Image1.OnClick := @CanvasClickHandler;
-
-
-  // Присоединяем обработчик события OnWindowSelected
-
-  RectWindowDeselected(Self);
-  RectWindow.OnWindowSelected := @RectWindowSelected;
-  RectWindow.OnWindowDeselected := @RectWindowDeselected;
-
 end;
+{
+procedure TForm1.SizeWindow(Sender: TObject);
+var
+  Window: TRectWindow;
+  i: Integer
+  begin
+    for i := 0 to WindowContainer.Count - 1 do
+  begin
+    Window := TRectWindow(WindowContainer.GetWindow(i));
+    if Window.GetSelection then
+      // Use the getter method to check if the window is selected
+    begin
+      Result := True; // Set the result to True if any window is selected
+      Exit; // Exit the loop since we found a selected window
 
-
+    end;
+  end;
+       if ((StrToInt(Edit1.Text) <> FRectHeight) or (StrToInt(Edit2.Text) <> FRectWidth)) then
+  end;
+ }
 procedure TForm1.RectWindowSelected(Sender: TObject);
 var
   Window: TRectWindow;
@@ -225,7 +296,15 @@ begin
     // Обработчик события изменения значения
     Edit4.OnChange := @EditChange;
 
+    Edit1.OnKeyPress := @EditKeyPress;
+    // Обработчик события нажатия клавиши
+    Edit1.OnChange := @EditChange2;
+    // Обработчик события изменения значения
 
+    // Обработчик события нажатия клавиши
+    Edit2.OnKeyPress := @EditKeyPress;
+    // Обработчик события изменения значения
+    Edit2.OnChange := @EditChange2;
 
     // Отключение события изменения значения для списка после закрытия окна
     Node.Selected := False;
@@ -260,6 +339,24 @@ begin
   end
   else
     BitBtn3.Enabled := False;
+end;
+
+procedure TForm1.EditChange2(Sender: TObject);
+var
+  WidthValue, HeightValue: integer;
+begin
+  // Проверка на ввод корректных значений
+  if TryStrToInt(Edit1.Text, HeightValue) and TryStrToInt(Edit2.Text, WidthValue) then
+  begin
+    // Проверка на минимальное и максимальное значение для длины и ширины
+    if (WidthValue >= 450) and (WidthValue <= 3500) and (HeightValue >= 450) and
+      (HeightValue <= 2000) then
+      BitBtn1.Enabled := True
+    else
+      BitBtn1.Enabled := False;
+  end
+  else
+    BitBtn1.Enabled := False;
 end;
 
 procedure TForm1.InputVerticalImpost(Sender: TObject);
@@ -600,6 +697,49 @@ begin
   end;
 end;
 
+function TForm1.CheckHeightChange: boolean;
+var
+  Window: TRectWindow;
+  Diff, I: integer;
+begin
+  for I := 0 to WindowContainer.Count - 1 do
+  begin
+    Window := TRectWindow(WindowContainer.GetWindow(I));
+    if (Window.GetYOtstup = 0) then
+    begin
+      Diff := StrToInt(Edit3.Text) - FRectHeight;
+      if ((Window.GetHeight + Diff) <= 450) then
+      begin
+        Result := False;
+        Exit;
+      end
+      else
+        Result := True;
+    end;
+  end;
+end;
+
+function TForm1.CheckWidthChange: boolean;
+var
+  Window: TRectWindow;
+  Diff, I: integer;
+begin
+  for I := 0 to WindowContainer.Count - 1 do
+  begin
+    Window := TRectWindow(WindowContainer.GetWindow(I));
+    if (Window.GetXOtstup = 0) then
+    begin
+      Diff := StrToInt(Edit4.Text) - FRectWidth;
+      if ((Window.GetWidth + Diff) <= 450) then
+      begin
+        Result := False;
+        Exit;
+      end
+      else
+        Result := True;
+    end;
+  end;
+end;
 
 
 end.

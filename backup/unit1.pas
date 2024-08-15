@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ComCtrls, Buttons, Menus, RectWindow, AbstractWindow, WindowContainer, LCLType;
+  ComCtrls, Buttons, Menus, RectWindow, AbstractWindow, WindowContainer,
+  LCLType, Generics.Collections;
 
 const
   tfInputMask = 'InputMask';
@@ -154,7 +155,8 @@ begin
   else
   begin
 
-    if ((StrToInt(Edit3.Text) <> FRectHeight) or (StrToInt(Edit4.Text) <> FRectWidth)) then
+    if ((StrToInt(Edit3.Text) <> FRectHeight) or
+      (StrToInt(Edit4.Text) <> FRectWidth)) then
     begin
       if ((CheckHeightChange = False) or (CheckWidthChange = False)) then
       begin
@@ -188,35 +190,187 @@ begin
           end;
         end;
       end;
-        FRectHeight := StrToInt(Edit3.Text);
-        FRectWidth := StrToInt(Edit4.Text);
+      FRectHeight := StrToInt(Edit3.Text);
+      FRectWidth := StrToInt(Edit4.Text);
     end;
     Image1.Canvas.Brush.Color := clWhite;
-    Image1.Canvas.FillRect(0, 0, 2000, 3500);
+    Image1.Canvas.FillRect(0, 0, 3500, 2000);
     DrawWindows;
 
   end;
 end;
-{
+
 procedure TForm1.SizeWindow(Sender: TObject);
 var
-  Window: TRectWindow;
-  i: Integer
-  begin
-    for i := 0 to WindowContainer.Count - 1 do
+  NearWindow, Window, ChangedWindow: TRectWindow;
+  i, a, ind, DiffY, DiffX, HeightLeft, HeightRight, WidthUp, WidthDown: integer;
+  WUpCont, WDownCont, HLeftCont, HRightCont: TList;
+begin
+  for i := 0 to WindowContainer.Count - 1 do
   begin
     Window := TRectWindow(WindowContainer.GetWindow(i));
     if Window.GetSelection then
       // Use the getter method to check if the window is selected
     begin
-      Result := True; // Set the result to True if any window is selected
-      Exit; // Exit the loop since we found a selected window
+      if ((StrToInt(Edit1.Text) <> Window.GetHeight) or
+        (StrToInt(Edit2.Text) <> Window.GetWidth)) then
+      begin
 
+        DiffY := Window.GetHeight - StrToInt(Edit1.Text);
+        DiffX := Window.GetWidth - StrToInt(Edit2.Text);
+        HeightLeft := 0;
+        WidthUp := 0;
+        HeightRight := 0;
+        WidthDown := 0;
+        WUpCont := TList.Create;
+        WDownCont := TList.Create;
+        HLeftCont := TList.Create;
+        HRightCont := TList.Create;
+
+
+        if ((StrToInt(Edit1.Text) > FRectHeight) or
+          (StrToInt(Edit2.Text) > FRectWidth)) then
+        begin
+          ShowMessage(
+            'Введенные размеры окна больше размеров конструкции');
+          Edit1.Text := IntToStr(FRectHeight);
+          Edit2.Text := IntToStr(FRectWidth);
+        end
+
+
+        else
+        begin
+         {
+         Изменение ширины отдельного окна
+         }
+          if (DiffY <> 0) then
+          begin
+            for a := 0 to WindowContainer.Count - 1 do
+            begin
+              NearWindow := TRectWindow(WindowContainer.GetWindow(a));
+
+              if ((NearWindow.GetYOtstup = (Window.GetYOtstup + Window.GetHeight)) and
+                (Window.GetXOtstup <= NearWindow.GetXOtstup) and
+                ((Window.GetXOtstup + Window.GetWidth) >= NearWindow.GetXOtstup) and
+                ((Window.GetXOtstup + Window.GetWidth) >=
+                (NearWindow.GetXOtstup + NearWindow.GetWidth)) and
+                ((NearWindow.GetHeight + DiffY) > 450)) then
+              begin
+                WidthDown := WidthDown + NearWindow.GetWidth;
+                WDownCont.Add(Pointer(a));
+              end;
+
+              if (((NearWindow.GetYOtstup + NearWindow.GetHeight) =
+                Window.GetYOtstup) and (Window.GetXOtstup <= NearWindow.GetXOtstup) and
+                ((Window.GetXOtstup + Window.GetWidth) >= NearWindow.GetXOtstup) and
+                ((Window.GetXOtstup + Window.GetWidth) >=
+                (NearWindow.GetXOtstup + NearWindow.GetWidth)) and
+                ((NearWindow.GetHeight + DiffY) > 450)) then
+              begin
+                WidthUp := WidthUp + NearWindow.GetWidth;
+                WUpCont.Add(Pointer(a));
+              end;
+
+            end;
+
+            if (WidthDown = Window.GetWidth) then
+            begin
+              Window.SetHeight(Window.GetHeight - DiffY);
+              for a := 0 to WDownCont.Count - 1 do
+              begin
+                ind := integer(WDownCont.Items[a]);
+                ChangedWindow := TRectWindow(WindowContainer.GetWindow(ind));
+                ChangedWindow.SetHeight(ChangedWindow.GetHeight + DiffY);
+                ChangedWindow.SetYOtstup(ChangedWindow.GetYOtstup - DiffY);
+              end;
+            end
+            else if (WidthUp = Window.GetWidth) then
+            begin
+              Window.SetHeight(Window.GetHeight - DiffY);
+              Window.SetYOtstup(Window.GetYOtstup + DiffY);
+              for a := 0 to WUpCont.Count - 1 do
+              begin
+                ind := integer(WUpCont.Items[a]);
+                ChangedWindow := TRectWindow(WindowContainer.GetWindow(ind));
+                ChangedWindow.SetHeight(ChangedWindow.GetHeight + DiffY);
+              end;
+            end
+            else
+            begin
+            ShowMessage('Высоту окна НЕ удалось изменить. Возможно размеры СОСЕДНИХ окон становятся МЕНЬШЕ минимально допустимых при изменении размеров данного.');
+            end;
+          end;
+          {
+         Изменение высоты отдельного окна
+         }
+          if (DiffX <> 0) then
+          begin
+            for a := 0 to WindowContainer.Count - 1 do
+            begin
+              NearWindow := TRectWindow(WindowContainer.GetWindow(a));
+
+              if ((NearWindow.GetXOtstup = (Window.GetXOtstup + Window.GetWidth)) and
+                (Window.GetYOtstup <= NearWindow.GetYOtstup) and
+                ((Window.GetYOtstup + Window.GetHeight) >= NearWindow.GetYOtstup) and
+                ((Window.GetYOtstup + Window.GetHeight) >=
+                (NearWindow.GetYOtstup + NearWindow.GetHeight)) and
+                ((NearWindow.GetWidth + DiffX) > 450)) then
+              begin
+                HeightRight := HeightRight + NearWindow.GetHeight;
+                HRightCont.Add(Pointer(a));
+              end;
+
+              if (((NearWindow.GetXOtstup + NearWindow.GetWidth) = Window.GetXOtstup) and
+                (Window.GetYOtstup <= NearWindow.GetYOtstup) and
+                ((Window.GetYOtstup + Window.GetHeight) >= NearWindow.GetYOtstup) and
+                ((Window.GetYOtstup + Window.GetHeight) >=
+                (NearWindow.GetYOtstup + NearWindow.GetHeight)) and
+                ((NearWindow.GetWidth + DiffX) > 450)) then
+              begin
+                HeightLeft := HeightLeft + NearWindow.GetHeight;
+                HLeftCont.Add(Pointer(a));
+              end;
+
+            end;
+
+            if (HeightRight = Window.GetHeight) then
+            begin
+              Window.SetWidth(Window.GetWidth - DiffX);
+              for a := 0 to HRightCont.Count - 1 do
+              begin
+                ind := integer(HRightCont.Items[a]);
+                ChangedWindow := TRectWindow(WindowContainer.GetWindow(ind));
+                ChangedWindow.SetWidth(ChangedWindow.GetWidth + DiffX);
+                ChangedWindow.SetXOtstup(ChangedWindow.GetXOtstup - DiffX);
+              end;
+            end
+            else if (HeightLeft = Window.GetHeight) then
+            begin
+              Window.SetWidth(Window.GetWidth - DiffX);
+              Window.SetXOtstup(Window.GetXOtstup + DiffX);
+              for a := 0 to HLeftCont.Count - 1 do
+              begin
+                ind := integer(HLeftCont.Items[a]);
+                ChangedWindow := TRectWindow(WindowContainer.GetWindow(ind));
+                ChangedWindow.SetWidth(ChangedWindow.GetWidth + DiffX);
+              end;
+            end;
+            else
+            begin
+            ShowMessage('Высоту окна НЕ удалось изменить. Возможно размеры СОСЕДНИХ окон становятся МЕНЬШЕ минимально допустимых при изменении размеров данного.');
+            end;
+          end;
+        end;
+        Window.Select(Self);
+        Image1.Canvas.Brush.Color := clWhite;
+        Image1.Canvas.FillRect(0, 0, 3500, 2000);
+        DrawWindows;
+      end;
     end;
   end;
-       if ((StrToInt(Edit1.Text) <> FRectHeight) or (StrToInt(Edit2.Text) <> FRectWidth)) then
-  end;
- }
+end;
+
+
 procedure TForm1.RectWindowSelected(Sender: TObject);
 var
   Window: TRectWindow;

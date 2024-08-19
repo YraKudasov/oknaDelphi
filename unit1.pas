@@ -20,6 +20,7 @@ type
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
+    ComboBox1: TComboBox;
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
@@ -31,6 +32,7 @@ type
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
+    Label7: TLabel;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
@@ -39,9 +41,11 @@ type
     MenuItem6: TMenuItem;
     Panel1: TPanel;
     Panel2: TPanel;
+    Panel3: TPanel;
     PopupMenu1: TPopupMenu;
     ScrollBox1: TScrollBox;
     TreeView1: TTreeView;
+
 
 
 
@@ -66,6 +70,7 @@ type
     procedure DeleteHorizontalImpost(Sender: TObject);
     function CheckHeightChange: boolean;
     function CheckWidthChange: boolean;
+    //procedure PaintSizes;
 
 
 
@@ -140,7 +145,7 @@ begin
     RectWindow.SetSize(TPoint.Create(RectHeight, RectWidth));
 
     // Отрисовка окна на изображении
-    RectWindow.DrawWindow;
+    DrawWindows;
 
     Image1.OnClick := @CanvasClickHandler;
 
@@ -199,6 +204,9 @@ begin
 
   end;
 end;
+
+
+
 
 procedure TForm1.SizeWindow(Sender: TObject);
 var
@@ -377,10 +385,13 @@ begin
   if Assigned(Window) then
   begin
     Panel1.Enabled := True;
+    Panel3.Enabled := True;
     Edit1.Text := IntToStr(Window.GetHeight);
     Edit2.Text := IntToStr(Window.GetWidth);
     MenuItem2.Enabled := True;
     MenuItem3.Enabled := True;
+    MenuItem5.Enabled := True;
+    MenuItem6.Enabled := True;
   end;
 end;
 
@@ -390,7 +401,10 @@ begin
   Edit2.Text := '0';
   MenuItem2.Enabled := False;
   MenuItem3.Enabled := False;
+  MenuItem5.Enabled := False;
+  MenuItem6.Enabled := False;
   Panel1.Enabled := False;
+  Panel3.Enabled := False;
 end;
 
 
@@ -407,8 +421,11 @@ procedure TForm1.FormCreate(Sender: TObject);
 begin
   Panel1.Enabled := False;
   Panel2.Enabled := False;
+  Panel3.Enabled := False;
   MenuItem2.Enabled := False;
   MenuItem3.Enabled := False;
+  MenuItem5.Enabled := False;
+  MenuItem6.Enabled := False;
 end;
 
 
@@ -422,6 +439,7 @@ begin
 
     MenuItem2.Enabled := False;
     Panel2.Enabled := True;
+    Panel3.Enabled := True;
     Bitbtn3.Enabled := False;
 
     Image1.Canvas.Brush.Color := clWhite;
@@ -510,7 +528,22 @@ begin
   else
     BitBtn1.Enabled := False;
 end;
-
+ {
+procedure TForm1.PaintSizes;
+var
+  KoefWidth, KoefHeight: double;
+  i, ArrowLength, ScaledWidth, ScaledHeight: integer;
+begin
+  KoefWidth := Image1.Width / 3500;
+  KoefHeight := Image1.Height / 2000;
+  ScaledWidth := Round((KoefWidth) * FRectWidth);
+  ScaledHeight := Round((KoefHeight) * FRectHeight);
+  ShowMessage(IntToStr(ScaledWidth) + ' ' + IntToStr(ScaledHeight));
+  Image1.Canvas.Brush.Color := clBlack;
+  Image1.Canvas.MoveTo(ScaledWidth+5, 3);
+  Image1.Canvas.LineTo(ScaledWidth+5, ScaledHeight);
+end;
+  }
 procedure TForm1.InputVerticalImpost(Sender: TObject);
 var
   Number: string;
@@ -824,6 +857,7 @@ begin
     Window := TRectWindow(WindowContainer.GetWindow(i));
     Window.DrawWindow;
   end;
+  //PaintSizes;
 end;
 
 function TForm1.CheckSelectionWindows: boolean;

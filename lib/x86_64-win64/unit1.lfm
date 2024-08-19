@@ -1,11 +1,11 @@
 object Form1: TForm1
-  Left = 684
-  Height = 604
-  Top = 167
-  Width = 1193
+  Left = 338
+  Height = 736
+  Top = 159
+  Width = 1427
   Caption = 'Form1'
-  ClientHeight = 604
-  ClientWidth = 1193
+  ClientHeight = 736
+  ClientWidth = 1427
   OnCreate = FormCreate
   PopupMenu = PopupMenu1
   LCLVersion = '3.2.0.0'
@@ -43,10 +43,10 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 912
-    Height = 164
-    Top = 122
+    Height = 160
+    Top = 320
     Width = 272
-    ClientHeight = 164
+    ClientHeight = 160
     ClientWidth = 272
     TabOrder = 2
     object Label3: TLabel
@@ -191,7 +191,7 @@ object Form1: TForm1
   object Panel2: TPanel
     Left = 912
     Height = 164
-    Top = 320
+    Top = 122
     Width = 272
     ClientHeight = 164
     ClientWidth = 272
@@ -334,6 +334,42 @@ object Form1: TForm1
       }
       OnClick = BitBtn4Click
       TabOrder = 3
+    end
+  end
+  object Panel3: TPanel
+    Left = 912
+    Height = 118
+    Top = 504
+    Width = 272
+    ClientHeight = 118
+    ClientWidth = 272
+    TabOrder = 4
+    object Label7: TLabel
+      Left = 40
+      Height = 15
+      Top = 16
+      Width = 89
+      Caption = 'Тип открывания'
+    end
+    object ComboBox1: TComboBox
+      Left = 40
+      Height = 23
+      Top = 40
+      Width = 100
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Глухая'
+        'Лев. п/о'
+        'Лев. повор.'
+        'Откидная'
+        'Прав. п/о'
+        'Прав. повор.'
+      )
+      ReadOnly = True
+      Style = csDropDownList
+      TabOrder = 0
+      Text = 'Глухая'
     end
   end
   object PopupMenu1: TPopupMenu

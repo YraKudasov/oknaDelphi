@@ -36,6 +36,8 @@ type
     procedure SetWidth(Value: Integer);
     procedure SetHeight(Value: Integer);
     procedure SetYOtstup(Value: Integer);
+    procedure SetXOtstup(Value: Integer);
+    procedure PaintSize;
 
 
 
@@ -79,24 +81,7 @@ begin
 end;
 
 procedure TRectWindow.Select(Sender: TObject);
-{
-var
-  ClickX, ClickY: Integer;
-begin
 
-
-    ClickX := Mouse.CursorPos.X;
-    ClickY := Mouse.CursorPos.Y;
-
-    // Преобразуем абсолютные координаты в координаты клиента
-    ClickX := FImage.ScreenToClient(Point(ClickX, ClickY)).X;
-    ClickY := FImage.ScreenToClient(Point(ClickX, ClickY)).Y;
-
-
-  // Проверяем, находится ли клик внутри области окна
-   if (ClickX >= 4+ScaledOtstup) and  (ClickX <= ScaledRectWidth+ScaledOtstup) and
-      (ClickY >= 4) and (ClickY <= ScaledRectHeight) then
-      }
 begin
 
   if FSelected then
@@ -127,7 +112,6 @@ end;
 
 procedure TRectWindow.DrawWindow;
 var
-  ArrowLength: integer;
   ScreenWidth, ScreenHeight: integer;
   ScaleFactorX, ScaleFactorY: double;
 begin
@@ -164,19 +148,6 @@ begin
   FImage.Canvas.Rectangle(ScaledXOtstup + 24, ScaledYOtstup + 24, ScaledRectWidth - 20 + ScaledXOtstup,
     ScaledRectHeight - 20 + ScaledYOtstup);
 
-
-  //Отрисовка размеров
-  {
-  ArrowLength := 50;
-  Image1.Canvas.MoveTo(FRectW, 3);
-  Image1.Canvas.LineTo(FRectW + ArrowLength, 3);
-  Image1.Canvas.MoveTo(FRectW, FRectH);
-  Image1.Canvas.LineTo(FRectW + ArrowLength,FRectH);
-  Image1.Canvas.MoveTo(FRectW, FRectH);
-  Image1.Canvas.LineTo(FRectW, FRectH + ArrowLength);
-  Image1.Canvas.MoveTo(3, FRectH);
-  Image1.Canvas.LineTo(3, FRectH + ArrowLength);
-  }
 end;
 
 

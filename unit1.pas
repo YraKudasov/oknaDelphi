@@ -49,6 +49,7 @@ type
 
 
 
+    procedure ComboBox1Change(Sender: TObject);
     procedure SizeConstruction(Sender: TObject);
     procedure SizeWindow(Sender: TObject);
     procedure BitBtn4Click(Sender: TObject);
@@ -129,18 +130,9 @@ begin
     FRectWidth := RectWidth;
     FRectHeight := RectHeight;
     // Инициализация окна
-    RectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1, 0, 0);
+    RectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1,
+      0, 0, ComboBox1.ItemIndex);
     WindowContainer.AddWindow(RectWindow);
-
-    if WindowContainer.Count > 0 then
-    begin
-      ShowMessage('Экземпляр окна был добавлен в контейнер.'
-        + IntToStr(WindowContainer.Count));
-    end;
-    if WindowContainer.Count = 0 then
-    begin
-      ShowMessage('Контейнер пустой');
-    end;
 
     RectWindow.SetSize(TPoint.Create(RectHeight, RectWidth));
 
@@ -204,8 +196,6 @@ begin
 
   end;
 end;
-
-
 
 
 procedure TForm1.SizeWindow(Sender: TObject);
@@ -392,8 +382,10 @@ begin
     MenuItem3.Enabled := True;
     MenuItem5.Enabled := True;
     MenuItem6.Enabled := True;
+    ComboBox1.ItemIndex := Window.GetType;
   end;
 end;
+
 
 procedure TForm1.RectWindowDeselected(Sender: TObject);
 begin
@@ -407,6 +399,20 @@ begin
   Panel3.Enabled := False;
 end;
 
+procedure TForm1.ComboBox1Change(Sender: TObject);
+var
+  Window: TRectWindow;
+begin
+  if (FRectHeight <> 0) and (FRectWidth <> 0) then
+  begin
+    Window := TRectWindow(WindowContainer.GetWindow(WindowContainer.GetSelectedIndex));
+    if Assigned(Window) then
+    begin
+      Window.SetType(ComboBox1.ItemIndex);
+      Window.DrawWindow;
+    end;
+  end;
+end;
 
 procedure TForm1.BitBtn4Click(Sender: TObject);
 begin
@@ -612,9 +618,10 @@ begin
       begin
         // Разделяем окно на два новых экземпляра
         Window1 := TRectWindow.Create(Window.GetSize.X, VertImpost,
-          Image1, Otstup, Window.GetYOtstup);
+          Image1, Otstup, Window.GetYOtstup, ComboBox1.ItemIndex);
         Window2 := TRectWindow.Create(Window.GetSize.X, Window.GetSize.Y -
-          VertImpost, Image1, Otstup + VertImpost, Window.GetYOtstup);
+          VertImpost, Image1, Otstup + VertImpost, Window.GetYOtstup,
+          ComboBox1.ItemIndex);
 
 
 
@@ -672,9 +679,10 @@ begin
       begin
         // Разделяем окно на два новых экземпляра
         Window1 := TRectWindow.Create(HorizImpost, Window.GetWidth,
-          Image1, Window.GetXOtstup, Window.GetYOtstup);
+          Image1, Window.GetXOtstup, Window.GetYOtstup, ComboBox1.ItemIndex);
         Window2 := TRectWindow.Create(Window.GetSize.X - HorizImpost,
-          Window.GetWidth, Image1, Window.GetXOtstup, Window.GetYOtstup + HorizImpost);
+          Window.GetWidth, Image1, Window.GetXOtstup, Window.GetYOtstup +
+          HorizImpost, ComboBox1.ItemIndex);
 
 
 

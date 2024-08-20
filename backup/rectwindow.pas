@@ -10,9 +10,8 @@ uses
 type
   TRectWindow = class(TAbstractWindow)
   private
-    FRectH, FRectW, FXOtstup, FYOtstup: integer;
+    FRectH, FRectW, FXOtstup, FYOtstup, FType: integer;
     FImage: TImage;
-
     FOnWindowSelected: TNotifyEvent;
     FOnWindowDeselected: TNotifyEvent;
     ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup: integer;
@@ -22,9 +21,10 @@ type
 
   public
     constructor Create(ARectH, ARectW: integer; AImage: TImage;
-     AXOtstup, AYOtstup: Integer);
+      AXOtstup, AYOtstup, AType: integer);
     procedure DrawWindow; override;
-    procedure DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX, ScaledOtY: integer); override;
+    procedure DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX, ScaledOtY: integer);
+      override;
     procedure Select(Sender: TObject); override;
 
     property OnWindowSelected: TNotifyEvent read FOnWindowSelected
@@ -33,11 +33,14 @@ type
       read FOnWindowDeselected write FOnWindowDeselected;
     function GetSize: TPoint; override;
     procedure SetSize(const NewSize: TPoint); override;
-    procedure SetWidth(Value: Integer);
-    procedure SetHeight(Value: Integer);
-    procedure SetYOtstup(Value: Integer);
-    procedure SetXOtstup(Value: Integer);
-    procedure PaintSize;
+    procedure SetWidth(Value: integer);
+    procedure SetHeight(Value: integer);
+    procedure SetYOtstup(Value: integer);
+    procedure SetXOtstup(Value: integer);
+    procedure SetType(Value: integer);
+    function GetType: integer;
+    procedure DrawGluxar;
+    procedure DrawNeGluxar;
 
 
 
@@ -48,7 +51,7 @@ type
     function GetHeight: integer;
     function GetWidth: integer;
     function Contains(CurrentClickX, CurrentClickY: integer): boolean; override;
-    function GetYOtstup: Integer;
+    function GetYOtstup: integer;
 
 
 
@@ -57,7 +60,7 @@ type
 implementation
 
 constructor TRectWindow.Create(ARectH, ARectW: integer; AImage: TImage;
- AXOtstup, AYOtstup: integer);
+  AXOtstup, AYOtstup, AType: integer);
 begin
   FRectH := ARectH;
   FRectW := ARectW;
@@ -65,9 +68,11 @@ begin
 
   FXOtstup := AXOtstup;
   FYOtstup := AYOtstup;
+  FType := AType;
 end;
 
-procedure TRectWindow.DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX, ScaledOtY: integer);
+procedure TRectWindow.DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX,
+  ScaledOtY: integer);
 begin
   if FSelected then
   begin
@@ -75,13 +80,13 @@ begin
     // Изменение обводки окна при выделении
     FImage.Canvas.Pen.Color := clRed;
     // Можете выбрать любой другой цвет
-    FImage.Canvas.Pen.Width := 2;
-    FImage.Canvas.Rectangle(2 + ScaledOtX, 2 + ScaledOtY, ScaledRW + 3 + ScaledOtX, ScaledRH + 3 + ScaledOtY);
+    FImage.Canvas.Pen.Width := 3;
+    FImage.Canvas.Rectangle(2 + ScaledOtX, 2 + ScaledOtY, ScaledRW + 2 +
+      ScaledOtX, ScaledRH + 2 + ScaledOtY);
   end;
 end;
 
 procedure TRectWindow.Select(Sender: TObject);
-
 begin
 
   if FSelected then
@@ -132,24 +137,174 @@ begin
 
   // Отрисовка окна с учетом коэффициентов пропорциональности
 
+  if (FType = 0) then
+  begin
+    DrawGluxar;
+  end
+  else
+  begin
+    DrawNeGluxar;
+  end;
+end;
+
+
+procedure TRectWindow.DrawGluxar;
+begin
   FImage.Canvas.Brush.Color := clWhite; // Задайте цвет фона окна
 
-    FImage.Canvas.FillRect(Rect(ScaledXOtstup + 4, ScaledYOtstup + 4, ScaledRectWidth +
-      ScaledXOtstup + 1, ScaledRectHeight + ScaledYOtstup + 1));
-    // Очистите всю область окна
+  FImage.Canvas.FillRect(Rect(ScaledXOtstup + 4, ScaledYOtstup + 4,
+    ScaledRectWidth + ScaledXOtstup + 1, ScaledRectHeight + ScaledYOtstup + 1));
+  // Очистите всю область окна
 
   FImage.Canvas.Pen.Color := clBlack;
-  FImage.Canvas.Pen.Width := 3;
-  FImage.Canvas.Rectangle(ScaledXOtstup + 4, ScaledYOtstup + 4, ScaledRectWidth + ScaledXOtstup,
+  FImage.Canvas.Pen.Width := 2;
+  FImage.Canvas.Rectangle(ScaledXOtstup + 4, ScaledYOtstup + 4,
+    ScaledRectWidth + ScaledXOtstup,
     ScaledRectHeight + ScaledYOtstup);
 
   // Отрисовка меньшего синего окна внутри
   FImage.Canvas.Brush.Color := clSkyBlue;
-  FImage.Canvas.Rectangle(ScaledXOtstup + 24, ScaledYOtstup + 24, ScaledRectWidth - 20 + ScaledXOtstup,
+  FImage.Canvas.Rectangle(ScaledXOtstup + 24, ScaledYOtstup + 24,
+    ScaledRectWidth - 20 + ScaledXOtstup,
     ScaledRectHeight - 20 + ScaledYOtstup);
 
 end;
 
+procedure TRectWindow.DrawNeGluxar;
+begin
+
+  FImage.Canvas.Brush.Color := clWhite; // Задайте цвет фона окна
+
+  FImage.Canvas.FillRect(Rect(ScaledXOtstup + 4, ScaledYOtstup + 4,
+    ScaledRectWidth + ScaledXOtstup + 1, ScaledRectHeight + ScaledYOtstup + 1));
+  // Очистите всю область окна
+
+  FImage.Canvas.Pen.Color := clBlack;
+  FImage.Canvas.Pen.Width := 2;
+  FImage.Canvas.Rectangle(ScaledXOtstup + 4, ScaledYOtstup + 4,
+    ScaledRectWidth + ScaledXOtstup,
+    ScaledRectHeight + ScaledYOtstup);
+
+  FImage.Canvas.Pen.Color := clBlack;
+  FImage.Canvas.Rectangle(ScaledXOtstup + 17, ScaledYOtstup + 17,
+    ScaledRectWidth + ScaledXOtstup - 13,
+    ScaledRectHeight + ScaledYOtstup - 13);
+
+  FImage.Canvas.Brush.Color := clSkyBlue;
+  FImage.Canvas.Pen.Color := clBlack;
+  FImage.Canvas.Rectangle(ScaledXOtstup + 37, ScaledYOtstup + 37,
+    ScaledRectWidth + ScaledXOtstup - 33,
+    ScaledRectHeight + ScaledYOtstup - 33);
+
+  // Крепежи слева
+  if((FType = 1) or (FType = 2)) then
+  begin
+  FImage.Canvas.Pen.Width := 1;
+  FImage.Canvas.MoveTo(ScaledXOtstup + 16, ScaledYOtstup + 30);
+  FImage.Canvas.LineTo(ScaledXOtstup + 12, ScaledYOtstup + 30);
+  FImage.Canvas.LineTo(ScaledXOtstup + 12, ScaledYOtstup + 43);
+  FImage.Canvas.LineTo(ScaledXOtstup + 16, ScaledYOtstup + 43);
+
+  FImage.Canvas.MoveTo(ScaledXOtstup + 16, ScaledYOtstup + ScaledRectHeight - 30);
+  FImage.Canvas.LineTo(ScaledXOtstup + 12, ScaledYOtstup + ScaledRectHeight - 30);
+  FImage.Canvas.LineTo(ScaledXOtstup + 12, ScaledYOtstup + ScaledRectHeight - 43);
+  FImage.Canvas.LineTo(ScaledXOtstup + 16, ScaledYOtstup + ScaledRectHeight - 43);
+
+    // Ручка справа
+  FImage.Canvas.Brush.Color := clWhite;
+  FImage.Canvas.Rectangle(ScaledXOtstup + ScaledRectWidth - 18,
+    ScaledYOtstup + (ScaledRectHeight div 2) - 5,
+    ScaledXOtstup + ScaledRectWidth - 28,
+    ScaledYOtstup + (ScaledRectHeight div 2) + 5);
+
+
+  FImage.Canvas.Rectangle(ScaledXOtstup + ScaledRectWidth - 20,
+    ScaledYOtstup + (ScaledRectHeight div 2) - 2,
+    ScaledXOtstup + ScaledRectWidth - 26,
+    ScaledYOtstup + (ScaledRectHeight div 2) + 28);
+
+    // Линия левого поворота
+  FImage.Canvas.MoveTo(ScaledXOtstup + 37, ScaledYOtstup + 37);
+  FImage.Canvas.LineTo(ScaledXOtstup + ScaledRectWidth - 35,
+    ScaledYOtstup + (ScaledRectHeight div 2));
+  FImage.Canvas.LineTo(ScaledXOtstup + 37, ScaledRectHeight + ScaledYOtstup - 35);
+   end;
+
+
+
+  // Крепежи снизу
+
+  if(FType = 3) then
+  begin
+  FImage.Canvas.Pen.Width := 1;
+  FImage.Canvas.MoveTo(ScaledXOtstup + (ScaledRectWidth div 2) - (ScaledRectWidth div 5), ScaledRectHeight + ScaledYOtstup - 14);
+  FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) - (ScaledRectWidth div 5), ScaledRectHeight + ScaledYOtstup - 10);
+  FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) - (ScaledRectWidth div 5)+15, ScaledRectHeight + ScaledYOtstup - 10);
+  FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) - (ScaledRectWidth div 5)+15, ScaledRectHeight + ScaledYOtstup - 14);
+
+  FImage.Canvas.MoveTo(ScaledXOtstup + (ScaledRectWidth div 2) + (ScaledRectWidth div 5), ScaledRectHeight + ScaledYOtstup - 14);
+  FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) + (ScaledRectWidth div 5), ScaledRectHeight + ScaledYOtstup - 10);
+  FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) + (ScaledRectWidth div 5)-15, ScaledRectHeight + ScaledYOtstup - 10);
+  FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) + (ScaledRectWidth div 5)-15, ScaledRectHeight + ScaledYOtstup - 14);
+
+  // Ручка сверху
+  FImage.Canvas.Brush.Color := clWhite;
+  FImage.Canvas.Rectangle(ScaledXOtstup + (ScaledRectWidth div 2) - 5,
+    ScaledYOtstup + 22,
+    ScaledXOtstup + (ScaledRectWidth div 2) + 5,
+    ScaledYOtstup + 32);
+
+
+    FImage.Canvas.Rectangle(ScaledXOtstup + (ScaledRectWidth div 2) - 2,
+    ScaledYOtstup + 24,
+    ScaledXOtstup + (ScaledRectWidth div 2) + 28,
+    ScaledYOtstup + 30);
+  end;
+
+
+   if((FType = 4) or (FType = 5)) then
+   begin
+     // Крепежи справа
+  FImage.Canvas.Pen.Width := 1;
+  FImage.Canvas.MoveTo(ScaledXOtstup + ScaledRectWidth - 14, ScaledYOtstup + 30);
+  FImage.Canvas.LineTo(ScaledXOtstup + ScaledRectWidth - 10, ScaledYOtstup + 30);
+  FImage.Canvas.LineTo(ScaledXOtstup + ScaledRectWidth - 10, ScaledYOtstup + 43);
+  FImage.Canvas.LineTo(ScaledXOtstup + ScaledRectWidth - 14, ScaledYOtstup + 43);
+
+  FImage.Canvas.MoveTo(ScaledXOtstup + ScaledRectWidth - 14, ScaledYOtstup + ScaledRectHeight - 30);
+  FImage.Canvas.LineTo(ScaledXOtstup + ScaledRectWidth - 10, ScaledYOtstup + ScaledRectHeight - 30);
+  FImage.Canvas.LineTo(ScaledXOtstup + ScaledRectWidth - 10, ScaledYOtstup + ScaledRectHeight - 43);
+  FImage.Canvas.LineTo(ScaledXOtstup + ScaledRectWidth - 14, ScaledYOtstup + ScaledRectHeight - 43);
+
+  // Ручка слева
+    FImage.Canvas.Brush.Color := clWhite;
+  FImage.Canvas.Rectangle(ScaledXOtstup + 22,
+    ScaledYOtstup + (ScaledRectHeight div 2) - 5,
+    ScaledXOtstup + 32,
+    ScaledYOtstup + (ScaledRectHeight div 2) + 5);
+
+    FImage.Canvas.Rectangle(ScaledXOtstup + 24,
+    ScaledYOtstup + (ScaledRectHeight div 2) - 2,
+    ScaledXOtstup + 30,
+    ScaledYOtstup + (ScaledRectHeight div 2) + 28);
+
+    // Линия правого поворота
+    FImage.Canvas.MoveTo(ScaledXOtstup + ScaledRectWidth - 37, ScaledYOtstup + 35);
+    FImage.Canvas.LineTo(ScaledXOtstup + 35, ScaledYOtstup + (ScaledRectHeight div 2));
+    FImage.Canvas.LineTo(ScaledXOtstup + ScaledRectWidth - 37, ScaledRectHeight + ScaledYOtstup - 35);
+   end;
+
+  // Линия откида
+  if((FType = 1) or (FType = 3) or (FType = 4))
+  then
+  begin
+  FImage.Canvas.MoveTo(ScaledXOtstup + 37, ScaledRectHeight + ScaledYOtstup - 35);
+  FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2), ScaledYOtstup + 37);
+  FImage.Canvas.LineTo(ScaledXOtstup + ScaledRectWidth - 35,
+    ScaledRectHeight + ScaledYOtstup - 35);
+  end;
+
+end;
 
 
 function TRectWindow.Contains(CurrentClickX, CurrentClickY: integer): boolean;
@@ -196,37 +351,47 @@ begin
   FSelected := Value;
 end;
 
-procedure TRectWindow.SetWidth(Value: Integer);
+procedure TRectWindow.SetWidth(Value: integer);
 begin
   FRectW := Value;
 end;
 
-procedure TRectWindow.SetHeight(Value: Integer);
+procedure TRectWindow.SetHeight(Value: integer);
 begin
   FRectH := Value;
 end;
 
-function TRectWindow.GetHeight: Integer;
+procedure TRectWindow.SetType(Value: integer);
+begin
+  FType := Value;
+end;
+
+function TRectWindow.GetType: integer;
+begin
+  Result := FType;
+end;
+
+function TRectWindow.GetHeight: integer;
 begin
   Result := FRectH;
 end;
 
-function TRectWindow.GetWidth: Integer;
+function TRectWindow.GetWidth: integer;
 begin
   Result := FRectW;
 end;
 
-function TRectWindow.GetYOtstup: Integer;
+function TRectWindow.GetYOtstup: integer;
 begin
   Result := FYOtstup;
 end;
 
-procedure TRectWindow.SetYOtstup(Value: Integer);
+procedure TRectWindow.SetYOtstup(Value: integer);
 begin
   FYOtstup := Value;
 end;
 
-procedure TRectWindow.SetXOtstup(Value: Integer);
+procedure TRectWindow.SetXOtstup(Value: integer);
 begin
   FXOtstup := Value;
 end;

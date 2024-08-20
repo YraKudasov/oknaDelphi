@@ -370,6 +370,7 @@ object Form1: TForm1
       Style = csDropDownList
       TabOrder = 0
       Text = 'Глухая'
+      OnChange = ComboBox1Change
     end
   end
   object PopupMenu1: TPopupMenu

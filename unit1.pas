@@ -71,6 +71,7 @@ type
     procedure DeleteHorizontalImpost(Sender: TObject);
     function CheckHeightChange: boolean;
     function CheckWidthChange: boolean;
+    function UpdateIndexes(OperationNum, NewRow, NewCol, NewOtstup: Integer):Integer;
     //procedure PaintSizes;
 
 
@@ -130,7 +131,7 @@ begin
     FRectWidth := RectWidth;
     FRectHeight := RectHeight;
     // Инициализация окна
-    RectWindow := TRectWindow.Create(RectHeight, RectWidth, Image1,
+    RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth, Image1,
       0, 0, ComboBox1.ItemIndex);
     WindowContainer.AddWindow(RectWindow);
 
@@ -383,6 +384,7 @@ begin
     MenuItem5.Enabled := True;
     MenuItem6.Enabled := True;
     ComboBox1.ItemIndex := Window.GetType;
+    //ShowMessage('Номер окна' + IntToStr(Window.GetRow) + '.' + IntToStr(Window.GetColumn));
   end;
 end;
 
@@ -617,9 +619,9 @@ begin
       else
       begin
         // Разделяем окно на два новых экземпляра
-        Window1 := TRectWindow.Create(Window.GetSize.X, VertImpost,
+        Window1 := TRectWindow.Create(Window.GetRow, Window.GetColumn, Window.GetSize.X, VertImpost,
           Image1, Otstup, Window.GetYOtstup, ComboBox1.ItemIndex);
-        Window2 := TRectWindow.Create(Window.GetSize.X, Window.GetSize.Y -
+        Window2 := TRectWindow.Create(Window.GetRow, Window.GetColumn + 1,Window.GetSize.X, Window.GetSize.Y -
           VertImpost, Image1, Otstup + VertImpost, Window.GetYOtstup,
           ComboBox1.ItemIndex);
 
@@ -678,9 +680,9 @@ begin
       else
       begin
         // Разделяем окно на два новых экземпляра
-        Window1 := TRectWindow.Create(HorizImpost, Window.GetWidth,
+        Window1 := TRectWindow.Create(Window.GetRow, Window.GetColumn, HorizImpost, Window.GetWidth,
           Image1, Window.GetXOtstup, Window.GetYOtstup, ComboBox1.ItemIndex);
-        Window2 := TRectWindow.Create(Window.GetSize.X - HorizImpost,
+        Window2 := TRectWindow.Create(Window.GetRow + 1, Window.GetColumn, Window.GetSize.X - HorizImpost,
           Window.GetWidth, Image1, Window.GetXOtstup, Window.GetYOtstup +
           HorizImpost, ComboBox1.ItemIndex);
 
@@ -743,7 +745,7 @@ begin
             (LeftWindow.GetHeight = Window.GetHeight) then
           begin
 
-            // Удаляем 2 окна из контейнера, соблюдая порядок
+            // Удаляем 1 окно из контейнера, а размеры второго изменяем
             LeftWindow.SetWidth(LeftWindow.GetWidth + Window.GetWidth);
             WindowContainer.RemoveWindow(WindowContainer.IndexOf(Window));
             // Удалить сначала окно с меньшим индексом
@@ -795,7 +797,7 @@ begin
             (UpWindow.GetWidth = Window.GetWidth) then
           begin
 
-            // Удаляем 2 окна из контейнера, соблюдая порядок
+            // Удаляем 1 окно из контейнера, а размеры второго изменяем
             UpWindow.SetHeight(UpWindow.GetHeight + Window.GetHeight);
             WindowContainer.RemoveWindow(WindowContainer.IndexOf(Window));
             // Удалить сначала окно с меньшим индексом
@@ -819,6 +821,60 @@ begin
   end;
 end;
 
+function TForm1.UpdateIndexes(OperationNum, NewRow, NewCol, NewOtstup: Integer):Integer;
+var
+  Window: TRectWindow;
+  CountWin, RightWins, MinInd, i: integer;
+begin
+  MinInd := 100;
+  // Добавление вертикального импоста
+  if(OperationNum = 0)then
+  begin
+     for i := 0 to WindowContainer.Count - 1 do
+     begin
+     Window := TRectWindow(WindowContainer.GetWindow(i));
+     if((Window.GetRow = NewRow) and (Window.GetColumn >= NewCol))then
+     begin
+       Window.SetRow(Window.GetRow + 1);
+     end;
+  end;
+     Result := 0;
+  end;
+  // Удаление вертикального импоста
+  if(OperationNum = 1)then
+  begin
+         for i := 0 to WindowContainer.Count - 1 do
+     begin
+     Window := TRectWindow(WindowContainer.GetWindow(i));
+     if((Window.GetRow = NewRow) and (Window.GetColumn > NewCol))then
+     begin
+       Window.SetRow(Window.GetRow - 1);
+     end;
+  end;
+         Result := 0;
+    end;
+  // Добавление горизонтального импоста
+  if(OperationNum = 2) then
+  begin
+    CountWin := 0;
+    RightWins := 0;
+     for i := 0 to WindowContainer.Count - 1 do
+     begin
+     Window := TRectWindow(WindowContainer.GetWindow(i));
+     if(Window.GetRow = NewRow) then
+     begin
+       CountWin := CountWin + 1;
+       if (Window.GetXOtstup > NewOtstup)then
+       begin
+        Window.SetRow(Window.GetRow + 1);
+        RightWins := RightWins + 1;
+       end;
+     end;
+  end;
+
+     //Result := CountWin - RightWins + 1;
+  end;
+end;
 
 // Обработчик клика на изображении
 procedure TForm1.CanvasClickHandler(Sender: TObject);
@@ -850,7 +906,10 @@ begin
       Window.Select(Self);
       Window.OnWindowSelected := @RectWindowSelected;
       Window.OnWindowDeselected := @RectWindowDeselected;
-      DrawWindows;
+      if(WindowContainer.GetSelectedIndex <> WindowContainer.IndexOf(Window)) then
+      begin
+        DrawWindows;
+      end;
     end;
   end;
 end;
@@ -864,6 +923,7 @@ begin
   begin
     Window := TRectWindow(WindowContainer.GetWindow(i));
     Window.DrawWindow;
+    Window.DrawImposts(FRectWidth, FRectHeight);
   end;
   //PaintSizes;
 end;
@@ -934,6 +994,7 @@ begin
     end;
   end;
 end;
+
 
 
 end.

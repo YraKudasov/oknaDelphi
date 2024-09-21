@@ -21,6 +21,7 @@ type
     function IndexOf(const AWindow: TAbstractWindow): integer;
     function GetSelectedIndex: integer;
     function FindWindow(const ClickX, ClickY: integer): integer;
+     function GetIndexRowColumn(Row, Column: integer): Integer;
     // Другие методы, если необходимо
   end;
 
@@ -46,6 +47,27 @@ function TWindowContainer.GetWindow(index: integer): TAbstractWindow;
 begin
   Result := TAbstractWindow(FWindows[index]);
 end;
+
+  function TWindowContainer.GetIndexRowColumn(Row, Column: integer): Integer;
+  var
+    Index: integer;
+  begin
+    Result := -1;
+    // Инициализируем результат, если ничего не выбрано
+    for Index := 0 to Count - 1 do
+    begin
+      if FWindows[Index] is TRectWindow then
+      begin
+        if ((TRectWindow(FWindows[Index]).GetRow = Row) and (TRectWindow(FWindows[Index]).GetRow = Column)) then
+        begin
+          Result := Index;
+          // Возвращаем индекс выбранного экземпляра
+          Break;
+          // Прерываем цикл, так как нашли выбранный экземпляр
+        end;
+      end;
+    end;
+  end;
 
 function TWindowContainer.Count: integer;
 begin

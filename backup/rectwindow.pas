@@ -10,7 +10,7 @@ uses
 type
   TRectWindow = class(TAbstractWindow)
   private
-    FRectH, FRectW, FXOtstup, FYOtstup, FType: integer;
+    FRow, FColumn, FRectH, FRectW, FXOtstup, FYOtstup, FType: integer;
     FImage: TImage;
     FOnWindowSelected: TNotifyEvent;
     FOnWindowDeselected: TNotifyEvent;
@@ -20,7 +20,7 @@ type
 
 
   public
-    constructor Create(ARectH, ARectW: integer; AImage: TImage;
+    constructor Create(ARow, AColumn, ARectH, ARectW: integer; AImage: TImage;
       AXOtstup, AYOtstup, AType: integer);
     procedure DrawWindow; override;
     procedure DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX, ScaledOtY: integer);
@@ -41,10 +41,11 @@ type
     function GetType: integer;
     procedure DrawGluxar;
     procedure DrawNeGluxar;
+    procedure DrawImposts(FRectWidth, FRectHeight: Integer);
 
 
-
-
+    function GetRow: integer;
+    function GetColumn: integer;
     function GetXOtstup: integer;
     function GetSelection: boolean;
     procedure SetSelection(Value: boolean);
@@ -59,9 +60,11 @@ type
 
 implementation
 
-constructor TRectWindow.Create(ARectH, ARectW: integer; AImage: TImage;
+constructor TRectWindow.Create(ARow, AColumn, ARectH, ARectW: integer; AImage: TImage;
   AXOtstup, AYOtstup, AType: integer);
 begin
+  FRow := ARow;
+  FColumn := AColumn;
   FRectH := ARectH;
   FRectW := ARectW;
   FImage := AImage;
@@ -109,6 +112,8 @@ begin
 
     if Assigned(OnWindowSelected) then
       OnWindowSelected(Self);
+
+
 
   end;
 end;
@@ -289,8 +294,8 @@ begin
     ScaledYOtstup + (ScaledRectHeight div 2) + 28);
 
     // Линия правого поворота
-    FImage.Canvas.MoveTo(ScaledXOtstup + ScaledRectWidth - 37, ScaledYOtstup + 35);
-    FImage.Canvas.LineTo(ScaledXOtstup + 35, ScaledYOtstup + (ScaledRectHeight div 2));
+    FImage.Canvas.MoveTo(ScaledXOtstup + ScaledRectWidth - 37, ScaledYOtstup + 37);
+    FImage.Canvas.LineTo(ScaledXOtstup + 37, ScaledYOtstup + (ScaledRectHeight div 2));
     FImage.Canvas.LineTo(ScaledXOtstup + ScaledRectWidth - 37, ScaledRectHeight + ScaledYOtstup - 35);
    end;
 
@@ -306,6 +311,21 @@ begin
 
 end;
 
+ procedure TRectWindow.DrawImposts(FRectWidth, FRectHeight: Integer);
+  begin
+        if (GetXOtstup > 0) then
+        begin
+        FImage.Canvas.Pen.Width := 1;
+        FImage.Canvas.Brush.Color := clWhite;
+        FImage.Canvas.Rectangle(ScaledXOtstup-4, ScaledYOtstup + 3, ScaledXOtstup+8, ScaledRectHeight + ScaledYOtstup);
+        end;
+        if (GetYOtstup > 0) then
+        begin
+        FImage.Canvas.Pen.Width := 1;
+        FImage.Canvas.Brush.Color := clWhite;
+        FImage.Canvas.Rectangle(ScaledXOtstup-4, ScaledYOtstup - 4, ScaledXOtstup+ScaledRectWidth, ScaledYOtstup + 8);
+        end;
+  end;
 
 function TRectWindow.Contains(CurrentClickX, CurrentClickY: integer): boolean;
 begin
@@ -366,6 +386,16 @@ begin
   FType := Value;
 end;
 
+procedure TRectWindow.SetRow(Value: integer);
+begin
+  FRow := Value;
+end;
+
+procedure TRectWindow.SetColumn(Value: integer);
+begin
+  FColumn := Value;
+end;
+
 function TRectWindow.GetType: integer;
 begin
   Result := FType;
@@ -384,6 +414,16 @@ end;
 function TRectWindow.GetYOtstup: integer;
 begin
   Result := FYOtstup;
+end;
+
+function TRectWindow.GetRow: integer;
+begin
+  Result := FRow;
+end;
+
+function TRectWindow.GetColumn: integer;
+begin
+  Result := FColumn;
 end;
 
 procedure TRectWindow.SetYOtstup(Value: integer);

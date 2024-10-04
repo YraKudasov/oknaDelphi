@@ -38,10 +38,13 @@ type
     procedure SetYOtstup(Value: integer);
     procedure SetXOtstup(Value: integer);
     procedure SetType(Value: integer);
+    procedure SetRow(Value: integer);
+    procedure SetColumn(Value: integer);
     function GetType: integer;
     procedure DrawGluxar;
     procedure DrawNeGluxar;
     procedure DrawImposts(FRectWidth, FRectHeight: Integer);
+
 
 
     function GetRow: integer;

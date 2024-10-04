@@ -384,7 +384,7 @@ begin
     MenuItem5.Enabled := True;
     MenuItem6.Enabled := True;
     ComboBox1.ItemIndex := Window.GetType;
-    ShowMessage('Номер окна' + IntToStr(Window.GetRow) + '.' + IntToStr(Window.GetColumn));
+    //ShowMessage('Номер окна' + IntToStr(Window.GetRow) + '.' + IntToStr(Window.GetColumn));
   end;
 end;
 
@@ -625,14 +625,14 @@ begin
           VertImpost, Image1, Otstup + VertImpost, Window.GetYOtstup,
           ComboBox1.ItemIndex);
 
-
-
         // Удаляем исходное окно из контейнера
         WindowContainer.RemoveWindow(WindowIndex);
 
         // Добавляем два новых окна в контейнер
         WindowContainer.AddWindow(Window1);
         WindowContainer.AddWindow(Window2);
+
+        UpdateIndexes(0,Window.GetRow,Window.GetColumn, Window.GetXOtstup);
 
         if WindowContainer.Count > 0 then
         begin
@@ -661,6 +661,7 @@ end;
 
 procedure TForm1.HorizontalImpost(HorizImpost: integer);
 var
+  NewCol: integer;
   WindowIndex: integer;
   Window, Window1, Window2: TRectWindow;
 begin
@@ -835,7 +836,7 @@ begin
      Window := TRectWindow(WindowContainer.GetWindow(i));
      if((Window.GetRow = NewRow) and (Window.GetColumn >= NewCol))then
      begin
-       Window.SetRow(Window.GetRow + 1);
+       Window.SetColumn(Window.GetColumn + 1);
      end;
   end;
      Result := 0;
@@ -848,7 +849,7 @@ begin
      Window := TRectWindow(WindowContainer.GetWindow(i));
      if((Window.GetRow = NewRow) and (Window.GetColumn > NewCol))then
      begin
-       Window.SetRow(Window.GetRow - 1);
+       Window.SetColumn(Window.GetColumn - 1);
      end;
   end;
          Result := 0;
@@ -864,15 +865,27 @@ begin
      if(Window.GetRow = NewRow) then
      begin
        CountWin := CountWin + 1;
-       if (Window.GetXOtstup > NewOtstup)then
+       if (Window.GetXOtstup >= NewOtstup)then
        begin
-        Window.SetRow(Window.GetRow + 1);
+        Window.SetColumn(Window.GetColumn + 1);
         RightWins := RightWins + 1;
        end;
      end;
   end;
-
-     //Result := CountWin - RightWins + 1;
+     Result := CountWin - RightWins;
+  end;
+     // Удаление горизонтального импоста
+    if(OperationNum = 3) then
+  begin
+     for i := 0 to WindowContainer.Count - 1 do
+     begin
+     Window := TRectWindow(WindowContainer.GetWindow(i));
+     if(Window.GetRow = NewRow) and (Window.GetColumn > NewCol) then
+     begin
+        Window.SetColumn(Window.GetColumn - 1);
+     end;
+  end;
+     Result := 0;
   end;
 end;
 
@@ -945,8 +958,8 @@ begin
       {ShowMessage('Индекс выбранного окна ' +
         IntToStr(WindowContainer.IndexOf(Window)));
         }
+      ShowMessage('Индекс окна' + IntToStr(Window.GetRow)+'.'+ IntToStr(Window.GetColumn));
       Exit; // Exit the loop since we found a selected window
-
     end;
   end;
 end;

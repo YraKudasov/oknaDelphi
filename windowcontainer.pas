@@ -15,7 +15,7 @@ type
     procedure AddWindow(Window: TAbstractWindow);
     procedure RemoveWindow(Index: integer);
     procedure Clear;
-    function GetWindow(index: integer): TAbstractWindow;
+    function GetWindow(index: integer): TRectWindow;
     function Count: integer;
     function GetWindows: TObjectList;
     function IndexOf(const AWindow: TAbstractWindow): integer;
@@ -43,9 +43,9 @@ begin
   FWindows.Add(Window);
 end;
 
-function TWindowContainer.GetWindow(index: integer): TAbstractWindow;
+function TWindowContainer.GetWindow(index: integer): TRectWindow;
 begin
-  Result := TAbstractWindow(FWindows[index]);
+  Result := TRectWindow(FWindows[index]);
 end;
 
   function TWindowContainer.GetIndexRowColumn(Row, Column: integer): Integer;
@@ -140,6 +140,7 @@ begin
     end;
   end;
 end;
+
 
 
 

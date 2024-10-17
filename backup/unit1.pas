@@ -396,6 +396,7 @@ begin
     MenuItem3.Enabled := True;
     MenuItem5.Enabled := True;
     MenuItem6.Enabled := True;
+    ComboBox1.Enabled := True;
     ComboBox1.ItemIndex := Window.GetType;
      {
     ShowMessage('Номер окна' + IntToStr(Window.GetRow) +
@@ -415,6 +416,7 @@ begin
   MenuItem6.Enabled := False;
   Panel1.Enabled := False;
   Panel3.Enabled := False;
+  ComboBox1.Enabled := False;
 end;
 
 procedure TForm1.ComboBox1Change(Sender: TObject);
@@ -471,7 +473,8 @@ begin
     Image1.Canvas.FillRect(Image1.ClientRect);
 
     StringGrid1.RowCount := 1;
-
+    ComboBox1.Enabled := False;
+    ComboBox1.ItemIndex := 0;
     // Сохраните старые значения
     FRectHeight := 0;
     FRectWidth := 0;
@@ -1087,29 +1090,41 @@ end;
 
 procedure TForm1.UpdateTable;
 var
-  i: integer;
+  i, j: integer;
+  TempString: string;
+  WindowList: TStringList;
 begin
+  // Создаем список окон с их индексами
+  WindowList := TStringList.Create;
+  try
+    for i := 0 to WindowContainer.Count - 1 do
+    begin
+      WindowList.Add(IntToStr(WindowContainer.GetWindow(i).GetRow) + '.' +
+                     IntToStr(WindowContainer.GetWindow(i).GetColumn) + '|' + IntToStr(i));
+    end;
 
-  // Очищаем существующие строки
-  StringGrid1.RowCount := 1;
+    // Сортируем список окон
+    WindowList.Sort;
 
-  // Устанавливаем количество строк равное количеству окон
-  StringGrid1.RowCount := WindowContainer.Count + 1;
+    // Очищаем существующие строки
+    StringGrid1.RowCount := 1;
 
-  WindowContainer.SortWindows;
+    // Устанавливаем количество строк равное количеству окон
+    StringGrid1.RowCount := WindowContainer.Count + 1;
 
-  for i := 0 to WindowContainer.Count - 1 do
-  begin
-    StringGrid1.Cells[0, i + 1] :=
-      IntToStr(WindowContainer.GetWindow(i).GetRow) + '.' +
-      IntToStr(WindowContainer.GetWindow(i).GetColumn);
-    // Добавляем текст из индекс окна
-    StringGrid1.Cells[1, i + 1] := IntToStr(WindowContainer.GetWindow(i).GetHeight);
-    // Добавляем текст высоту окна
-    StringGrid1.Cells[2, i + 1] := IntToStr(WindowContainer.GetWindow(i).GetWidth);
-    // Добавляем текст ширину окна
-    StringGrid1.Cells[3, i + 1] := ComboBox1.Items[WindowContainer.GetWindow(i).GetType];
-    // Добавляем тип открывания
+    // Добавляем отсортированные окна в StringGrid
+    for i := 0 to WindowList.Count - 1 do
+    begin
+      j := StrToInt(Copy(WindowList[i], Pos('|', WindowList[i]) + 1, Length(WindowList[i])));
+
+      TempString := Copy(WindowList[i], 1, Pos('|', WindowList[i]) - 1);
+      StringGrid1.Cells[0, i + 1] := TempString;
+      StringGrid1.Cells[1, i + 1] := IntToStr(WindowContainer.GetWindow(j).GetHeight);
+      StringGrid1.Cells[2, i + 1] := IntToStr(WindowContainer.GetWindow(j).GetWidth);
+      StringGrid1.Cells[3, i + 1] := ComboBox1.Items[WindowContainer.GetWindow(j).GetType];
+    end;
+  finally
+    WindowList.Free;
   end;
 end;
 

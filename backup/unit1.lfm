@@ -4,8 +4,8 @@ object Form1: TForm1
   Top = 99
   Width = 1546
   Caption = 'Form1'
-  ClientHeight = 0
-  ClientWidth = 0
+  ClientHeight = 896
+  ClientWidth = 1546
   OnCreate = FormCreate
   PopupMenu = PopupMenu1
   LCLVersion = '3.2.0.0'
@@ -26,17 +26,17 @@ object Form1: TForm1
   end
   object ScrollBox1: TScrollBox
     Left = 19
-    Height = 500
-    Top = 122
+    Height = 760
+    Top = 104
     Width = 875
     HorzScrollBar.Page = 854
-    VertScrollBar.Page = 479
-    ClientHeight = 479
+    VertScrollBar.Page = 739
+    ClientHeight = 739
     ClientWidth = 854
     TabOrder = 1
     object Image1: TImage
       Left = 0
-      Height = 500
+      Height = 752
       Top = 0
       Width = 875
     end
@@ -374,9 +374,9 @@ object Form1: TForm1
     end
   end
   object StringGrid1: TStringGrid
-    Left = 19
+    Left = 904
     Height = 224
-    Top = 656
+    Top = 640
     Width = 293
     ColCount = 4
     RowCount = 1

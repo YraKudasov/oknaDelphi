@@ -22,7 +22,7 @@ type
     function GetSelectedIndex: integer;
     function FindWindow(const ClickX, ClickY: integer): integer;
      function GetIndexRowColumn(Row, Column: integer): Integer;
-     procedure SortWindows;
+      function SortWindows: Boolean;
     // Другие методы, если необходимо
   end;
 
@@ -142,7 +142,34 @@ begin
   end;
 end;
 
+ function TWindowContainer.SortWindows: Boolean;
+var
+  i, j: Integer;
+  Temp: TRectWindow;
+begin
+  Result := False;
+  // Check if there are at least two windows to sort
+  if Count < 2 then Exit;
 
+  // Simple bubble sort algorithm
+  for i := 0 to Count - 2 do
+  begin
+    for j := 0 to Count - 2 - i do
+    begin
+      if (FWindows[j] is TRectWindow) and (FWindows[j + 1] is TRectWindow) then
+      begin
+        if TRectWindow(FWindows[j]).GetRow > TRectWindow(FWindows[j + 1]).GetRow then
+        begin
+          // Swap the windows
+          Temp := TRectWindow(FWindows[j]);
+          FWindows[j] := FWindows[j + 1];
+          FWindows[j + 1] := Temp;
+          Result := True; // Indicate that a swap occurred
+        end;
+      end;
+    end;
+  end;
+end;
 
 
 

@@ -11,6 +11,7 @@ type
   TRectWindow = class(TAbstractWindow)
   private
     FRow, FColumn, FRectH, FRectW, FXOtstup, FYOtstup, FType, FTableIdx: integer;
+    FMoskit: boolean;
     FImage: TImage;
     FOnWindowSelected: TNotifyEvent;
     FOnWindowDeselected: TNotifyEvent;
@@ -21,7 +22,8 @@ type
 
   public
     constructor Create(ARow, AColumn, ARectH, ARectW: integer;
-      AImage: TImage; AXOtstup, AYOtstup, AType: integer);
+      AImage: TImage; AXOtstup, AYOtstup, AType: integer;
+      AMoskit: boolean);
     procedure DrawWindow; override;
     procedure DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX, ScaledOtY: integer);
       override;
@@ -40,12 +42,13 @@ type
     procedure SetType(Value: integer);
     procedure SetRow(Value: integer);
     procedure SetColumn(Value: integer);
-    procedure SetTabeIdx(Value: integer);
+    procedure SetTableIdx(Value: integer);
     function GetType: integer;
-    function GetTabeIdx: integer;
+    function GetTableIdx: integer;
     procedure DrawGluxar;
     procedure DrawNeGluxar;
     procedure DrawImposts(FRectWidth, FRectHeight: integer);
+    procedure SetMoskit(Value: boolean);
 
 
 
@@ -58,7 +61,7 @@ type
     function GetWidth: integer;
     function Contains(CurrentClickX, CurrentClickY: integer): boolean; override;
     function GetYOtstup: integer;
-
+    function GetMoskit: boolean;
 
 
   end;
@@ -66,7 +69,8 @@ type
 implementation
 
 constructor TRectWindow.Create(ARow, AColumn, ARectH, ARectW: integer;
-  AImage: TImage; AXOtstup, AYOtstup, AType: integer);
+  AImage: TImage; AXOtstup, AYOtstup, AType: integer;
+  AMoskit: boolean);
 begin
   FRow := ARow;
   FColumn := AColumn;
@@ -77,6 +81,8 @@ begin
   FXOtstup := AXOtstup;
   FYOtstup := AYOtstup;
   FType := AType;
+
+  FMoskit := AMoskit;
 end;
 
 procedure TRectWindow.DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX,
@@ -155,6 +161,7 @@ begin
   end;
 end;
 
+procedure
 
 procedure TRectWindow.DrawGluxar;
 begin
@@ -461,6 +468,16 @@ end;
 procedure TRectWindow.SetTableIdx(Value: integer);
 begin
   FTableIdx := Value;
+end;
+
+function TRectWindow.GetMoskit: boolean;
+begin
+  Result := FMoskit;
+end;
+
+procedure TRectWindow.SetMoskit(Value: boolean);
+begin
+  FMoskit := Value;
 end;
 
 end.

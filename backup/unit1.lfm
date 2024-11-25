@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 338
+  Left = 304
   Height = 896
-  Top = 99
+  Top = 116
   Width = 1546
   Caption = 'Form1'
   ClientHeight = 896
@@ -371,6 +371,21 @@ object Form1: TForm1
       TabOrder = 0
       Text = 'Глухая'
       OnChange = ComboBox1Change
+    end
+    object Label8: TLabel
+      Left = 160
+      Height = 15
+      Top = 18
+      Width = 93
+      Caption = 'Москитная сетка'
+    end
+    object CheckBox1: TCheckBox
+      Left = 168
+      Height = 17
+      Top = 40
+      Width = 18
+      TabOrder = 1
+      OnChange = CheckBox1Change
     end
   end
   object StringGrid1: TStringGrid

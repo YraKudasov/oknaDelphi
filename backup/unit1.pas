@@ -20,6 +20,7 @@ type
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
+    CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     Edit1: TEdit;
     Edit2: TEdit;
@@ -33,6 +34,7 @@ type
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
+    Label8: TLabel;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
@@ -50,6 +52,7 @@ type
 
 
 
+    procedure CheckBox1Change(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure SizeConstruction(Sender: TObject);
     procedure SizeWindow(Sender: TObject);
@@ -134,7 +137,7 @@ begin
     FRectHeight := RectHeight;
     // Инициализация окна
     RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
-      Image1, 0, 0, ComboBox1.ItemIndex);
+      Image1, 0, 0, ComboBox1.ItemIndex, false);
     WindowContainer.AddWindow(RectWindow);
 
     RectWindow.SetSize(TPoint.Create(RectHeight, RectWidth));
@@ -398,6 +401,8 @@ begin
     MenuItem6.Enabled := True;
     ComboBox1.Enabled := True;
     ComboBox1.ItemIndex := Window.GetType;
+    CheckBox1.Enabled := True;
+    CheckBox1.Checked := Window.GetMoskit;
      {
     ShowMessage('Номер окна' + IntToStr(Window.GetRow) +
       '.' + IntToStr(Window.GetColumn));
@@ -417,6 +422,7 @@ begin
   Panel1.Enabled := False;
   Panel3.Enabled := False;
   ComboBox1.Enabled := False;
+  CheckBox1.Enabled := False;
 end;
 
 procedure TForm1.ComboBox1Change(Sender: TObject);
@@ -433,6 +439,31 @@ begin
       Window.DrawWindow;
     end;
   end;
+end;
+
+procedure TForm1.CheckBox1Change(Sender: TObject);
+var
+   Window: TRectWindow;
+begin
+    if (FRectHeight <> 0) and (FRectWidth <> 0) then
+  begin
+    Window := TRectWindow(WindowContainer.GetWindow(WindowContainer.GetSelectedIndex));
+    if Assigned(Window) then
+    begin
+      if (CheckBox1.Checked) then
+      begin
+        Window.SetMoskit(true);
+        UpdateTable;
+        Window.DrawWindow;
+    end
+      else
+      begin
+        Window.SetMoskit(false);
+        UpdateTable;
+        Window.DrawWindow;
+    end;
+  end;
+end;
 end;
 
 procedure TForm1.BitBtn4Click(Sender: TObject);
@@ -643,10 +674,10 @@ begin
         // Разделяем окно на два новых экземпляра
         Window1 := TRectWindow.Create(Window.GetRow, Window.GetColumn,
           Window.GetSize.X, VertImpost, Image1, Otstup, Window.GetYOtstup,
-          ComboBox1.ItemIndex);
+          ComboBox1.ItemIndex, false);
         Window2 := TRectWindow.Create(Window.GetRow, Window.GetColumn +
           1, Window.GetSize.X, Window.GetSize.Y - VertImpost, Image1,
-          Otstup + VertImpost, Window.GetYOtstup, ComboBox1.ItemIndex);
+          Otstup + VertImpost, Window.GetYOtstup, ComboBox1.ItemIndex, false);
 
         UpdateIndexes(0, Window.GetRow, Window.GetColumn + 1, Otstup);
 
@@ -710,14 +741,14 @@ begin
         // Разделяем окно на два новых экземпляра
         Window1 := TRectWindow.Create(Window.GetRow, Window.GetColumn,
           HorizImpost, Window.GetWidth, Image1, Window.GetXOtstup,
-          Window.GetYOtstup, ComboBox1.ItemIndex);
+          Window.GetYOtstup, ComboBox1.ItemIndex, false);
 
         NewCol := UpdateIndexes(2, Window.GetRow + 1, Window.GetColumn,
           Window.GetXOtstup);
 
         Window2 := TRectWindow.Create(Window.GetRow + 1, NewCol,
           Window.GetSize.X - HorizImpost, Window.GetWidth, Image1,
-          Window.GetXOtstup, Window.GetYOtstup + HorizImpost, ComboBox1.ItemIndex);
+          Window.GetXOtstup, Window.GetYOtstup + HorizImpost, ComboBox1.ItemIndex, false);
 
         // Удаляем исходное окно из контейнера
         WindowContainer.RemoveWindow(WindowIndex);
@@ -941,6 +972,7 @@ begin
   end;
 end;
 
+
 // Обработчик клика на изображении
 procedure TForm1.CanvasClickHandler(Sender: TObject);
 var
@@ -1019,6 +1051,7 @@ begin
 
   //PaintSizes;
 end;
+
 
 function TForm1.CheckSelectionWindows: boolean;
 var

@@ -401,8 +401,12 @@ begin
     MenuItem6.Enabled := True;
     ComboBox1.Enabled := True;
     ComboBox1.ItemIndex := Window.GetType;
-    CheckBox1.Enabled := True;
+    if(Window.GetType <> 0) then
+    begin
+    CheckBox1.Visible := True;
     CheckBox1.Checked := Window.GetMoskit;
+    Label8.Visible:= True;
+    end;
      {
     ShowMessage('Номер окна' + IntToStr(Window.GetRow) +
       '.' + IntToStr(Window.GetColumn));
@@ -422,7 +426,8 @@ begin
   Panel1.Enabled := False;
   Panel3.Enabled := False;
   ComboBox1.Enabled := False;
-  CheckBox1.Enabled := False;
+  CheckBox1.Visible:= False;
+  Label8.Visible:= False;
 end;
 
 procedure TForm1.ComboBox1Change(Sender: TObject);
@@ -436,6 +441,16 @@ begin
     begin
       Window.SetType(ComboBox1.ItemIndex);
       UpdateTable;
+      if(Window.GetType <> 0) then
+        begin
+          CheckBox1.Visible := True;
+          CheckBox1.Checked := Window.GetMoskit;
+          Label8.Visible:= True;
+        end
+      else begin
+        CheckBox1.Visible := False;
+        Label8.Visible:= False;
+      end;
       Window.DrawWindow;
     end;
   end;
@@ -484,6 +499,8 @@ begin
   MenuItem3.Enabled := False;
   MenuItem5.Enabled := False;
   MenuItem6.Enabled := False;
+  CheckBox1.Visible := False;
+  Label8.Visible:= False;
 end;
 
 
@@ -506,7 +523,8 @@ begin
     StringGrid1.RowCount := 1;
     ComboBox1.Enabled := False;
     ComboBox1.ItemIndex := 0;
-    CheckBox1.Enabled := False;
+    CheckBox1.Visible := False;
+    Label8.Visible:= False;
     // Сохраните старые значения
     FRectHeight := 0;
     FRectWidth := 0;

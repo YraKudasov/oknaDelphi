@@ -131,23 +131,22 @@ end;
 
 procedure TRectWindow.DrawMoskit(ScaledRectW, ScaledRectH, ScaledXOt, ScaledYOt : integer);
 var
-  i: Integer;
   x, y: Integer;
 begin
   FImage.Canvas.Pen.Color := clBlack;
   FImage.Canvas.Pen.Width := 1;
 
-  x := ScaledXOt + 24;
+  x := ScaledXOt + 36;
   while x < ScaledXOt + ScaledRectW - 24 do
   begin
-    FImage.Canvas.Line(x, ScaledYOt + 24, x, ScaledRectH - 22 + ScaledYOt);
+    FImage.Canvas.Line(x, ScaledYOt + 36, x, ScaledRectH - 34 + ScaledYOt);
     x := x + 6; // 6-pixel interval
   end;
 
-  y := ScaledYOt + 24;
-  while x < ScaledYOt + ScaledRectH - 24 do
+  y := ScaledYOt + 36;
+  while y < ScaledYOt + ScaledRectH - 24 do
   begin
-    FImage.Canvas.Line(ScaledXOt + 24, y, ScaledRectW - 22 + ScaledXOt, y);
+    FImage.Canvas.Line(ScaledXOt + 36, y, ScaledRectW - 34 + ScaledXOt, y);
     y := y + 6; // 6-pixel interval
   end;
 end;
@@ -177,12 +176,12 @@ begin
   if (FType = 0) then
   begin
     DrawGluxar;
-    if(FMoskit = True) then
-    DrawMoskit(ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup);
   end
   else
   begin
     DrawNeGluxar;
+    if(FMoskit = True) then
+    DrawMoskit(ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup);
   end;
 end;
 

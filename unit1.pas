@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ComCtrls, Buttons, Menus, RectWindow, AbstractWindow, WindowContainer,
+  ComCtrls, Buttons, Menus, RectWindow, WindowContainer,
   LCLType, Grids, Generics.Collections;
 
 const

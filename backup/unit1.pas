@@ -499,6 +499,8 @@ begin
   MenuItem3.Enabled := False;
   MenuItem5.Enabled := False;
   MenuItem6.Enabled := False;
+  CheckBox1.Visible := False;
+  Label8.Visible:= False;
 end;
 
 

@@ -4,11 +4,11 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ComCtrls, AbstractWindow, Contnrs;
+  ComCtrls, Contnrs;
   // Убедитесь, что используемый модуль совпадает с указанным здесь
 
 type
-  TRectWindow = class(TAbstractWindow)
+  TRectWindow = class
   private
     FRow, FColumn, FRectH, FRectW, FXOtstup, FYOtstup, FType, FTableIdx: integer;
     FMoskit: boolean;
@@ -24,17 +24,16 @@ type
     constructor Create(ARow, AColumn, ARectH, ARectW: integer;
       AImage: TImage; AXOtstup, AYOtstup, AType: integer;
       AMoskit: boolean);
-    procedure DrawWindow; override;
+    procedure DrawWindow;
     procedure DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX, ScaledOtY: integer);
-      override;
-    procedure Select(Sender: TObject); override;
+    procedure Select(Sender: TObject);
 
     property OnWindowSelected: TNotifyEvent read FOnWindowSelected
       write FOnWindowSelected;
     property OnWindowDeselected: TNotifyEvent
       read FOnWindowDeselected write FOnWindowDeselected;
-    function GetSize: TPoint; override;
-    procedure SetSize(const NewSize: TPoint); override;
+    function GetSize: TPoint;
+    procedure SetSize(const NewSize: TPoint);
     procedure SetWidth(Value: integer);
     procedure SetHeight(Value: integer);
     procedure SetYOtstup(Value: integer);
@@ -60,7 +59,7 @@ type
     procedure SetSelection(Value: boolean);
     function GetHeight: integer;
     function GetWidth: integer;
-    function Contains(CurrentClickX, CurrentClickY: integer): boolean; override;
+    function Contains(CurrentClickX, CurrentClickY: integer): boolean;
     function GetYOtstup: integer;
     function GetMoskit: boolean;
 

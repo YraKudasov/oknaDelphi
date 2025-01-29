@@ -4,11 +4,11 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ComCtrls, AbstractWindow, Contnrs;
+  ComCtrls, Contnrs;
   // Убедитесь, что используемый модуль совпадает с указанным здесь
 
 type
-  TRectWindow = class(TAbstractWindow)
+  TRectWindow = class
   private
     FRow, FColumn, FRectH, FRectW, FXOtstup, FYOtstup, FType, FTableIdx: integer;
     FMoskit: boolean;
@@ -24,17 +24,16 @@ type
     constructor Create(ARow, AColumn, ARectH, ARectW: integer;
       AImage: TImage; AXOtstup, AYOtstup, AType: integer;
       AMoskit: boolean);
-    procedure DrawWindow; override;
+    procedure DrawWindow;
     procedure DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX, ScaledOtY: integer);
-      override;
-    procedure Select(Sender: TObject); override;
+    procedure Select(Sender: TObject);
 
     property OnWindowSelected: TNotifyEvent read FOnWindowSelected
       write FOnWindowSelected;
     property OnWindowDeselected: TNotifyEvent
       read FOnWindowDeselected write FOnWindowDeselected;
-    function GetSize: TPoint; override;
-    procedure SetSize(const NewSize: TPoint); override;
+    function GetSize: TPoint;
+    procedure SetSize(const NewSize: TPoint);
     procedure SetWidth(Value: integer);
     procedure SetHeight(Value: integer);
     procedure SetYOtstup(Value: integer);
@@ -137,14 +136,14 @@ begin
   FImage.Canvas.Pen.Width := 1;
 
   x := ScaledXOt + 36;
-  while x < ScaledXOt + ScaledRectW - 24 do
+  while x < ScaledXOt + ScaledRectW - 30 do
   begin
     FImage.Canvas.Line(x, ScaledYOt + 36, x, ScaledRectH - 34 + ScaledYOt);
     x := x + 6; // 6-pixel interval
   end;
 
   y := ScaledYOt + 36;
-  while y < ScaledYOt + ScaledRectH - 24 do
+  while y < ScaledYOt + ScaledRectH - 30 do
   begin
     FImage.Canvas.Line(ScaledXOt + 36, y, ScaledRectW - 34 + ScaledXOt, y);
     y := y + 6; // 6-pixel interval

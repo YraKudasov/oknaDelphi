@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ComCtrls, Buttons, Menus, RectWindow, AbstractWindow, WindowContainer,
+  ComCtrls, Buttons, Menus, RectWindow, WindowContainer,
   LCLType, Grids, Generics.Collections;
 
 const
@@ -20,6 +20,7 @@ type
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
+    Button1: TButton;
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     Edit1: TEdit;
@@ -47,11 +48,12 @@ type
     PopupMenu1: TPopupMenu;
     ScrollBox1: TScrollBox;
     StringGrid1: TStringGrid;
-    TreeView1: TTreeView;
 
 
 
 
+
+    procedure Button1Click(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure SizeConstruction(Sender: TObject);
@@ -59,7 +61,6 @@ type
     procedure BitBtn4Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure DeleteVerticalImpost(Sender: TObject);
-    procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
     procedure EditKeyPress(Sender: TObject; var Key: char);
     procedure EditChange(Sender: TObject);
     procedure EditChange2(Sender: TObject);
@@ -123,42 +124,6 @@ var
   Window: TRectWindow;
   RectWidth, RectHeight, I, DiffX, DiffY: integer;
 begin
-  if (FRectHeight = 0) and (FRectWidth = 0) then
-  begin
-    WindowContainer := TWindowContainer.Create;
-
-    // Создаем экземпляр WindowContainer
-
-    // Получение значений из Edit1 и Edit2
-    RectHeight := StrToInt(Edit3.Text);
-    RectWidth := StrToInt(Edit4.Text);
-
-    FRectWidth := RectWidth;
-    FRectHeight := RectHeight;
-    // Инициализация окна
-    RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
-      Image1, 0, 0, ComboBox1.ItemIndex, false);
-    WindowContainer.AddWindow(RectWindow);
-
-    RectWindow.SetSize(TPoint.Create(RectHeight, RectWidth));
-
-    UpdateTable;
-    // Отрисовка окна на изображении
-    DrawWindows;
-
-    Image1.OnClick := @CanvasClickHandler;
-
-
-    // Присоединяем обработчик события OnWindowSelected
-
-    RectWindowDeselected(Self);
-    RectWindow.OnWindowSelected := @RectWindowSelected;
-    RectWindow.OnWindowDeselected := @RectWindowDeselected;
-
-  end
-  else
-  begin
-
     if ((StrToInt(Edit3.Text) <> FRectHeight) or
       (StrToInt(Edit4.Text) <> FRectWidth)) then
     begin
@@ -481,6 +446,8 @@ begin
 end;
 end;
 
+
+
 procedure TForm1.BitBtn4Click(Sender: TObject);
 begin
   Edit3.Text := IntToStr(FRectHeight);
@@ -506,13 +473,17 @@ end;
 
 
 
-procedure TForm1.TreeView1Change(Sender: TObject; Node: TTreeNode);
+procedure TForm1.Button1Click(Sender: TObject);
+var  RectWidth, RectHeight: integer;
 begin
 
-  if Assigned(Node) then
+  if Button1.Enabled then
   begin
-
+    Self.SetFocus;
     MenuItem2.Enabled := False;
+    MenuItem3.Enabled := False;
+    MenuItem5.Enabled := False;
+    MenuItem6.Enabled := False;
     Panel2.Enabled := True;
     Panel3.Enabled := True;
     Bitbtn3.Enabled := False;
@@ -556,11 +527,42 @@ begin
     // Обработчик события изменения значения
     Edit2.OnChange := @EditChange2;
 
-    // Отключение события изменения значения для списка после закрытия окна
-    Node.Selected := False;
 
-    // Сброс обработчика событий
-    Image1.OnClick := nil;
+    Edit3.text := '1000';
+    Edit4.text := '1000';
+
+
+     WindowContainer := TWindowContainer.Create;
+
+    // Создаем экземпляр WindowContainer
+
+    // Получение значений из Edit3 и Edit4
+    RectHeight := StrToInt(Edit3.Text);
+    RectWidth := StrToInt(Edit4.Text);
+
+    FRectWidth := RectWidth;
+    FRectHeight := RectHeight;
+    // Инициализация окна
+    RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
+      Image1, 0, 0, ComboBox1.ItemIndex, false);
+    WindowContainer.AddWindow(RectWindow);
+
+    RectWindow.SetSize(TPoint.Create(RectHeight, RectWidth));
+
+    UpdateTable;
+    // Отрисовка окна на изображении
+    DrawWindows;
+
+    Image1.OnClick := @CanvasClickHandler;
+
+
+    // Присоединяем обработчик события OnWindowSelected
+
+    RectWindowDeselected(Self);
+    RectWindow.OnWindowSelected := @RectWindowSelected;
+    RectWindow.OnWindowDeselected := @RectWindowDeselected;
+
+
   end;
 end;
 

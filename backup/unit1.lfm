@@ -1,29 +1,14 @@
 object Form1: TForm1
-  Left = 304
-  Height = 896
-  Top = 116
+  Left = 281
+  Height = 895
+  Top = 149
   Width = 1546
   Caption = 'Form1'
-  ClientHeight = 896
-  ClientWidth = 1546
+  ClientHeight = 0
+  ClientWidth = 0
   OnCreate = FormCreate
   PopupMenu = PopupMenu1
   LCLVersion = '3.2.0.0'
-  object TreeView1: TTreeView
-    Left = 19
-    Height = 84
-    Top = 6
-    Width = 115
-    TabOrder = 0
-    OnChange = TreeView1Change
-    Items.Data = {
-      F9FFFFFF020002000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF010000000000
-      00000115000000D093D0BBD183D185D0BED0B520D0BED0BAD0BDD0BEFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFF00000000000000000009000000D09ED0BAD0BDD0
-      BE32FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000E000000D0
-      A1D182D0B2D0BED180D0BAD0B0
-    }
-  end
   object ScrollBox1: TScrollBox
     Left = 19
     Height = 500
@@ -33,7 +18,7 @@ object Form1: TForm1
     VertScrollBar.Page = 479
     ClientHeight = 479
     ClientWidth = 854
-    TabOrder = 1
+    TabOrder = 0
     object Image1: TImage
       Left = 0
       Height = 500
@@ -48,7 +33,7 @@ object Form1: TForm1
     Width = 272
     ClientHeight = 160
     ClientWidth = 272
-    TabOrder = 2
+    TabOrder = 1
     object Label3: TLabel
       Left = 40
       Height = 15
@@ -195,7 +180,7 @@ object Form1: TForm1
     Width = 272
     ClientHeight = 164
     ClientWidth = 272
-    TabOrder = 3
+    TabOrder = 2
     object Label2: TLabel
       Left = 72
       Height = 15
@@ -343,7 +328,7 @@ object Form1: TForm1
     Width = 272
     ClientHeight = 118
     ClientWidth = 272
-    TabOrder = 4
+    TabOrder = 3
     object Label7: TLabel
       Left = 40
       Height = 15
@@ -395,7 +380,7 @@ object Form1: TForm1
     Width = 293
     ColCount = 4
     RowCount = 1
-    TabOrder = 5
+    TabOrder = 4
     ColWidths = (
       64
       64
@@ -418,9 +403,18 @@ object Form1: TForm1
       'Тип открывания'
     )
   end
+  object Button1: TButton
+    Left = 19
+    Height = 48
+    Top = 32
+    Width = 227
+    Caption = 'Создать новую конструкцию'
+    TabOrder = 5
+    OnClick = Button1Click
+  end
   object PopupMenu1: TPopupMenu
-    Left = 168
-    Top = 16
+    Left = 464
+    Top = 24
     object MenuItem1: TMenuItem
       Caption = 'Добавить'
       object MenuItem2: TMenuItem

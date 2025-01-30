@@ -16,15 +16,15 @@ type
     FOnWindowSelected: TNotifyEvent;
     FOnWindowDeselected: TNotifyEvent;
     ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup: integer;
+    ZoomIndex: double;
   public
     FSelected: boolean;
-
 
   public
     constructor Create(ARow, AColumn, ARectH, ARectW: integer;
       AImage: TImage; AXOtstup, AYOtstup, AType: integer;
       AMoskit: boolean);
-    procedure DrawWindow;
+    procedure DrawWindow; virtual;
     procedure DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX, ScaledOtY: integer);
     procedure Select(Sender: TObject);
 
@@ -49,7 +49,7 @@ type
     procedure DrawImposts(FRectWidth, FRectHeight: integer);
     procedure DrawMoskit(ScaledRectW, ScaledRectH, ScaledXOt, ScaledYOt: integer);
     procedure SetMoskit(Value: boolean);
-
+    procedure SetZoomIndex(Value: double);
 
 
     function GetRow: integer;
@@ -62,6 +62,7 @@ type
     function Contains(CurrentClickX, CurrentClickY: integer): boolean;
     function GetYOtstup: integer;
     function GetMoskit: boolean;
+    function GetZoomIndex: double;
 
 
   end;
@@ -155,7 +156,7 @@ var
   ScreenWidth, ScreenHeight: integer;
   ScaleFactorX, ScaleFactorY: double;
 begin
-
+ {
   ScreenWidth := FImage.Width;
   ScreenHeight := FImage.Height;
   // Вычисление коэффициентов пропорциональности
@@ -163,12 +164,14 @@ begin
   // Замените 3500 на ширину вашего прямоугольника
   ScaleFactorY := ScreenHeight / 2000;
   // Замените 2000 на высоту вашего прямоугольника
+  }
+
 
   // Вычисление масштабированных размеров окна
-  ScaledRectWidth := Round(FRectW * ScaleFactorX);
-  ScaledRectHeight := Round(FRectH * ScaleFactorY);
-  ScaledXOtstup := Round(FXOtstup * ScaleFactorX);
-  ScaledYOtstup := Round(FYOtstup * ScaleFactorY);
+  ScaledRectWidth := Round(FRectW * GetZoomIndex);
+  ScaledRectHeight := Round(FRectH * GetZoomIndex);
+  ScaledXOtstup := Round(FXOtstup * GetZoomIndex);
+  ScaledYOtstup := Round(FYOtstup * GetZoomIndex);
 
   // Отрисовка окна с учетом коэффициентов пропорциональности
 
@@ -500,6 +503,16 @@ end;
 procedure TRectWindow.SetMoskit(Value: boolean);
 begin
   FMoskit := Value;
+end;
+
+function TRectWindow.GetZoomIndex: double;
+begin
+  Result := ZoomIndex;
+end;
+
+procedure TRectWindow.SetZoomIndex(Value: double);
+begin
+  ZoomIndex := Value;
 end;
 
 end.

@@ -1,11 +1,11 @@
 object Form1: TForm1
-  Left = 281
+  Left = 323
   Height = 895
-  Top = 149
+  Top = 83
   Width = 1546
   Caption = 'Form1'
-  ClientHeight = 0
-  ClientWidth = 0
+  ClientHeight = 895
+  ClientWidth = 1546
   OnCreate = FormCreate
   PopupMenu = PopupMenu1
   LCLVersion = '3.2.0.0'
@@ -163,6 +163,7 @@ object Form1: TForm1
         F4D3353CF3D13646F4BA3544F60C3645F6003645F6003645F6003645F6003645
         F6003545F5003645F5003645F5003645F5003546F50A3642F4B73445F5D4
       }
+      OnClick = BitBtn2Click
       TabOrder = 3
     end
     object Label1: TLabel

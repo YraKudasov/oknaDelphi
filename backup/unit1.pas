@@ -59,6 +59,7 @@ type
     procedure SizeConstruction(Sender: TObject);
     procedure SizeWindow(Sender: TObject);
     procedure BitBtn4Click(Sender: TObject);
+    procedure BitBtn2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure DeleteVerticalImpost(Sender: TObject);
     procedure EditKeyPress(Sender: TObject; var Key: char);
@@ -77,6 +78,7 @@ type
     function CheckHeightChange: boolean;
     function CheckWidthChange: boolean;
     function UpdateIndexes(OperationNum, NewRow, NewCol, NewOtstup: integer): integer;
+    function DrawingIndex: double;
     procedure UpdateTable;
     //procedure PaintSizes;
 
@@ -118,11 +120,11 @@ end;
 { TForm1 }
 
 
-
+{******** ИЗМЕНЕНИЕ РАЗМЕРОВ КОНСТРУКЦИИ **********}
 procedure TForm1.SizeConstruction(Sender: TObject);
 var
   Window: TRectWindow;
-  RectWidth, RectHeight, I, DiffX, DiffY: integer;
+  I, DiffX, DiffY: integer;
 begin
     if ((StrToInt(Edit3.Text) <> FRectHeight) or
       (StrToInt(Edit4.Text) <> FRectWidth)) then
@@ -168,10 +170,9 @@ begin
     Image1.Canvas.FillRect(0, 0, 3500, 2000);
     DrawWindows;
 
-  end;
 end;
 
-
+{******** ИЗМЕНЕНИЕ РАЗМЕРОВ ОКНА **********}
 procedure TForm1.SizeWindow(Sender: TObject);
 var
   NearWindow, Window, ChangedWindow: TRectWindow;
@@ -348,7 +349,7 @@ begin
   end;
 end;
 
-
+{******** ВЫДЕЛЕНИЕ ОКНА ПРИ КЛИКЕ **********}
 procedure TForm1.RectWindowSelected(Sender: TObject);
 var
   Window: TRectWindow;
@@ -379,7 +380,7 @@ begin
   end;
 end;
 
-
+{******** ОТМЕНА ВЫДЕЛЕНИЯ **********}
 procedure TForm1.RectWindowDeselected(Sender: TObject);
 begin
   Edit1.Text := '0';
@@ -395,6 +396,8 @@ begin
   Label8.Visible:= False;
 end;
 
+
+{******** ИЗМЕНЕНИЕ ТИПА ОКНА **********}
 procedure TForm1.ComboBox1Change(Sender: TObject);
 var
   Window: TRectWindow;
@@ -416,11 +419,26 @@ begin
         CheckBox1.Visible := False;
         Label8.Visible:= False;
       end;
+      Window.SetZoomIndex(DrawingIndex);
       Window.DrawWindow;
     end;
   end;
 end;
 
+{******** ПОДСЧЕТ ИНДЕКСА ОТРИСОВКИ **********}
+function TForm1.DrawingIndex: double;
+var DIndex: double;
+  begin
+    if ((FrectHeight < 1300) and (FRectWidth < 1625)) then
+        DIndex := 0.25
+    else if ((FrectHeight < 1800) and (FRectWidth < 2250)) then
+        DIndex := 0.22
+    else if ((FrectHeight >= 1800) or (FRectWidth >= 2250)) then
+        DIndex := 0.2;
+    Result := DIndex;
+  end;
+
+{******** ИЗМЕНЕНИЕ НАЛИЧИЯ МОСКИТНОЙ СЕТКИ **********}
 procedure TForm1.CheckBox1Change(Sender: TObject);
 var
    Window: TRectWindow;
@@ -434,12 +452,14 @@ begin
       begin
         Window.SetMoskit(true);
         UpdateTable;
+        Window.SetZoomIndex(DrawingIndex);
         Window.DrawWindow;
     end
       else
       begin
         Window.SetMoskit(false);
         UpdateTable;
+        Window.SetZoomIndex(DrawingIndex);
         Window.DrawWindow;
     end;
   end;
@@ -447,16 +467,30 @@ end;
 end;
 
 
-
+{******** ОТМЕНА РАЗМЕРОВ КОНСТРУКЦИИ **********}
 procedure TForm1.BitBtn4Click(Sender: TObject);
 begin
   Edit3.Text := IntToStr(FRectHeight);
   Edit4.Text := IntToStr(FRectWidth);
 end;
 
+{******** ОТМЕНА РАЗМЕРОВ ОКНА **********}
+procedure TForm1.BitBtn2Click(Sender: TObject);
+var Window: TRectWindow;
+   i: integer;
+begin
+   for i := 0 to WindowContainer.Count - 1 do
+  begin
+    Window := TRectWindow(WindowContainer.GetWindow(i));
+    if Window.GetSelection then
+    begin
+      Edit1.Text := IntToStr(Window.GetHeight);
+      Edit2.Text := IntToStr(Window.GetWidth);
+        end;
+    end;
+end;
 
-
-
+{******** СОЗДАНИЕ ФОРМЫ **********}
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   Panel1.Enabled := False;
@@ -472,7 +506,7 @@ end;
 
 
 
-
+{******** ОТРИСОВКА СТАРТОВОЙ КОНСТРУКЦИИ **********}
 procedure TForm1.Button1Click(Sender: TObject);
 var  RectWidth, RectHeight: integer;
 begin
@@ -547,11 +581,11 @@ begin
       Image1, 0, 0, ComboBox1.ItemIndex, false);
     WindowContainer.AddWindow(RectWindow);
 
-    RectWindow.SetSize(TPoint.Create(RectHeight, RectWidth));
 
     UpdateTable;
     // Отрисовка окна на изображении
-    DrawWindows;
+    RectWindow.SetZoomIndex(DrawingIndex);
+    RectWindow.DrawWindow;
 
     Image1.OnClick := @CanvasClickHandler;
 
@@ -567,7 +601,7 @@ begin
 end;
 
 
-
+{******** РЕГУЛЯРКА ДЛЯ ВВОДА РАЗМЕРОВ **********}
 procedure TForm1.EditKeyPress(Sender: TObject; var Key: char);
 begin
   // Allow only digits and control keys (e.g., backspace, delete)
@@ -575,6 +609,7 @@ begin
     Key := #0; // Discard the key press event
 end;
 
+{******** ПРОВЕРКА КОРРЕКТНОСТИ ВВОДА РАЗМЕРОВ **********}
 procedure TForm1.EditChange(Sender: TObject);
 var
   WidthValue, HeightValue: integer;
@@ -593,6 +628,8 @@ begin
     BitBtn3.Enabled := False;
 end;
 
+
+{******** ПРОВЕРКА КОРРЕКТНОСТИ ВВОДА РАЗМЕРОВ **********}
 procedure TForm1.EditChange2(Sender: TObject);
 var
   WidthValue, HeightValue: integer;
@@ -610,6 +647,8 @@ begin
   else
     BitBtn1.Enabled := False;
 end;
+
+{******** ОТРИСОВКА РАЗМЕРОВ **********}
  {
 procedure TForm1.PaintSizes;
 var
@@ -626,6 +665,8 @@ begin
   Image1.Canvas.LineTo(ScaledWidth+5, ScaledHeight);
 end;
   }
+
+{******** ВНЕСЕНИЕ РАЗМЕРОВ ВЕРТИКАЛЬНОГО ИМПОСТА **********}
 procedure TForm1.InputVerticalImpost(Sender: TObject);
 var
   Number: string;
@@ -648,6 +689,7 @@ begin
   end;
 end;
 
+{******** ВНЕСЕНИЕ РАЗМЕРОВ ГОРИЗОНТАЛЬНОГО ИМПОСТА **********}
 procedure TForm1.InputHorizontalImpost(Sender: TObject);
 var
   Number: string;
@@ -671,6 +713,7 @@ begin
   end;
 end;
 
+{******** ДОБАВЛЕНИЕ ВЕРТИКАЛЬНОГО ИМПОСТА **********}
 procedure TForm1.VerticalImpost(VertImpost: integer);
 var
   WindowIndex, Otstup: integer;
@@ -738,6 +781,8 @@ begin
   end;
 end;
 
+
+{******** ДОБАВЛЕНИЕ ГОРИЗОНТАЛЬНОГО ИМПОСТА **********}
 procedure TForm1.HorizontalImpost(HorizImpost: integer);
 var
   NewCol: integer;
@@ -806,6 +851,8 @@ begin
   end;
 end;
 
+
+{******** УДАЛЕНИЕ ВЕРТИКАЛЬНОГО ИМПОСТА **********}
 procedure TForm1.DeleteVerticalImpost(Sender: TObject);
 var
   Window: TRectWindow;
@@ -864,7 +911,7 @@ begin
 end;
 
 
-
+{******** УДАЛЕНИЕ ГОРИЗОНТАЛЬНОГО ИМПОСТА **********}
 procedure TForm1.DeleteHorizontalImpost(Sender: TObject);
 var
   Window: TRectWindow;
@@ -919,6 +966,8 @@ begin
   end;
 end;
 
+
+{******** ОБНОВЛЕНИЕ ИНДЕКСОВ **********}
 function TForm1.UpdateIndexes(OperationNum, NewRow, NewCol, NewOtstup: integer): integer;
 var
   Window: TRectWindow;
@@ -993,7 +1042,7 @@ begin
   end;
 end;
 
-
+{******** ОБРАБОТЧИК КЛИКОВ **********}
 // Обработчик клика на изображении
 procedure TForm1.CanvasClickHandler(Sender: TObject);
 var
@@ -1032,6 +1081,7 @@ begin
   end;
 end;
 
+{******** ОТРИСОВКА ВСЕЙ КОНСТРУКЦИИ **********}
 procedure TForm1.DrawWindows;
 var
   MaxRow, MaxCol, i, row, col: integer;
@@ -1059,6 +1109,7 @@ begin
         if (Window.GetRow = row) and (Window.GetColumn = col) then
         begin
           // Отрисовываем окно
+          Window.SetZoomIndex(DrawingIndex);
           Window.DrawWindow;
           //Window.DrawImposts(FRectWidth, FRectHeight);
           // Прерываем внутренний цикл, чтобы не отображать одно окно несколько раз
@@ -1073,7 +1124,7 @@ begin
   //PaintSizes;
 end;
 
-
+{******** ПРОВЕРКА ВЫДЕЛЕНИЯ ОКНА **********}
 function TForm1.CheckSelectionWindows: boolean;
 var
   i: integer;
@@ -1098,6 +1149,7 @@ begin
   end;
 end;
 
+{******** ПРОВЕРКА ИЗМЕНЕНИЯ ВЫСОТЫ **********}
 function TForm1.CheckHeightChange: boolean;
 var
   Window: TRectWindow;
@@ -1120,6 +1172,7 @@ begin
   end;
 end;
 
+{******** ПРОВЕРКА ИЗМЕНЕНИЯ ШИРИНЫ **********}
 function TForm1.CheckWidthChange: boolean;
 var
   Window: TRectWindow;
@@ -1142,6 +1195,7 @@ begin
   end;
 end;
 
+{******** ОБНОВЛЕНИЕ ТАБЛИЦЫ **********}
 procedure TForm1.UpdateTable;
 var
   i, j: integer;

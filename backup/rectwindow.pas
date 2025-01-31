@@ -50,6 +50,7 @@ type
     procedure DrawMoskit(ScaledRectW, ScaledRectH, ScaledXOt, ScaledYOt: integer);
     procedure SetMoskit(Value: boolean);
     procedure SetZoomIndex(Value: double);
+    procedure PaintSize(ScaledConstructW, ScaledConstructH, ScaledXOt, ScaledYOt: integer; NoOneW, NoOneH: boolean);
 
 
     function GetRow: integer;
@@ -152,20 +153,7 @@ begin
 end;
 
 procedure TRectWindow.DrawWindow;
-var
-  ScreenWidth, ScreenHeight: integer;
-  ScaleFactorX, ScaleFactorY: double;
 begin
- {
-  ScreenWidth := FImage.Width;
-  ScreenHeight := FImage.Height;
-  // Вычисление коэффициентов пропорциональности
-  ScaleFactorX := ScreenWidth / 3500;
-  // Замените 3500 на ширину вашего прямоугольника
-  ScaleFactorY := ScreenHeight / 2000;
-  // Замените 2000 на высоту вашего прямоугольника
-  }
-
 
   // Вычисление масштабированных размеров окна
   ScaledRectWidth := Round(FRectW * GetZoomIndex);
@@ -185,6 +173,42 @@ begin
     if(FMoskit = True) then
     DrawMoskit(ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup);
   end;
+end;
+
+
+procedure TRectWindow.PaintSize(ScaledConstructW, ScaledConstructH, ScaledXOt, ScaledYOt: integer; NoOneW, NoOneH: boolean);
+begin
+  FImage.Canvas.Pen.Width := 1 ;
+  FImage.Canvas.Pen.Color := clBlack;
+  FImage.Canvas.Font.Size := 8;
+  FImage.Canvas.Brush.Style := bsClear;
+
+  if(NoOneH = true) then begin
+  //Линия высоты
+  FImage.Canvas.MoveTo(ScaledConstructW+10, 3);
+  FImage.Canvas.LineTo(ScaledConstructW+10, ScaledYOt + ScaledRectHeight);
+  FImage.Canvas.TextOut(ScaledConstructW+15, ScaledYOt + ScaledRectHeight div 2 - 10, IntToStr(FRectH));
+  //Маленькая линия высоты (сверху)
+  FImage.Canvas.MoveTo(ScaledConstructW, ScaledYOt + 3 );
+  FImage.Canvas.LineTo(ScaledConstructW+20, ScaledYOt +3);
+  //Маленькая линия высоты (снизу)
+  FImage.Canvas.MoveTo(ScaledConstructW, ScaledYOt + ScaledRectHeight);
+  FImage.Canvas.LineTo(ScaledConstructW+20, ScaledYOt + ScaledRectHeight);
+  end;
+
+  if(NoOneW = true) then begin
+  //Линия высоты
+  FImage.Canvas.MoveTo(3, ScaledConstructH+7);
+  FImage.Canvas.LineTo(ScaledXOt + ScaledRectWidth, ScaledConstructH+7);
+  FImage.Canvas.TextOut(ScaledXOt + ScaledRectWidth div 2 - 10, ScaledConstructH+12, IntToStr(FRectW));
+  //Маленькая линия высоты (сверху)
+  FImage.Canvas.MoveTo(ScaledConstructW, ScaledYOt + 3 );
+  FImage.Canvas.LineTo(ScaledConstructW+20, ScaledYOt +3);
+  //Маленькая линия высоты (снизу)
+  FImage.Canvas.MoveTo(ScaledConstructW, ScaledYOt + ScaledRectHeight);
+  FImage.Canvas.LineTo(ScaledConstructW+20, ScaledYOt + ScaledRectHeight);
+  end;
+
 end;
 
 
@@ -505,6 +529,7 @@ begin
   FMoskit := Value;
 end;
 
+function TRectWindow.GetZoomIndex: double;
 begin
   Result := ZoomIndex;
 end;

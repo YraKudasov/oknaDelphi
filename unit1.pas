@@ -654,37 +654,53 @@ procedure TForm1.PaintSizes;
 var
   KoefPaint: double;
   ScaledWidth, ScaledHeight: integer;
+  Window: TRectWindow;
+  NoOneHeight, NoOneWidth: boolean;
+  i: integer;
 begin
   KoefPaint := DrawingIndex;
   ScaledWidth := Round((KoefPaint) * FRectWidth);
   ScaledHeight := Round((KoefPaint) * FRectHeight);
   Image1.Canvas.Pen.Width := 1 ;
   Image1.Canvas.Pen.Color := clBlack;
-    Image1.Canvas.Font.Size := 11;
+  Image1.Canvas.Font.Size := 11;
   Image1.Canvas.Brush.Style := bsClear;
   //Линия высоты
-  Image1.Canvas.MoveTo(ScaledWidth+20, 3);
-  Image1.Canvas.LineTo(ScaledWidth+20, ScaledHeight);
-  Image1.Canvas.TextOut(ScaledWidth+35, ScaledHeight div 2 - 10, IntToStr(FRectHeight));
+  Image1.Canvas.MoveTo(ScaledWidth+45, 3);
+  Image1.Canvas.LineTo(ScaledWidth+45, ScaledHeight);
+  Image1.Canvas.TextOut(ScaledWidth+65, ScaledHeight div 2 - 10, IntToStr(FRectHeight));
   //Маленькая линия высоты (сверху)
   Image1.Canvas.MoveTo(ScaledWidth, 3);
-  Image1.Canvas.LineTo(ScaledWidth+30, 3);
+  Image1.Canvas.LineTo(ScaledWidth+55, 3);
   //Маленькая линия высоты (снизу)
   Image1.Canvas.MoveTo(ScaledWidth, ScaledHeight);
-  Image1.Canvas.LineTo(ScaledWidth+30, ScaledHeight);
+  Image1.Canvas.LineTo(ScaledWidth+55, ScaledHeight);
 
 
   //Линия ширины
-  Image1.Canvas.MoveTo(3, ScaledHeight+20);
-  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight+20);
-  Image1.Canvas.TextOut(ScaledWidth div 2 - 10, ScaledHeight + 35, IntToStr(FRectWidth));
+  Image1.Canvas.MoveTo(3, ScaledHeight+30);
+  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight+30);
+  Image1.Canvas.TextOut(ScaledWidth div 2 - 10, ScaledHeight + 42, IntToStr(FRectWidth));
   //Маленькая линия ширины (слева)
   Image1.Canvas.MoveTo(3, ScaledHeight);
-  Image1.Canvas.LineTo(3, ScaledHeight+30);
+  Image1.Canvas.LineTo(3, ScaledHeight+35);
   //Маленькая линия ширины (справа)
   Image1.Canvas.MoveTo(ScaledWidth, ScaledHeight);
-  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight+30);
+  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight+35);
 
+  if(WindowContainer.Count > 1)  then begin
+     for i := 0 to WindowContainer.Count - 1 do
+     begin
+         NoOneHeight:= false;
+         NoOneWidth:= false;
+        Window := TRectWindow(WindowContainer.GetWindow(i));
+         if (Window.GetWidth <> FRectWidth)then
+            NoOneWidth := true;
+         if (Window.GetHeight <> FRectHeight)then
+            NoOneHeight := true;
+         Window.PaintSize(ScaledWidth, ScaledHeight, Round(Window.GetXOtstup*KoefPaint), Round(Window.GetYOtstup*KoefPaint), NoOneWidth, NoOneHeight);
+     end;
+  end;
 end;
 
 
@@ -897,7 +913,7 @@ begin
           LeftWindow := TRectWindow(WindowContainer.GetWindow(Index));
           if Assigned(Window) and (LeftWindow.GetXOtstup =
             (Window.GetXOtstup - LeftWindow.GetWidth)) and
-            (LeftWindow.GetHeight = Window.GetHeight) then
+            (LeftWindow.GetHeight = Window.GetHeight) and (LeftWindow.GetYOtstup = Window.GetYOtstup)then
           begin
 
             // Удаляем 1 окно из контейнера, а размеры второго изменяем
@@ -956,7 +972,7 @@ begin
           UpWindow := TRectWindow(WindowContainer.GetWindow(Index));
           if Assigned(Window) and (UpWindow.GetYOtstup =
             (Window.GetYOtstup - UpWindow.GetHeight)) and
-            (UpWindow.GetWidth = Window.GetWidth) then
+            (UpWindow.GetWidth = Window.GetWidth) and (UpWindow.GetXOtstup = Window.GetXOtstup) then
           begin
 
             // Удаляем 1 окно из контейнера, а размеры второго изменяем

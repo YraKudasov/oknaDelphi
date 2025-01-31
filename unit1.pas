@@ -80,7 +80,7 @@ type
     function UpdateIndexes(OperationNum, NewRow, NewCol, NewOtstup: integer): integer;
     function DrawingIndex: double;
     procedure UpdateTable;
-    //procedure PaintSizes;
+    procedure PaintSizes;
 
 
 
@@ -596,7 +596,7 @@ begin
     RectWindow.OnWindowSelected := @RectWindowSelected;
     RectWindow.OnWindowDeselected := @RectWindowDeselected;
 
-
+    PaintSizes;
   end;
 end;
 
@@ -649,22 +649,44 @@ begin
 end;
 
 {******** ОТРИСОВКА РАЗМЕРОВ **********}
- {
+
 procedure TForm1.PaintSizes;
 var
-  KoefWidth, KoefHeight: double;
-  i, ArrowLength, ScaledWidth, ScaledHeight: integer;
+  KoefPaint: double;
+  ScaledWidth, ScaledHeight: integer;
 begin
-  KoefWidth := Image1.Width / 3500;
-  KoefHeight := Image1.Height / 2000;
-  ScaledWidth := Round((KoefWidth) * FRectWidth);
-  ScaledHeight := Round((KoefHeight) * FRectHeight);
-  ShowMessage(IntToStr(ScaledWidth) + ' ' + IntToStr(ScaledHeight));
-  Image1.Canvas.Brush.Color := clBlack;
-  Image1.Canvas.MoveTo(ScaledWidth+5, 3);
-  Image1.Canvas.LineTo(ScaledWidth+5, ScaledHeight);
+  KoefPaint := DrawingIndex;
+  ScaledWidth := Round((KoefPaint) * FRectWidth);
+  ScaledHeight := Round((KoefPaint) * FRectHeight);
+  Image1.Canvas.Pen.Width := 1 ;
+  Image1.Canvas.Pen.Color := clBlack;
+    Image1.Canvas.Font.Size := 11;
+  Image1.Canvas.Brush.Style := bsClear;
+  //Линия высоты
+  Image1.Canvas.MoveTo(ScaledWidth+20, 3);
+  Image1.Canvas.LineTo(ScaledWidth+20, ScaledHeight);
+  Image1.Canvas.TextOut(ScaledWidth+35, ScaledHeight div 2 - 10, IntToStr(FRectHeight));
+  //Маленькая линия высоты (сверху)
+  Image1.Canvas.MoveTo(ScaledWidth, 3);
+  Image1.Canvas.LineTo(ScaledWidth+30, 3);
+  //Маленькая линия высоты (снизу)
+  Image1.Canvas.MoveTo(ScaledWidth, ScaledHeight);
+  Image1.Canvas.LineTo(ScaledWidth+30, ScaledHeight);
+
+
+  //Линия ширины
+  Image1.Canvas.MoveTo(3, ScaledHeight+20);
+  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight+20);
+  Image1.Canvas.TextOut(ScaledWidth div 2 - 10, ScaledHeight + 35, IntToStr(FRectWidth));
+  //Маленькая линия ширины (слева)
+  Image1.Canvas.MoveTo(3, ScaledHeight);
+  Image1.Canvas.LineTo(3, ScaledHeight+30);
+  //Маленькая линия ширины (справа)
+  Image1.Canvas.MoveTo(ScaledWidth, ScaledHeight);
+  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight+30);
+
 end;
-  }
+
 
 {******** ВНЕСЕНИЕ РАЗМЕРОВ ВЕРТИКАЛЬНОГО ИМПОСТА **********}
 procedure TForm1.InputVerticalImpost(Sender: TObject);
@@ -1118,10 +1140,7 @@ begin
       end;
     end;
   end;
-
-
-
-  //PaintSizes;
+  PaintSizes;
 end;
 
 {******** ПРОВЕРКА ВЫДЕЛЕНИЯ ОКНА **********}

@@ -17,6 +17,7 @@ type
     FOnWindowDeselected: TNotifyEvent;
     ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup: integer;
     ZoomIndex: double;
+    IsDoor: boolean;
   public
     FSelected: boolean;
 
@@ -50,6 +51,7 @@ type
     procedure DrawMoskit(ScaledRectW, ScaledRectH, ScaledXOt, ScaledYOt: integer);
     procedure SetMoskit(Value: boolean);
     procedure SetZoomIndex(Value: double);
+    procedure SetIsDoor(Value: boolean);
     procedure PaintSize(ScaledConstructW, ScaledConstructH, ScaledXOt, ScaledYOt: integer; NoOneW, NoOneH: boolean);
 
 
@@ -64,6 +66,7 @@ type
     function GetYOtstup: integer;
     function GetMoskit: boolean;
     function GetZoomIndex: double;
+    function GetIsDoor: boolean;
 
 
   end;
@@ -170,10 +173,11 @@ begin
   else
   begin
     DrawNeGluxar;
-    if(FMoskit = True) then
+    if((GetMoskit = True) and (GetIsDoor = False)) then
     DrawMoskit(ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup);
   end;
 end;
+
 
 
 procedure TRectWindow.PaintSize(ScaledConstructW, ScaledConstructH, ScaledXOt, ScaledYOt: integer; NoOneW, NoOneH: boolean);
@@ -524,6 +528,11 @@ begin
   Result := FMoskit;
 end;
 
+function TRectWindow.GetIsDoor: boolean;
+begin
+  Result := IsDoor;
+end;
+
 procedure TRectWindow.SetMoskit(Value: boolean);
 begin
   FMoskit := Value;
@@ -537,6 +546,11 @@ end;
 procedure TRectWindow.SetZoomIndex(Value: double);
 begin
   ZoomIndex := Value;
+end;
+
+procedure TRectWindow.SetIsDoor(Value: boolean);
+begin
+  IsDoor := Value;
 end;
 
 end.

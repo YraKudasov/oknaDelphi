@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ComCtrls, Buttons, Menus, RectWindow, WindowContainer,
-  LCLType, Grids, Generics.Collections;
+  ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2,
+  LCLType, Grids, ActnList, Generics.Collections;
 
 const
   tfInputMask = 'InputMask';
@@ -52,9 +52,10 @@ type
 
 
 
-
-    procedure Button1Click(Sender: TObject);
+    procedure ChooseTypeOfConstr(Sender: TObject);
+    procedure CreateNewFullConstr(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);
+    procedure Choo(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure SizeConstruction(Sender: TObject);
     procedure SizeWindow(Sender: TObject);
@@ -429,12 +430,14 @@ end;
 function TForm1.DrawingIndex: double;
 var DIndex: double;
   begin
-    if ((FrectHeight < 1300) and (FRectWidth < 1625)) then
-        DIndex := 0.25
-    else if ((FrectHeight < 1800) and (FRectWidth < 2250)) then
+    if ((FrectHeight < 1300) and (FRectWidth < 1895)) then
+        DIndex := 0.24
+    else if ((FrectHeight < 1800) and (FRectWidth < 2625)) then
         DIndex := 0.22
-    else if ((FrectHeight >= 1800) or (FRectWidth >= 2250)) then
-        DIndex := 0.21;
+    else if ((FrectHeight < 2100) and (FRectWidth < 3062)) then
+        DIndex := 0.20
+    else if ((FrectHeight >= 2100) or (FRectWidth >= 3062)) then
+        DIndex := 0.17;
     Result := DIndex;
   end;
 
@@ -464,6 +467,11 @@ begin
     end;
   end;
 end;
+end;
+
+procedure TForm1.Choo(Sender: TObject);
+begin
+
 end;
 
 
@@ -507,7 +515,7 @@ end;
 
 
 {******** ОТРИСОВКА СТАРТОВОЙ КОНСТРУКЦИИ **********}
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.CreateNewFullConstr(Sender: TObject);
 var  RectWidth, RectHeight: integer;
 begin
 
@@ -601,6 +609,20 @@ begin
 end;
 
 
+
+
+procedure TForm1.ChooseTypeOfConstr(Sender: TObject);
+begin
+  // Открываем Form2 как модальное окно
+  Form2 := TForm2.Create(Self); // Создаем экземпляр Form2
+  try
+    Form2.ShowModal; // Показываем Form2
+  finally
+    Form2.Free; // Освобождаем память после закрытия Form2
+  end;
+end;
+
+
 {******** РЕГУЛЯРКА ДЛЯ ВВОДА РАЗМЕРОВ **********}
 procedure TForm1.EditKeyPress(Sender: TObject; var Key: char);
 begin
@@ -619,7 +641,7 @@ begin
   begin
     // Проверка на минимальное и максимальное значение для длины и ширины
     if (WidthValue >= 450) and (WidthValue <= 3500) and (HeightValue >= 450) and
-      (HeightValue <= 2000) then
+      (HeightValue <= 2400) and (WidthValue * HeightValue <= 6000000)then
       BitBtn3.Enabled := True
     else
       BitBtn3.Enabled := False;
@@ -688,11 +710,11 @@ begin
   Image1.Canvas.MoveTo(ScaledWidth, ScaledHeight);
   Image1.Canvas.LineTo(ScaledWidth, ScaledHeight+35);
 
-  NoOneHeight:= false;
-  NoOneWidth:= false;
   if(WindowContainer.Count > 1)  then begin
      for i := 0 to WindowContainer.Count - 1 do
      begin
+         NoOneHeight:= false;
+         NoOneWidth:= false;
         Window := TRectWindow(WindowContainer.GetWindow(i));
          if (Window.GetWidth <> FRectWidth)then
             NoOneWidth := true;

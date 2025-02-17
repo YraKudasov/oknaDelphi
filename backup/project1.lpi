@@ -137,8 +137,19 @@
         <Filename Value="unit2.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Form2"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit2"/>
+      </Unit>
+      <Unit>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="PlasticDoorImpost"/>
+      </Unit>
+      <Unit>
+        <Filename Value="impostscontainer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ImpostsContainer"/>
       </Unit>
     </Units>
   </ProjectOptions>

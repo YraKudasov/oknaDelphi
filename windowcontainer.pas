@@ -21,7 +21,7 @@ type
     function IndexOf(const AWindow: TRectWindow): integer;
     function GetSelectedIndex: integer;
     function FindWindow(const ClickX, ClickY: integer): integer;
-     function GetIndexRowColumn(Row, Column: integer): Integer;
+    function GetIndexRowColumn(Row, Column: integer): Integer;
     // Другие методы, если необходимо
   end;
 

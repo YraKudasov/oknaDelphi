@@ -3,7 +3,7 @@ unit WindowContainer;
 interface
 
 uses
-  Classes, SysUtils, Contnrs, AbstractWindow, RectWindow;
+  Classes, SysUtils, Contnrs, RectWindow;
 
 type
   TWindowContainer = class
@@ -12,13 +12,13 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AddWindow(Window: TAbstractWindow);
+    procedure AddWindow(Window: TRectWindow);
     procedure RemoveWindow(Index: integer);
     procedure Clear;
     function GetWindow(index: integer): TRectWindow;
     function Count: integer;
     function GetWindows: TObjectList;
-    function IndexOf(const AWindow: TAbstractWindow): integer;
+    function IndexOf(const AWindow: TRectWindow): integer;
     function GetSelectedIndex: integer;
     function FindWindow(const ClickX, ClickY: integer): integer;
      function GetIndexRowColumn(Row, Column: integer): Integer;
@@ -38,7 +38,7 @@ begin
   inherited;
 end;
 
-procedure TWindowContainer.AddWindow(Window: TAbstractWindow);
+procedure TWindowContainer.AddWindow(Window: TRectWindow);
 begin
   FWindows.Add(Window);
 end;
@@ -95,7 +95,7 @@ begin
   FWindows.Clear;
 end;
 
-function TWindowContainer.IndexOf(const AWindow: TAbstractWindow): integer;
+function TWindowContainer.IndexOf(const AWindow: TRectWindow): integer;
 begin
   Result := FWindows.IndexOf(AWindow);
 end;
@@ -125,7 +125,7 @@ end;
 function TWindowContainer.FindWindow(const ClickX, ClickY: integer): integer;
 var
   Index: integer;
-  Window: TAbstractWindow;
+  Window: TRectWindow;
 begin
   Result := -1;
   // Инициализируем результат, если ничего не найдено

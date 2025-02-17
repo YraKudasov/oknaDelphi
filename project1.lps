@@ -8,9 +8,10 @@
       <Unit>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos Y="23"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="38" Y="14"/>
         <UsageCount Value="202"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="unit1.pas"/>
@@ -19,11 +20,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="177"/>
-        <CursorPos X="44" Y="442"/>
-        <FoldState Value=" T3jc0n1 pl2mE0S211132]4]HBqC0L2 pk2kY0t2 PjcjT0@"/>
-        <ComponentState Value="1"/>
+        <TopLine Value="771"/>
+        <CursorPos X="60" Y="790"/>
+        <FoldState Value=" T3jb0n111242 pmPt5050131[D43nc0t2 PjcjT0v"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -32,10 +31,9 @@
         <Filename Value="rectwindow.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RectWindow"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <TopLine Value="154"/>
-        <CursorPos Y="181"/>
-        <FoldState Value=" T3m30K1 pkHkf0GQ"/>
+        <CursorPos X="26" Y="7"/>
         <UsageCount Value="205"/>
         <Loaded Value="True"/>
       </Unit>
@@ -51,9 +49,9 @@
         <Filename Value="windowcontainer.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="WindowContainer"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="62"/>
-        <CursorPos X="92" Y="30"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="4"/>
+        <CursorPos Y="30"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit>
@@ -61,31 +59,44 @@
         <Filename Value="plasticdoor.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="PlasticDoor"/>
-        <EditorIndex Value="4"/>
-        <CursorPos X="62" Y="24"/>
-        <UsageCount Value="64"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="38" Y="28"/>
+        <UsageCount Value="84"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unit2.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form2"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unit2"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="3"/>
+        <CursorPos X="39" Y="65"/>
+        <UsageCount Value="45"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="C:\lazarus\lcl\include\control.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3600"/>
         <CursorPos Y="3612"/>
-        <UsageCount Value="4"/>
+        <UsageCount Value="2"/>
       </Unit>
       <Unit>
         <Filename Value="C:\lazarus\lcl\include\treeview.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="4473"/>
         <CursorPos Y="4485"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="1"/>
       </Unit>
       <Unit>
         <Filename Value="backup\unit1.lfm"/>
         <HasResources Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="36" Y="15"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="29"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit>
       <Unit>
@@ -93,156 +104,163 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="3992"/>
         <CursorPos Y="4009"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="3"/>
       </Unit>
       <Unit>
         <Filename Value="D:\lazarus\fpc\3.2.2\source\rtl\inc\objpash.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="189"/>
         <CursorPos X="23" Y="206"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="8"/>
       </Unit>
       <Unit>
         <Filename Value="D:\lazarus\lcl\include\customimage.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="63"/>
         <CursorPos Y="46"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="6"/>
       </Unit>
       <Unit>
-        <Filename Value="unit2.pas"/>
+        <Filename Value="plasticdoorimpost.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="Form2"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="Unit2"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="5"/>
-        <CursorPos X="28" Y="58"/>
-        <UsageCount Value="25"/>
+        <UnitName Value="PlasticDoorImpost"/>
+        <EditorIndex Value="4"/>
+        <CursorPos X="68" Y="18"/>
+        <UsageCount Value="31"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="impostscontainer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ImpostsContainer"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="43"/>
+        <CursorPos X="5" Y="82"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
       <Position>
-        <Filename Value="unit2.pas"/>
-        <Caret Line="13" Column="14" TopLine="4"/>
-      </Position>
-      <Position>
-        <Filename Value="unit2.pas"/>
-        <Caret Line="8" Column="65"/>
-      </Position>
-      <Position>
-        <Filename Value="unit2.pas"/>
-        <Caret Line="30" Column="51" TopLine="10"/>
-      </Position>
-      <Position>
-        <Filename Value="unit2.pas"/>
-        <Caret Line="33" Column="24" TopLine="13"/>
-      </Position>
-      <Position>
-        <Filename Value="unit2.pas"/>
-        <Caret Line="30" Column="51" TopLine="10"/>
-      </Position>
-      <Position>
-        <Filename Value="unit2.pas"/>
-        <Caret Line="8" Column="75"/>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="384" Column="39" TopLine="358"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="604" TopLine="94"/>
-      </Position>
-      <Position>
-        <Filename Value="unit2.pas"/>
-        <Caret Line="39" Column="45" TopLine="16"/>
-      </Position>
-      <Position>
-        <Filename Value="unit2.pas"/>
-        <Caret Line="15" Column="10" TopLine="6"/>
-      </Position>
-      <Position>
-        <Filename Value="unit2.pas"/>
-        <Caret Line="8" Column="27"/>
-      </Position>
-      <Position>
-        <Filename Value="unit2.pas"/>
-        <Caret Line="45" Column="36" TopLine="25"/>
-      </Position>
-      <Position>
-        <Filename Value="unit2.pas"/>
-        <Caret Line="46" Column="39" TopLine="25"/>
+        <Caret Line="383" Column="31" TopLine="364"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="600" Column="41" TopLine="582"/>
+        <Caret Line="384" Column="86" TopLine="358"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="601" Column="41" TopLine="583"/>
+        <Caret Line="385" Column="13" TopLine="364"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="600" Column="41" TopLine="582"/>
+        <Caret Line="386" Column="28" TopLine="353"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="601" Column="41" TopLine="583"/>
+        <Caret Line="377" Column="15" TopLine="357"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="600" Column="41" TopLine="582"/>
+        <Caret Line="406" TopLine="375"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="601" Column="41" TopLine="583"/>
+        <Caret Line="376" Column="46" TopLine="376"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="600" Column="41" TopLine="582"/>
+        <Caret Line="434" Column="2" TopLine="371"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="514" Column="39" TopLine="509"/>
+        <Caret Line="433" Column="75" TopLine="407"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="57" Column="15" TopLine="57"/>
+        <Caret Line="429" Column="27" TopLine="410"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Column="23"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="28" Column="26" TopLine="14"/>
+      </Position>
+      <Position>
+        <Filename Value="windowcontainer.pas"/>
+        <Caret Line="30" Column="92"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="18" Column="26"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="26" Column="5"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="24" Column="35"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="27" Column="30"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="28" Column="26" TopLine="154"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="20" Column="43" TopLine="9"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="15" Column="5"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="513" TopLine="431"/>
+        <Caret Line="787" Column="11" TopLine="691"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="57" Column="21" TopLine="50"/>
+        <Caret Line="775" Column="24" TopLine="771"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="56" Column="21" TopLine="49"/>
+        <Caret Line="777" Column="41" TopLine="769"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="512" Column="23" TopLine="510"/>
+        <Caret Line="9" Column="83"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="511" Column="23" TopLine="509"/>
+        <Caret Line="790" Column="58" TopLine="672"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="18" Column="68"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="615" Column="25" TopLine="593"/>
+        <Caret Line="789" Column="39" TopLine="770"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="56" Column="15" TopLine="32"/>
+        <Caret Line="791" Column="11" TopLine="771"/>
       </Position>
       <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="567" Column="87" TopLine="552"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="82" Column="26" TopLine="47"/>
+        <Filename Value="impostscontainer.pas"/>
+        <Caret Line="9" Column="55"/>
       </Position>
     </JumpHistory>
     <RunParams>

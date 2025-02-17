@@ -55,7 +55,7 @@ procedure TForm2.ButtonOkonnyBlockClick(Sender: TObject);
 begin
   // Действие для "Оконный блок"
   // Call the procedure from Form1
-  Form1.CreateNewFullConstrWin(Self);
+  Form1.CreateNewFullConstr(Self);
 
   Close; // Закрываем форму
 end;

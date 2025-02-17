@@ -18,6 +18,7 @@ type
     ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup: integer;
     ZoomIndex: double;
     IsDoor: boolean;
+    FImpostsContainer: TImpostsContainer;
   public
     FSelected: boolean;
 
@@ -25,7 +26,7 @@ type
     constructor Create(ARow, AColumn, ARectH, ARectW: integer;
       AImage: TImage; AXOtstup, AYOtstup, AType: integer;
       AMoskit: boolean);
-    procedure DrawWindow; virtual;
+    procedure DrawWindow;
     procedure DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX, ScaledOtY: integer);
     procedure Select(Sender: TObject);
 

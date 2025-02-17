@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2,
+  ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2, PlasticDoorImpost,
   LCLType, Grids, ActnList, Generics.Collections;
 
 const
@@ -53,9 +53,8 @@ type
 
 
     procedure ChooseTypeOfConstr(Sender: TObject);
-    procedure CreateNewFullConstr(Sender: TObject);
+    procedure CreateNewFullConstr(Sender: TObject; IsPlasticDoor: boolean);
     procedure CheckBox1Change(Sender: TObject);
-    procedure Choo(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure SizeConstruction(Sender: TObject);
     procedure SizeWindow(Sender: TObject);
@@ -374,10 +373,13 @@ begin
     CheckBox1.Checked := Window.GetMoskit;
     Label8.Visible:= True;
     end;
-     {
-    ShowMessage('Номер окна' + IntToStr(Window.GetRow) +
-      '.' + IntToStr(Window.GetColumn));
-      }
+  end;
+  if (Window.GetIsDoor = true)then
+  begin
+    MenuItem2.Visible := False;
+    MenuItem5.Visible := False;
+    CheckBox1.Visible := False;
+    Label8.Visible := False;
   end;
 end;
 
@@ -420,6 +422,16 @@ begin
         CheckBox1.Visible := False;
         Label8.Visible:= False;
       end;
+      if(Window.GetIsDoor = true)then begin
+        if (ComboBox1.ItemIndex = 0) or (ComboBox1.ItemIndex = 3) then
+        begin
+             ShowMessage('Этот элемент недоступен.');
+             ComboBox1.ItemIndex := 1; // Сбрасываем выбор
+             Window.SetType(2);
+        end;
+        CheckBox1.Visible := False;
+        Label8.Visible := False;
+      end;
       Window.SetZoomIndex(DrawingIndex);
       Window.DrawWindow;
     end;
@@ -434,9 +446,9 @@ var DIndex: double;
         DIndex := 0.24
     else if ((FrectHeight < 1800) and (FRectWidth < 2625)) then
         DIndex := 0.22
-    else if ((FrectHeight < 2100) and (FRectWidth < 3062)) then
-        DIndex := 0.19
-    else if ((FrectHeight >= 2100) or (FRectWidth >= 3062)) then
+    else if ((FrectHeight < 2101) and (FRectWidth < 3062)) then
+        DIndex := 0.20
+    else if ((FrectHeight >= 2101) or (FRectWidth >= 3062)) then
         DIndex := 0.17;
     Result := DIndex;
   end;
@@ -469,10 +481,6 @@ begin
 end;
 end;
 
-procedure TForm1.Choo(Sender: TObject);
-begin
-
-end;
 
 
 {******** ОТМЕНА РАЗМЕРОВ КОНСТРУКЦИИ **********}
@@ -515,7 +523,7 @@ end;
 
 
 {******** ОТРИСОВКА СТАРТОВОЙ КОНСТРУКЦИИ **********}
-procedure TForm1.CreateNewFullConstr(Sender: TObject);
+procedure TForm1.CreateNewFullConstr(Sender: TObject; IsPlasticDoor: boolean);
 var  RectWidth, RectHeight: integer;
 begin
 
@@ -538,16 +546,7 @@ begin
     ComboBox1.ItemIndex := 0;
     CheckBox1.Visible := False;
     Label8.Visible:= False;
-    // Сохраните старые значения
-    FRectHeight := 0;
-    FRectWidth := 0;
 
-    Panel1.Enabled := False;
-    Edit1.Text := '0';
-    Edit2.Text := '0';
-
-    Edit3.Text := IntToStr(FRectWidth);
-    Edit4.Text := IntToStr(FRectHeight);
 
     Edit3.OnKeyPress := @EditKeyPress;
     // Обработчик события нажатия клавиши
@@ -568,15 +567,12 @@ begin
     Edit2.OnKeyPress := @EditKeyPress;
     // Обработчик события изменения значения
     Edit2.OnChange := @EditChange2;
+    WindowContainer := TWindowContainer.Create;
 
-
+    if(isPlasticDoor = false) then
+    begin
     Edit3.text := '1000';
     Edit4.text := '1000';
-
-
-     WindowContainer := TWindowContainer.Create;
-
-    // Создаем экземпляр WindowContainer
 
     // Получение значений из Edit3 и Edit4
     RectHeight := StrToInt(Edit3.Text);
@@ -584,9 +580,31 @@ begin
 
     FRectWidth := RectWidth;
     FRectHeight := RectHeight;
+    ComboBox1.Items[0] := 'Глухая';
+    ComboBox1.Items[3] := 'Откидная';
     // Инициализация окна
     RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
       Image1, 0, 0, ComboBox1.ItemIndex, false);
+    RectWindow.SetIsDoor(false);
+    end
+    else if(isPlasticDoor = true) then begin
+    Edit3.text := '2100';
+    Edit4.text := '600';
+
+    // Получение значений из Edit3 и Edit4
+    RectHeight := StrToInt(Edit3.Text);
+    RectWidth := StrToInt(Edit4.Text);
+
+    FRectWidth := RectWidth;
+    FRectHeight := RectHeight;
+    ComboBox1.Items[0] := '(недоступно)';
+    ComboBox1.Items[3] := '(недоступно)';
+    // Инициализация окна
+    RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
+      Image1, 0, 0, 1, false);
+    RectWindow.SetIsDoor(true);
+    end;
+
     WindowContainer.AddWindow(RectWindow);
 
 
@@ -595,8 +613,8 @@ begin
     RectWindow.SetZoomIndex(DrawingIndex);
     RectWindow.DrawWindow;
 
-    Image1.OnClick := @CanvasClickHandler;
 
+    Image1.OnClick := @CanvasClickHandler;
 
     // Присоединяем обработчик события OnWindowSelected
 
@@ -754,6 +772,9 @@ procedure TForm1.InputHorizontalImpost(Sender: TObject);
 var
   Number: string;
   HorizImpost: integer;
+  WindowIndex: integer;
+  Window: TRectWindow;
+  DoorImpost: TPlasticDoorImpost;
 begin
   Number := '0';
   // Создаем диалог для ввода числа
@@ -763,6 +784,10 @@ begin
   begin
     if TryStrToInt(Number, HorizImpost) then
     begin
+      WindowIndex := WindowContainer.GetSelectedIndex;
+      Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
+      if(Window.GetIsDoor = True) then
+      DoorImpost := TPlasticDoorImpost.Create(HorizImpost);
       HorizontalImpost(HorizImpost);
     end
     else

@@ -25,7 +25,7 @@ type
     constructor Create(ARow, AColumn, ARectH, ARectW: integer;
       AImage: TImage; AXOtstup, AYOtstup, AType: integer;
       AMoskit: boolean);
-    procedure DrawWindow; virtual;
+    procedure DrawWindow;
     procedure DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX, ScaledOtY: integer);
     procedure Select(Sender: TObject);
 
@@ -178,7 +178,7 @@ begin
   end;
 end;
 
-procedure TRectWindow.Draw
+
 
 procedure TRectWindow.PaintSize(ScaledConstructW, ScaledConstructH, ScaledXOt, ScaledYOt: integer; NoOneW, NoOneH: boolean);
 begin

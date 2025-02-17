@@ -10,7 +10,8 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, unit1, RectWindow, AbstractWindow, WindowContainer;
+  Forms, unit1, RectWindow, AbstractWindow, WindowContainer, unit2,
+  PlasticDoorImpost;
 
 {$R *.res}
 
@@ -19,6 +20,7 @@ begin
   Application.Scaled:=True;
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TForm2, Form2);
   Application.Run;
-end;
+end.
 

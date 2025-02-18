@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2, PlasticDoorImpost,
+  ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2,
+  PlasticDoorImpost, ImpostsContainer,
   LCLType, Grids, ActnList, Generics.Collections;
 
 const
@@ -128,49 +129,49 @@ var
   Window: TRectWindow;
   I, DiffX, DiffY: integer;
 begin
-    if ((StrToInt(Edit3.Text) <> FRectHeight) or
-      (StrToInt(Edit4.Text) <> FRectWidth)) then
+  if ((StrToInt(Edit3.Text) <> FRectHeight) or
+    (StrToInt(Edit4.Text) <> FRectWidth)) then
+  begin
+    if ((CheckHeightChange = False) or (CheckWidthChange = False)) then
     begin
-      if ((CheckHeightChange = False) or (CheckWidthChange = False)) then
+      ShowMessage(
+        'После изменения размеров конструкции, размеры окна(окон) стали меньше минимально допустимых');
+      Edit3.Text := IntToStr(FRectHeight);
+      Edit4.Text := IntToStr(FRectWidth);
+    end
+    else
+    begin
+      for I := 0 to WindowContainer.Count - 1 do
       begin
-        ShowMessage(
-          'После изменения размеров конструкции, размеры окна(окон) стали меньше минимально допустимых');
-        Edit3.Text := IntToStr(FRectHeight);
-        Edit4.Text := IntToStr(FRectWidth);
-      end
-      else
-      begin
-        for I := 0 to WindowContainer.Count - 1 do
+        Window := TRectWindow(WindowContainer.GetWindow(I));
+        DiffY := StrToInt(Edit3.Text) - FRectHeight;
+        DiffX := StrToInt(Edit4.Text) - FRectWidth;
+        if (Window.GetYOtstup = 0) then
         begin
-          Window := TRectWindow(WindowContainer.GetWindow(I));
-          DiffY := StrToInt(Edit3.Text) - FRectHeight;
-          DiffX := StrToInt(Edit4.Text) - FRectWidth;
-          if (Window.GetYOtstup = 0) then
-          begin
-            Window.SetHeight(Window.GetHeight + DiffY);
-            UpdateTable;
-          end
-          else
-          begin
-            Window.SetYOtstup(Window.GetYOtstup + DiffY);
-          end;
-          if (Window.GetXOtstup = 0) then
-          begin
-            Window.SetWidth(Window.GetWidth + DiffX);
-            UpdateTable;
-          end
-          else
-          begin
-            Window.SetXOtstup(Window.GetXOtstup + DiffX);
-          end;
+          Window.SetHeight(Window.GetHeight + DiffY);
+          UpdateTable;
+        end
+        else
+        begin
+          Window.SetYOtstup(Window.GetYOtstup + DiffY);
+        end;
+        if (Window.GetXOtstup = 0) then
+        begin
+          Window.SetWidth(Window.GetWidth + DiffX);
+          UpdateTable;
+        end
+        else
+        begin
+          Window.SetXOtstup(Window.GetXOtstup + DiffX);
         end;
       end;
-      FRectHeight := StrToInt(Edit3.Text);
-      FRectWidth := StrToInt(Edit4.Text);
     end;
-    Image1.Canvas.Brush.Color := clWhite;
-    Image1.Canvas.FillRect(0, 0, 3500, 2000);
-    DrawWindows;
+    FRectHeight := StrToInt(Edit3.Text);
+    FRectWidth := StrToInt(Edit4.Text);
+  end;
+  Image1.Canvas.Brush.Color := clWhite;
+  Image1.Canvas.FillRect(0, 0, 3500, 2000);
+  DrawWindows;
 
 end;
 
@@ -369,14 +370,14 @@ begin
     MenuItem6.Enabled := True;
     ComboBox1.Enabled := True;
     ComboBox1.ItemIndex := Window.GetType;
-    if(Window.GetType <> 0) then
+    if (Window.GetType <> 0) then
     begin
-    CheckBox1.Visible := True;
-    CheckBox1.Checked := Window.GetMoskit;
-    Label8.Visible:= True;
+      CheckBox1.Visible := True;
+      CheckBox1.Checked := Window.GetMoskit;
+      Label8.Visible := True;
     end;
   end;
-  if (Window.GetIsDoor = true)then
+  if (Window.GetIsDoor = True) then
   begin
     MenuItem2.Visible := False;
     MenuItem5.Visible := False;
@@ -397,8 +398,8 @@ begin
   Panel1.Enabled := False;
   Panel3.Enabled := False;
   ComboBox1.Enabled := False;
-  CheckBox1.Visible:= False;
-  Label8.Visible:= False;
+  CheckBox1.Visible := False;
+  Label8.Visible := False;
 end;
 
 
@@ -414,22 +415,24 @@ begin
     begin
       Window.SetType(ComboBox1.ItemIndex);
       UpdateTable;
-      if(Window.GetType <> 0) then
-        begin
-          CheckBox1.Visible := True;
-          CheckBox1.Checked := Window.GetMoskit;
-          Label8.Visible:= True;
-        end
-      else begin
+      if (Window.GetType <> 0) then
+      begin
+        CheckBox1.Visible := True;
+        CheckBox1.Checked := Window.GetMoskit;
+        Label8.Visible := True;
+      end
+      else
+      begin
         CheckBox1.Visible := False;
-        Label8.Visible:= False;
+        Label8.Visible := False;
       end;
-      if(Window.GetIsDoor = true)then begin
+      if (Window.GetIsDoor = True) then
+      begin
         if (ComboBox1.ItemIndex = 0) or (ComboBox1.ItemIndex = 3) then
         begin
-             ShowMessage('Этот элемент недоступен.');
-             ComboBox1.ItemIndex := 1; // Сбрасываем выбор
-             Window.SetType(1);
+          ShowMessage('Этот элемент недоступен.');
+          ComboBox1.ItemIndex := 1; // Сбрасываем выбор
+          Window.SetType(1);
         end;
         CheckBox1.Visible := False;
         Label8.Visible := False;
@@ -442,45 +445,46 @@ end;
 
 {******** ПОДСЧЕТ ИНДЕКСА ОТРИСОВКИ **********}
 function TForm1.DrawingIndex: double;
-var DIndex: double;
-  begin
-    if ((FrectHeight < 1300) and (FRectWidth < 1895)) then
-        DIndex := 0.24
-    else if ((FrectHeight < 1800) and (FRectWidth < 2625)) then
-        DIndex := 0.22
-    else if ((FrectHeight < 2101) and (FRectWidth < 3062)) then
-        DIndex := 0.20
-    else if ((FrectHeight >= 2101) or (FRectWidth >= 3062)) then
-        DIndex := 0.17;
-    Result := DIndex;
-  end;
+var
+  DIndex: double;
+begin
+  if ((FrectHeight < 1300) and (FRectWidth < 1895)) then
+    DIndex := 0.24
+  else if ((FrectHeight < 1800) and (FRectWidth < 2625)) then
+    DIndex := 0.22
+  else if ((FrectHeight < 2101) and (FRectWidth < 3062)) then
+    DIndex := 0.20
+  else if ((FrectHeight >= 2101) or (FRectWidth >= 3062)) then
+    DIndex := 0.17;
+  Result := DIndex;
+end;
 
 {******** ИЗМЕНЕНИЕ НАЛИЧИЯ МОСКИТНОЙ СЕТКИ **********}
 procedure TForm1.CheckBox1Change(Sender: TObject);
 var
-   Window: TRectWindow;
+  Window: TRectWindow;
 begin
-    if (FRectHeight <> 0) and (FRectWidth <> 0) then
+  if (FRectHeight <> 0) and (FRectWidth <> 0) then
   begin
     Window := TRectWindow(WindowContainer.GetWindow(WindowContainer.GetSelectedIndex));
     if Assigned(Window) then
     begin
       if (CheckBox1.Checked) then
       begin
-        Window.SetMoskit(true);
+        Window.SetMoskit(True);
         UpdateTable;
         Window.SetZoomIndex(DrawingIndex);
         Window.DrawWindow;
-    end
+      end
       else
       begin
-        Window.SetMoskit(false);
+        Window.SetMoskit(False);
         UpdateTable;
         Window.SetZoomIndex(DrawingIndex);
         Window.DrawWindow;
+      end;
     end;
   end;
-end;
 end;
 
 
@@ -494,18 +498,19 @@ end;
 
 {******** ОТМЕНА РАЗМЕРОВ ОКНА **********}
 procedure TForm1.BitBtn2Click(Sender: TObject);
-var Window: TRectWindow;
-   i: integer;
+var
+  Window: TRectWindow;
+  i: integer;
 begin
-   for i := 0 to WindowContainer.Count - 1 do
+  for i := 0 to WindowContainer.Count - 1 do
   begin
     Window := TRectWindow(WindowContainer.GetWindow(i));
     if Window.GetSelection then
     begin
       Edit1.Text := IntToStr(Window.GetHeight);
       Edit2.Text := IntToStr(Window.GetWidth);
-        end;
     end;
+  end;
 end;
 
 {******** СОЗДАНИЕ ФОРМЫ **********}
@@ -519,14 +524,15 @@ begin
   MenuItem5.Enabled := False;
   MenuItem6.Enabled := False;
   CheckBox1.Visible := False;
-  Label8.Visible:= False;
+  Label8.Visible := False;
 end;
 
 
 
 {******** ОТРИСОВКА СТАРТОВОЙ КОНСТРУКЦИИ **********}
 procedure TForm1.CreateNewFullConstr(Sender: TObject; IsPlasticDoor: boolean);
-var  RectWidth, RectHeight: integer;
+var
+  RectWidth, RectHeight: integer;
 begin
 
   if Button1.Enabled then
@@ -547,7 +553,7 @@ begin
     ComboBox1.Enabled := False;
     ComboBox1.ItemIndex := 0;
     CheckBox1.Visible := False;
-    Label8.Visible:= False;
+    Label8.Visible := False;
 
 
     Edit3.OnKeyPress := @EditKeyPress;
@@ -571,43 +577,46 @@ begin
     Edit2.OnChange := @EditChange2;
     WindowContainer := TWindowContainer.Create;
 
-    if(isPlasticDoor = false) then
+    if (isPlasticDoor = False) then
     begin
-    Edit3.text := '1000';
-    Edit4.text := '1000';
+      Edit3.Text := '1000';
+      Edit4.Text := '1000';
 
-    // Получение значений из Edit3 и Edit4
-    RectHeight := StrToInt(Edit3.Text);
-    RectWidth := StrToInt(Edit4.Text);
+      // Получение значений из Edit3 и Edit4
+      RectHeight := StrToInt(Edit3.Text);
+      RectWidth := StrToInt(Edit4.Text);
 
-    FRectWidth := RectWidth;
-    FRectHeight := RectHeight;
-    ComboBox1.Items[0] := 'Глухая';
-    ComboBox1.Items[3] := 'Откидная';
-    ComboBox2.Visible := False;
-    Label9.Visible := False;
-    // Инициализация окна
-    RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
-      Image1, 0, 0, ComboBox1.ItemIndex, false);
-    RectWindow.SetIsDoor(false);
+      FRectWidth := RectWidth;
+      FRectHeight := RectHeight;
+      ComboBox1.Items[0] := 'Глухая';
+      ComboBox1.Items[3] := 'Откидная';
+      ComboBox2.Visible := False;
+      Label9.Visible := False;
+      // Инициализация окна
+      RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
+        Image1, 0, 0, ComboBox1.ItemIndex, False);
+      RectWindow.SetIsDoor(False);
     end
-    else if(isPlasticDoor = true) then begin
-    Edit3.text := '2100';
-    Edit4.text := '600';
+    else if (isPlasticDoor = True) then
+    begin
+      Edit3.Text := '2100';
+      Edit4.Text := '600';
 
-    // Получение значений из Edit3 и Edit4
-    RectHeight := StrToInt(Edit3.Text);
-    RectWidth := StrToInt(Edit4.Text);
+      // Получение значений из Edit3 и Edit4
+      RectHeight := StrToInt(Edit3.Text);
+      RectWidth := StrToInt(Edit4.Text);
 
-    FRectWidth := RectWidth;
-    FRectHeight := RectHeight;
-    ComboBox1.Items[0] := '(недоступно)';
-    ComboBox1.Items[3] := '(недоступно)';
-    ComboBox2.Clear;
-    // Инициализация окна
-    RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
-      Image1, 0, 0, 1, false);
-    RectWindow.SetIsDoor(true);
+      FRectWidth := RectWidth;
+      FRectHeight := RectHeight;
+      ComboBox1.Items[0] := '(недоступно)';
+      ComboBox1.Items[3] := '(недоступно)';
+      ComboBox2.Visible := True;
+      Label9.Visible := True;
+      ComboBox2.Clear;
+      // Инициализация окна
+      RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
+        Image1, 0, 0, 1, False);
+      RectWindow.SetIsDoor(True);
     end;
 
     WindowContainer.AddWindow(RectWindow);
@@ -666,7 +675,7 @@ begin
   begin
     // Проверка на минимальное и максимальное значение для длины и ширины
     if (WidthValue >= 450) and (WidthValue <= 3500) and (HeightValue >= 450) and
-      (HeightValue <= 2400) and (WidthValue * HeightValue <= 6000000)then
+      (HeightValue <= 2400) and (WidthValue * HeightValue <= 6000000) then
       BitBtn3.Enabled := True
     else
       BitBtn3.Enabled := False;
@@ -708,45 +717,47 @@ begin
   KoefPaint := DrawingIndex;
   ScaledWidth := Round((KoefPaint) * FRectWidth);
   ScaledHeight := Round((KoefPaint) * FRectHeight);
-  Image1.Canvas.Pen.Width := 1 ;
+  Image1.Canvas.Pen.Width := 1;
   Image1.Canvas.Pen.Color := clBlack;
   Image1.Canvas.Font.Size := 11;
   Image1.Canvas.Brush.Style := bsClear;
   //Линия высоты
-  Image1.Canvas.MoveTo(ScaledWidth+45, 3);
-  Image1.Canvas.LineTo(ScaledWidth+45, ScaledHeight);
-  Image1.Canvas.TextOut(ScaledWidth+65, ScaledHeight div 2 - 10, IntToStr(FRectHeight));
+  Image1.Canvas.MoveTo(ScaledWidth + 45, 3);
+  Image1.Canvas.LineTo(ScaledWidth + 45, ScaledHeight);
+  Image1.Canvas.TextOut(ScaledWidth + 65, ScaledHeight div 2 - 10, IntToStr(FRectHeight));
   //Маленькая линия высоты (сверху)
   Image1.Canvas.MoveTo(ScaledWidth, 3);
-  Image1.Canvas.LineTo(ScaledWidth+55, 3);
+  Image1.Canvas.LineTo(ScaledWidth + 55, 3);
   //Маленькая линия высоты (снизу)
   Image1.Canvas.MoveTo(ScaledWidth, ScaledHeight);
-  Image1.Canvas.LineTo(ScaledWidth+55, ScaledHeight);
+  Image1.Canvas.LineTo(ScaledWidth + 55, ScaledHeight);
 
 
   //Линия ширины
-  Image1.Canvas.MoveTo(3, ScaledHeight+30);
-  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight+30);
+  Image1.Canvas.MoveTo(3, ScaledHeight + 30);
+  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight + 30);
   Image1.Canvas.TextOut(ScaledWidth div 2 - 10, ScaledHeight + 42, IntToStr(FRectWidth));
   //Маленькая линия ширины (слева)
   Image1.Canvas.MoveTo(3, ScaledHeight);
-  Image1.Canvas.LineTo(3, ScaledHeight+35);
+  Image1.Canvas.LineTo(3, ScaledHeight + 35);
   //Маленькая линия ширины (справа)
   Image1.Canvas.MoveTo(ScaledWidth, ScaledHeight);
-  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight+35);
+  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight + 35);
 
-  if(WindowContainer.Count > 1)  then begin
-     for i := 0 to WindowContainer.Count - 1 do
-     begin
-         NoOneHeight:= false;
-         NoOneWidth:= false;
-        Window := TRectWindow(WindowContainer.GetWindow(i));
-         if (Window.GetWidth <> FRectWidth)then
-            NoOneWidth := true;
-         if (Window.GetHeight <> FRectHeight)then
-            NoOneHeight := true;
-         Window.PaintSize(ScaledWidth, ScaledHeight, Round(Window.GetXOtstup*KoefPaint), Round(Window.GetYOtstup*KoefPaint), NoOneWidth, NoOneHeight);
-     end;
+  if (WindowContainer.Count > 1) then
+  begin
+    for i := 0 to WindowContainer.Count - 1 do
+    begin
+      NoOneHeight := False;
+      NoOneWidth := False;
+      Window := TRectWindow(WindowContainer.GetWindow(i));
+      if (Window.GetWidth <> FRectWidth) then
+        NoOneWidth := True;
+      if (Window.GetHeight <> FRectHeight) then
+        NoOneHeight := True;
+      Window.PaintSize(ScaledWidth, ScaledHeight, Round(Window.GetXOtstup * KoefPaint),
+        Round(Window.GetYOtstup * KoefPaint), NoOneWidth, NoOneHeight);
+    end;
   end;
 end;
 
@@ -793,15 +804,16 @@ begin
     begin
       WindowIndex := WindowContainer.GetSelectedIndex;
       Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
-      if(Window.GetIsDoor = True) then begin
-      DoorImpost := TPlasticDoorImpost.Create(HorizImpost, Image1);
-      Window.GetImpostsContainer.AddImpost(DoorImpost);
-      ComboBox2.Items.Add(Format('Импост : %d мм', [HorizImpost]));
-      ComboBox2.ItemIndex := ComboBox2.Items.Count - 1;
-      DrawWindows;
+      if (Window.GetIsDoor = True) then
+      begin
+        DoorImpost := TPlasticDoorImpost.Create(HorizImpost, Image1);
+        Window.GetImpostsContainer.AddImpost(DoorImpost);
+        ComboBox2.Items.Add(Format('Импост : %d мм', [HorizImpost]));
+        ComboBox2.ItemIndex := ComboBox2.Items.Count - 1;
+        DrawWindows;
       end
       else
-      HorizontalImpost(HorizImpost);
+        HorizontalImpost(HorizImpost);
     end
     else
     begin
@@ -836,10 +848,10 @@ begin
         // Разделяем окно на два новых экземпляра
         Window1 := TRectWindow.Create(Window.GetRow, Window.GetColumn,
           Window.GetSize.X, VertImpost, Image1, Otstup, Window.GetYOtstup,
-          ComboBox1.ItemIndex, false);
+          ComboBox1.ItemIndex, False);
         Window2 := TRectWindow.Create(Window.GetRow, Window.GetColumn +
           1, Window.GetSize.X, Window.GetSize.Y - VertImpost, Image1,
-          Otstup + VertImpost, Window.GetYOtstup, ComboBox1.ItemIndex, false);
+          Otstup + VertImpost, Window.GetYOtstup, ComboBox1.ItemIndex, False);
 
         UpdateIndexes(0, Window.GetRow, Window.GetColumn + 1, Otstup);
 
@@ -905,14 +917,15 @@ begin
         // Разделяем окно на два новых экземпляра
         Window1 := TRectWindow.Create(Window.GetRow, Window.GetColumn,
           HorizImpost, Window.GetWidth, Image1, Window.GetXOtstup,
-          Window.GetYOtstup, ComboBox1.ItemIndex, false);
+          Window.GetYOtstup, ComboBox1.ItemIndex, False);
 
         NewCol := UpdateIndexes(2, Window.GetRow + 1, Window.GetColumn,
           Window.GetXOtstup);
 
         Window2 := TRectWindow.Create(Window.GetRow + 1, NewCol,
           Window.GetSize.X - HorizImpost, Window.GetWidth, Image1,
-          Window.GetXOtstup, Window.GetYOtstup + HorizImpost, ComboBox1.ItemIndex, false);
+          Window.GetXOtstup, Window.GetYOtstup + HorizImpost,
+          ComboBox1.ItemIndex, False);
 
         // Удаляем исходное окно из контейнера
         WindowContainer.RemoveWindow(WindowIndex);
@@ -973,7 +986,8 @@ begin
           LeftWindow := TRectWindow(WindowContainer.GetWindow(Index));
           if Assigned(Window) and (LeftWindow.GetXOtstup =
             (Window.GetXOtstup - LeftWindow.GetWidth)) and
-            (LeftWindow.GetHeight = Window.GetHeight) and (LeftWindow.GetYOtstup = Window.GetYOtstup)then
+            (LeftWindow.GetHeight = Window.GetHeight) and
+            (LeftWindow.GetYOtstup = Window.GetYOtstup) then
           begin
 
             // Удаляем 1 окно из контейнера, а размеры второго изменяем
@@ -1015,6 +1029,8 @@ var
   Window: TRectWindow;
   UpWindow: TRectWindow;
   WindowIndex, Index, NewCol: integer;
+  SelectedIndex: integer;
+  ImpostsContainer: TImpostsContainer;
 begin
   // Находим индекс окна, которое нужно разделить
   WindowIndex := WindowContainer.GetSelectedIndex;
@@ -1024,15 +1040,45 @@ begin
     Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
     if Assigned(Window) then
     begin
+      if (Window.GetIsDoor = True) then
+      begin
+        ImpostsContainer := Window.GetImpostsContainer;
+
+        // Check if the container is not empty
+        if (ImpostsContainer <> nil) and (ImpostsContainer.Count > 0) then
+        begin
+          // Get the selected index from ComboBox2
+          SelectedIndex := ComboBox2.ItemIndex;
+
+          // Ensure the selected index is valid
+          if (SelectedIndex >= 0) and (SelectedIndex < ImpostsContainer.Count) then
+          begin
+            // Remove the impost at the selected index
+            ImpostsContainer.RemoveImpostByIndex(SelectedIndex);
+          end
+          else
+          begin
+            // Handle invalid index (optional)
+            ShowMessage('Импост для удаления не найден');
+          end;
+        end
+        else
+        begin
+          // Handle empty container (optional)
+          ShowMessage('Импостов нет');
+        end;
+        DrawWindows;
+      end;
       // Проверяем высоту окна
-      if (Window.GetYOtstup > 0) then
+      if ((Window.GetYOtstup > 0) and (Window.GetIsDoor <> True)) then
       begin
         for Index := 0 to WindowContainer.Count - 1 do
         begin
           UpWindow := TRectWindow(WindowContainer.GetWindow(Index));
           if Assigned(Window) and (UpWindow.GetYOtstup =
             (Window.GetYOtstup - UpWindow.GetHeight)) and
-            (UpWindow.GetWidth = Window.GetWidth) and (UpWindow.GetXOtstup = Window.GetXOtstup) then
+            (UpWindow.GetWidth = Window.GetWidth) and
+            (UpWindow.GetXOtstup = Window.GetXOtstup) then
           begin
 
             // Удаляем 1 окно из контейнера, а размеры второго изменяем
@@ -1057,6 +1103,7 @@ begin
       end
       else
       begin
+        if(Window.GetIsDoor <> True) then
         ShowMessage(
           'Возможно вы выбрали самое верхнее окно');
       end;
@@ -1302,8 +1349,9 @@ begin
   try
     for i := 0 to WindowContainer.Count - 1 do
     begin
-      WindowList.Add(IntToStr(WindowContainer.GetWindow(i).GetRow) + '.' +
-                     IntToStr(WindowContainer.GetWindow(i).GetColumn) + '|' + IntToStr(i));
+      WindowList.Add(IntToStr(WindowContainer.GetWindow(i).GetRow) +
+        '.' + IntToStr(WindowContainer.GetWindow(i).GetColumn) +
+        '|' + IntToStr(i));
     end;
 
     // Сортируем список окон
@@ -1318,13 +1366,15 @@ begin
     // Добавляем отсортированные окна в StringGrid
     for i := 0 to WindowList.Count - 1 do
     begin
-      j := StrToInt(Copy(WindowList[i], Pos('|', WindowList[i]) + 1, Length(WindowList[i])));
+      j := StrToInt(Copy(WindowList[i], Pos('|', WindowList[i]) + 1,
+        Length(WindowList[i])));
 
       TempString := Copy(WindowList[i], 1, Pos('|', WindowList[i]) - 1);
       StringGrid1.Cells[0, i + 1] := TempString;
       StringGrid1.Cells[1, i + 1] := IntToStr(WindowContainer.GetWindow(j).GetHeight);
       StringGrid1.Cells[2, i + 1] := IntToStr(WindowContainer.GetWindow(j).GetWidth);
-      StringGrid1.Cells[3, i + 1] := ComboBox1.Items[WindowContainer.GetWindow(j).GetType];
+      StringGrid1.Cells[3, i + 1] :=
+        ComboBox1.Items[WindowContainer.GetWindow(j).GetType];
     end;
   finally
     WindowList.Free;

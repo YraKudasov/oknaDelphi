@@ -16,7 +16,7 @@ type
     destructor Destroy; override; // Деструктор для освобождения памяти
 
     procedure AddImpost(AImpost: TPlasticDoorImpost); // Метод добавления
-    procedure RemoveImpost(AImpost: TPlasticDoorImpost); // Метод удаления
+    procedure RemoveImpostByIndex(Index: Integer);
     function GetImpost(Index: Integer): TPlasticDoorImpost; // Получение импоста по индексу
     function Count: Integer; // Возвращает количество импостов
   end;
@@ -51,16 +51,18 @@ begin
   FImpostsList.Add(AImpost);
 end;
 
-// Метод удаления импоста
-procedure TImpostsContainer.RemoveImpost(AImpost: TPlasticDoorImpost);
-var
-  Index: Integer;
+// Метод удаления импоста по индексу
+procedure TImpostsContainer.RemoveImpostByIndex(Index: Integer);
 begin
-  Index := FImpostsList.IndexOf(AImpost);
-  if Index <> -1 then
+  // Проверяем, что индекс находится в пределах допустимого диапазона
+  if (Index >= 0) and (Index < FImpostsList.Count) then
   begin
     TObject(FImpostsList[Index]).Free; // Освобождаем память для удаляемого объекта
-    FImpostsList.Delete(Index); // Удаляем из списка
+    FImpostsList.Delete(Index);        // Удаляем объект из списка
+  end
+  else
+  begin
+    raise Exception.CreateFmt('Индекс %d находится вне допустимого диапазона.', [Index]);
   end;
 end;
 

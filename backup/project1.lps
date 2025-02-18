@@ -20,9 +20,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="569"/>
-        <CursorPos X="29" Y="588"/>
-        <FoldState Value=" T3jd0n111242 pmPtA050133]DlMqU0\#"/>
+        <TopLine Value="1037"/>
+        <CursorPos X="13" Y="1060"/>
+        <FoldState Value=" T3je0n111242 pmRtI050131[D46o50u011 PiTkN0B"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -32,8 +32,8 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="RectWindow"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="250"/>
-        <CursorPos X="67" Y="156"/>
+        <TopLine Value="548"/>
+        <CursorPos Y="582"/>
         <UsageCount Value="205"/>
         <Loaded Value="True"/>
       </Unit>
@@ -50,7 +50,6 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="WindowContainer"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="34"/>
         <CursorPos X="5" Y="24"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -61,7 +60,7 @@
         <UnitName Value="PlasticDoor"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="38" Y="28"/>
-        <UsageCount Value="93"/>
+        <UsageCount Value="95"/>
       </Unit>
       <Unit>
         <Filename Value="unit2.pas"/>
@@ -73,7 +72,7 @@
         <EditorIndex Value="1"/>
         <TopLine Value="18"/>
         <CursorPos X="39" Y="65"/>
-        <UsageCount Value="54"/>
+        <UsageCount Value="56"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -84,7 +83,7 @@
         <EditorIndex Value="3"/>
         <TopLine Value="3"/>
         <CursorPos X="90" Y="37"/>
-        <UsageCount Value="40"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -92,9 +91,8 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="ImpostsContainer"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="40"/>
-        <CursorPos X="51" Y="76"/>
-        <UsageCount Value="29"/>
+        <CursorPos X="15" Y="19"/>
+        <UsageCount Value="31"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -109,7 +107,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="4473"/>
         <CursorPos Y="4485"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit>
       <Unit>
         <Filename Value="backup\unit1.lfm"/>
@@ -150,26 +148,6 @@
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
-      <Position>
-        <Filename Value="plasticdoorimpost.pas"/>
-        <Caret Line="18" Column="68"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="789" Column="39" TopLine="770"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="791" Column="11" TopLine="771"/>
-      </Position>
-      <Position>
-        <Filename Value="impostscontainer.pas"/>
-        <Caret Line="9" Column="55"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="790" Column="60" TopLine="621"/>
-      </Position>
       <Position>
         <Filename Value="rectwindow.pas"/>
         <Caret Line="7" Column="37"/>
@@ -248,10 +226,6 @@
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="410" Column="3" TopLine="451"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
         <Caret Line="409" Column="3" TopLine="409"/>
       </Position>
       <Position>
@@ -269,6 +243,30 @@
       <Position>
         <Filename Value="unit1.pas"/>
         <Caret Line="646" TopLine="645"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="1056" Column="7" TopLine="1018"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="9" Column="101"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="1032" Column="37" TopLine="1012"/>
+      </Position>
+      <Position>
+        <Filename Value="impostscontainer.pas"/>
+        <Caret Line="19" Column="15"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="1044" Column="43" TopLine="1025"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="1106" Column="36" TopLine="1071"/>
       </Position>
     </JumpHistory>
     <RunParams>

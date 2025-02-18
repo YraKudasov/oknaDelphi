@@ -23,6 +23,7 @@ type
     Button1: TButton;
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
+    ComboBox2: TComboBox;
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
@@ -36,6 +37,7 @@ type
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
+    Label9: TLabel;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
@@ -427,7 +429,7 @@ begin
         begin
              ShowMessage('Этот элемент недоступен.');
              ComboBox1.ItemIndex := 1; // Сбрасываем выбор
-             Window.SetType(2);
+             Window.SetType(1);
         end;
         CheckBox1.Visible := False;
         Label8.Visible := False;
@@ -582,6 +584,8 @@ begin
     FRectHeight := RectHeight;
     ComboBox1.Items[0] := 'Глухая';
     ComboBox1.Items[3] := 'Откидная';
+    ComboBox2.Visible := False;
+    Label9.Visible := False;
     // Инициализация окна
     RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
       Image1, 0, 0, ComboBox1.ItemIndex, false);
@@ -599,6 +603,7 @@ begin
     FRectHeight := RectHeight;
     ComboBox1.Items[0] := '(недоступно)';
     ComboBox1.Items[3] := '(недоступно)';
+    ComboBox2.Clear;
     // Инициализация окна
     RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
       Image1, 0, 0, 1, false);
@@ -639,6 +644,8 @@ begin
     Form2.Free; // Освобождаем память после закрытия Form2
   end;
 end;
+
+
 
 
 {******** РЕГУЛЯРКА ДЛЯ ВВОДА РАЗМЕРОВ **********}
@@ -786,8 +793,13 @@ begin
     begin
       WindowIndex := WindowContainer.GetSelectedIndex;
       Window := TRectWindow(WindowContainer.GetWindow(WindowIndex));
-      if(Window.GetIsDoor = True) then
-      DoorImpost := TPlasticDoorImpost.Create(HorizImpost);
+      if(Window.GetIsDoor = True) then begin
+      DoorImpost := TPlasticDoorImpost.Create(HorizImpost, Image1);
+      Window.GetImpostsContainer.AddImpost(DoorImpost);
+      ComboBox2.Items.Add(Format('Импост : %d мм', [HorizImpost]));
+      ComboBox2.ItemIndex := ComboBox2.Items.Count - 1;
+      DrawWindows;
+      end
       else
       HorizontalImpost(HorizImpost);
     end

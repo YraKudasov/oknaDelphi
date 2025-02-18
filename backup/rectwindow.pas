@@ -4,7 +4,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ComCtrls, Contnrs;
+  ComCtrls, Contnrs, ImpostsContainer, PlasticDoorImpost;
   // Убедитесь, что используемый модуль совпадает с указанным здесь
 
 type
@@ -18,6 +18,7 @@ type
     ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup: integer;
     ZoomIndex: double;
     IsDoor: boolean;
+    FImpostsContainer: TImpostsContainer;
   public
     FSelected: boolean;
 
@@ -53,6 +54,7 @@ type
     procedure SetZoomIndex(Value: double);
     procedure SetIsDoor(Value: boolean);
     procedure PaintSize(ScaledConstructW, ScaledConstructH, ScaledXOt, ScaledYOt: integer; NoOneW, NoOneH: boolean);
+    procedure DrawImposts;
 
 
     function GetRow: integer;
@@ -67,6 +69,7 @@ type
     function GetMoskit: boolean;
     function GetZoomIndex: double;
     function GetIsDoor: boolean;
+    function GetImpostsContainer: TImpostsContainer;
 
 
   end;
@@ -88,6 +91,7 @@ begin
   FType := AType;
 
   FMoskit := AMoskit;
+  FImpostsContainer := TImpostsContainer.Create;
 end;
 
 procedure TRectWindow.DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX,
@@ -131,7 +135,29 @@ begin
 
   end;
 end;
-//end;
+
+procedure TRectWindow.DrawImposts;
+var
+  i: Integer;
+  Impost: TPlasticDoorImpost;
+  ScaledImpYOtstup:integer;
+begin
+  // Check if the container has at least one element
+  if FImpostsContainer.Count > 0 then
+  begin
+    // Iterate through all elements in the container
+    for i := 0 to FImpostsContainer.Count - 1 do
+    begin
+      // Get the current impost
+      ScaledRectWidth := Round(FRectW * GetZoomIndex);
+      ScaledXOtstup := Round(FXOtstup * GetZoomIndex);
+      Impost := FImpostsContainer.GetImpost(i);
+      ScaledImpYOtstup :=  Impost.GetScaledFImpYOtstup;
+      ScaledImpYOtstup := Round(ScaledImpYOtstup * GetZoomIndex);
+      Impost.DrawDoorImp(ScaledRectWidth, ScaledXOtstup, ScaledImpYOtstup);
+    end;
+  end;
+end;
 
 procedure TRectWindow.DrawMoskit(ScaledRectW, ScaledRectH, ScaledXOt, ScaledYOt : integer);
 var
@@ -175,6 +201,7 @@ begin
     DrawNeGluxar;
     if((GetMoskit = True) and (GetIsDoor = False)) then
     DrawMoskit(ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup);
+    DrawImposts;
   end;
 end;
 
@@ -551,6 +578,11 @@ end;
 procedure TRectWindow.SetIsDoor(Value: boolean);
 begin
   IsDoor := Value;
+end;
+
+function TRectWindow.GetImpostsContainer: TImpostsContainer;
+begin
+  Result := FImpostsContainer;
 end;
 
 end.

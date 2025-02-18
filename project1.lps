@@ -8,10 +8,9 @@
       <Unit>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="-1"/>
         <CursorPos X="38" Y="14"/>
         <UsageCount Value="202"/>
-        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="unit1.pas"/>
@@ -20,9 +19,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <TopLine Value="771"/>
-        <CursorPos X="60" Y="790"/>
-        <FoldState Value=" T3jb0n111242 pmPt5050131[D43nc0t2 PjcjT0v"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="578"/>
+        <CursorPos X="27" Y="607"/>
+        <FoldState Value=" T3jd0n111242 pmPtC050133]DlMqU0\h"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -31,9 +31,9 @@
         <Filename Value="rectwindow.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RectWindow"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="154"/>
-        <CursorPos X="26" Y="7"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="250"/>
+        <CursorPos X="67" Y="156"/>
         <UsageCount Value="205"/>
         <Loaded Value="True"/>
       </Unit>
@@ -49,9 +49,9 @@
         <Filename Value="windowcontainer.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="WindowContainer"/>
-        <EditorIndex Value="5"/>
-        <TopLine Value="4"/>
-        <CursorPos Y="30"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="34"/>
+        <CursorPos X="5" Y="24"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit>
@@ -61,7 +61,7 @@
         <UnitName Value="PlasticDoor"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="38" Y="28"/>
-        <UsageCount Value="84"/>
+        <UsageCount Value="93"/>
       </Unit>
       <Unit>
         <Filename Value="unit2.pas"/>
@@ -70,33 +70,53 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit2"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="3"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="18"/>
         <CursorPos X="39" Y="65"/>
-        <UsageCount Value="45"/>
+        <UsageCount Value="54"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="PlasticDoorImpost"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="3"/>
+        <CursorPos X="90" Y="37"/>
+        <UsageCount Value="40"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="impostscontainer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ImpostsContainer"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="40"/>
+        <CursorPos X="51" Y="76"/>
+        <UsageCount Value="29"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="C:\lazarus\lcl\include\control.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3600"/>
         <CursorPos Y="3612"/>
-        <UsageCount Value="2"/>
+        <UsageCount Value="1"/>
       </Unit>
       <Unit>
         <Filename Value="C:\lazarus\lcl\include\treeview.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="4473"/>
         <CursorPos Y="4485"/>
-        <UsageCount Value="1"/>
+        <UsageCount Value="0"/>
       </Unit>
       <Unit>
         <Filename Value="backup\unit1.lfm"/>
         <HasResources Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="36" Y="15"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="28"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit>
       <Unit>
@@ -104,148 +124,32 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="3992"/>
         <CursorPos Y="4009"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="2"/>
       </Unit>
       <Unit>
         <Filename Value="D:\lazarus\fpc\3.2.2\source\rtl\inc\objpash.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="189"/>
         <CursorPos X="23" Y="206"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit>
       <Unit>
         <Filename Value="D:\lazarus\lcl\include\customimage.inc"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="63"/>
+        <TopLine Value="26"/>
         <CursorPos Y="46"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="10"/>
       </Unit>
       <Unit>
-        <Filename Value="plasticdoorimpost.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="PlasticDoorImpost"/>
-        <EditorIndex Value="4"/>
-        <CursorPos X="68" Y="18"/>
-        <UsageCount Value="31"/>
-        <Loaded Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="impostscontainer.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="ImpostsContainer"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="6"/>
-        <TopLine Value="43"/>
-        <CursorPos X="5" Y="82"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
+        <Filename Value="D:\lazarus\lcl\stdctrls.pp"/>
+        <UnitName Value="StdCtrls"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="442"/>
+        <CursorPos X="14" Y="474"/>
+        <UsageCount Value="10"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="384" Column="39" TopLine="358"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="383" Column="31" TopLine="364"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="384" Column="86" TopLine="358"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="385" Column="13" TopLine="364"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="386" Column="28" TopLine="353"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="377" Column="15" TopLine="357"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="406" TopLine="375"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="376" Column="46" TopLine="376"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="434" Column="2" TopLine="371"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="433" Column="75" TopLine="407"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="429" Column="27" TopLine="410"/>
-      </Position>
-      <Position>
-        <Filename Value="plasticdoorimpost.pas"/>
-        <Caret Column="23"/>
-      </Position>
-      <Position>
-        <Filename Value="rectwindow.pas"/>
-        <Caret Line="28" Column="26" TopLine="14"/>
-      </Position>
-      <Position>
-        <Filename Value="windowcontainer.pas"/>
-        <Caret Line="30" Column="92"/>
-      </Position>
-      <Position>
-        <Filename Value="plasticdoorimpost.pas"/>
-        <Caret Line="18" Column="26"/>
-      </Position>
-      <Position>
-        <Filename Value="plasticdoorimpost.pas"/>
-        <Caret Line="26" Column="5"/>
-      </Position>
-      <Position>
-        <Filename Value="plasticdoorimpost.pas"/>
-        <Caret Line="24" Column="35"/>
-      </Position>
-      <Position>
-        <Filename Value="plasticdoorimpost.pas"/>
-        <Caret Line="27" Column="30"/>
-      </Position>
-      <Position>
-        <Filename Value="rectwindow.pas"/>
-        <Caret Line="28" Column="26" TopLine="154"/>
-      </Position>
-      <Position>
-        <Filename Value="plasticdoorimpost.pas"/>
-        <Caret Line="20" Column="43" TopLine="9"/>
-      </Position>
-      <Position>
-        <Filename Value="plasticdoorimpost.pas"/>
-        <Caret Line="15" Column="5"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="787" Column="11" TopLine="691"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="775" Column="24" TopLine="771"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="777" Column="41" TopLine="769"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="9" Column="83"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="790" Column="58" TopLine="672"/>
-      </Position>
       <Position>
         <Filename Value="plasticdoorimpost.pas"/>
         <Caret Line="18" Column="68"/>
@@ -261,6 +165,110 @@
       <Position>
         <Filename Value="impostscontainer.pas"/>
         <Caret Line="9" Column="55"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="790" Column="60" TopLine="621"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="7" Column="37"/>
+      </Position>
+      <Position>
+        <Filename Value="impostscontainer.pas"/>
+        <Caret Line="54" Column="49"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="57" Column="15" TopLine="27"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="158" Column="5" TopLine="128"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="19" Column="14"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="18" Column="15"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="35" Column="99"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="792" Column="7" TopLine="777"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="31" Column="66"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="17" Column="45"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="28" Column="20" TopLine="4"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="24" Column="60" TopLine="4"/>
+      </Position>
+      <Position>
+        <Filename Value="plasticdoorimpost.pas"/>
+        <Caret Line="37" Column="3" TopLine="6"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="778" Column="29" TopLine="567"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="430" Column="30" TopLine="401"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="431" Column="30" TopLine="402"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="432" Column="30" TopLine="403"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="431" Column="30" TopLine="402"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="432" Column="30" TopLine="403"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="410" Column="3" TopLine="451"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="409" Column="3" TopLine="409"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="410" Column="3" TopLine="410"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="409" Column="3" TopLine="409"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="411" Column="3" TopLine="411"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="646" TopLine="645"/>
       </Position>
     </JumpHistory>
     <RunParams>

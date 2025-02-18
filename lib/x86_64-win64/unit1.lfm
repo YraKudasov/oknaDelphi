@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 408
+  Left = 316
   Height = 874
-  Top = 21
+  Top = 345
   Width = 1652
   Caption = 'Form1'
   ClientHeight = 874
@@ -324,10 +324,10 @@ object Form1: TForm1
   end
   object Panel3: TPanel
     Left = 912
-    Height = 118
+    Height = 158
     Top = 504
     Width = 272
-    ClientHeight = 118
+    ClientHeight = 158
     ClientWidth = 272
     TabOrder = 3
     object Label7: TLabel
@@ -372,6 +372,23 @@ object Form1: TForm1
       Width = 18
       TabOrder = 1
       OnChange = CheckBox1Change
+    end
+    object ComboBox2: TComboBox
+      Left = 24
+      Height = 23
+      Top = 112
+      Width = 132
+      ItemHeight = 15
+      ReadOnly = True
+      Style = csDropDownList
+      TabOrder = 2
+    end
+    object Label9: TLabel
+      Left = 40
+      Height = 15
+      Top = 88
+      Width = 52
+      Caption = 'Импосты'
     end
   end
   object StringGrid1: TStringGrid

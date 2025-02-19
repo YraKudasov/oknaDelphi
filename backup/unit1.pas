@@ -367,6 +367,7 @@ begin
     MenuItem2.Enabled := True;
     MenuItem3.Enabled := True;
     MenuItem5.Enabled := True;
+    MenuItem5.Visible := True;
     MenuItem6.Enabled := True;
     ComboBox1.Enabled := True;
     ComboBox1.ItemIndex := Window.GetType;
@@ -1055,6 +1056,9 @@ begin
           begin
             // Remove the impost at the selected index
             ImpostsContainer.RemoveImpostByIndex(SelectedIndex);
+
+            // Remove the corresponding item from ComboBox2
+            ComboBox2.Items.Delete(SelectedIndex);
           end
           else
           begin

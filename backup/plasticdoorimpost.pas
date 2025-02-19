@@ -15,7 +15,7 @@ type
     FImage: TImage;
   public
     constructor Create(AImpYOtstup: integer; AImage: TImage);
-    procedure DrawDoorImp(ScaledImpWidth, ScaledXOtstup, ScaledYOtstup: integer);
+    procedure DrawDoorImp(ScaledImpWidth, ScaledXOtstup, ScaledYOtstup: integer; ZoomIndex, MaxZoom: double);
     function GetScaledFImpYOtstup: integer;
   end;
 
@@ -26,15 +26,16 @@ begin
 
   ScaledFImpYOtstup := AImpYOtstup;
   FImage := AImage;
+
 end;
 
 // Реализация метода класса
-procedure TPlasticDoorImpost.DrawDoorImp(ScaledImpWidth, ScaledXOtstup, ScaledYOtstup: integer);
+procedure TPlasticDoorImpost.DrawDoorImp(ScaledImpWidth, ScaledXOtstup, ScaledYOtstup: integer; ZoomIndex, MaxZoom: double);
 begin
   FImage.Canvas.Pen.Color := clBlack;
   FImage.Canvas.Brush.Color := clWhite;
   FImage.Canvas.Pen.Width := 2;
-  FImage.Canvas.Rectangle(ScaledXOtstup+37,ScaledYOtstup, ScaledXOtstup+ScaledImpWidth-32, ScaledYOtstup+20);
+  FImage.Canvas.Rectangle(ScaledXOtstup+37,ScaledYOtstup, ScaledXOtstup+ScaledImpWidth-33, ScaledYOtstup+20);
 end;
 
 function TPlasticDoorImpost.GetScaledFImpYOtstup: integer;

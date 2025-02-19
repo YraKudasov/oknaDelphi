@@ -365,8 +365,10 @@ begin
     Edit1.Text := IntToStr(Window.GetHeight);
     Edit2.Text := IntToStr(Window.GetWidth);
     MenuItem2.Enabled := True;
+    MenuItem2.Visible := True;
     MenuItem3.Enabled := True;
     MenuItem5.Enabled := True;
+    MenuItem5.Visible := True;
     MenuItem6.Enabled := True;
     ComboBox1.Enabled := True;
     ComboBox1.ItemIndex := Window.GetType;

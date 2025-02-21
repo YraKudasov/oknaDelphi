@@ -1,27 +1,27 @@
 object Form1: TForm1
-  Left = 316
-  Height = 874
-  Top = 345
+  Left = 259
+  Height = 979
+  Top = 106
   Width = 1652
   Caption = 'Form1'
-  ClientHeight = 874
-  ClientWidth = 1652
+  ClientHeight = 0
+  ClientWidth = 0
   OnCreate = FormCreate
   PopupMenu = PopupMenu1
   LCLVersion = '3.2.0.0'
   object ScrollBox1: TScrollBox
-    Left = 19
-    Height = 500
-    Top = 122
+    Left = 16
+    Height = 510
+    Top = 88
     Width = 875
     HorzScrollBar.Page = 854
-    VertScrollBar.Page = 479
-    ClientHeight = 479
+    VertScrollBar.Page = 489
+    ClientHeight = 489
     ClientWidth = 854
     TabOrder = 0
     object Image1: TImage
-      Left = 0
-      Height = 500
+      Left = -1
+      Height = 510
       Top = 0
       Width = 875
     end
@@ -392,9 +392,9 @@ object Form1: TForm1
     end
   end
   object StringGrid1: TStringGrid
-    Left = 19
+    Left = 1296
     Height = 224
-    Top = 656
+    Top = 122
     Width = 293
     ColCount = 4
     RowCount = 1
@@ -422,13 +422,39 @@ object Form1: TForm1
     )
   end
   object Button1: TButton
-    Left = 40
+    Left = 16
     Height = 40
-    Top = 40
-    Width = 184
+    Top = 24
+    Width = 144
     Caption = 'Создать новое изделие'
     TabOrder = 5
-    OnClick = ChooseTypeOfConstr
+    OnClick = ChooseTypeOfNewConstr
+  end
+  object Button2: TButton
+    Left = 184
+    Height = 40
+    Top = 24
+    Width = 144
+    Caption = 'Добавить конструкцию'
+    TabOrder = 6
+    OnClick = ChooseTypeOfAddingConstr
+  end
+  object ComboBox3: TComboBox
+    Left = 920
+    Height = 23
+    Top = 80
+    Width = 136
+    ItemHeight = 15
+    ReadOnly = True
+    Style = csDropDownList
+    TabOrder = 7
+  end
+  object Label10: TLabel
+    Left = 924
+    Height = 15
+    Top = 54
+    Width = 72
+    Caption = 'Конструкции'
   end
   object PopupMenu1: TPopupMenu
     Left = 464

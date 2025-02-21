@@ -11,7 +11,7 @@ uses
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, unit1, RectWindow, AbstractWindow, WindowContainer, unit2,
-  PlasticDoorImpost;
+  PlasticDoorImpost, ImpostsContainer;
 
 {$R *.res}
 

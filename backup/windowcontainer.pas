@@ -9,6 +9,7 @@ type
   TWindowContainer = class
   private
     FWindows: TObjectList;
+    FCommonYOtstup: integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -21,7 +22,7 @@ type
     function IndexOf(const AWindow: TRectWindow): integer;
     function GetSelectedIndex: integer;
     function FindWindow(const ClickX, ClickY: integer): integer;
-     function GetIndexRowColumn(Row, Column: integer): Integer;
+    function GetIndexRowColumn(Row, Column: integer): Integer;
     // Другие методы, если необходимо
   end;
 

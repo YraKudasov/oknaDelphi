@@ -9,6 +9,7 @@ type
   TWindowContainer = class
   private
     FWindows: TObjectList;
+    FCommonXOtstup: integer;
   public
     constructor Create;
     destructor Destroy; override;

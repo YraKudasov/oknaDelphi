@@ -151,6 +151,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="ImpostsContainer"/>
       </Unit>
+      <Unit>
+        <Filename Value="fullcontainer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="FullContainer"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

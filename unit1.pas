@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
   ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2,
-  PlasticDoorImpost, ImpostsContainer,
+  PlasticDoorImpost, ImpostsContainer, FullContainer,
   LCLType, Grids, ActnList, Generics.Collections;
 
 const
@@ -22,15 +22,18 @@ type
     BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
     Button1: TButton;
+    Button2: TButton;
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
+    ComboBox3: TComboBox;
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
     Edit4: TEdit;
     Image1: TImage;
     Label1: TLabel;
+    Label10: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -55,7 +58,8 @@ type
 
 
 
-    procedure ChooseTypeOfConstr(Sender: TObject);
+    procedure ChooseTypeOfNewConstr(Sender: TObject);
+    procedure ChooseTypeOfAddingConstr(Sender: TObject);
     procedure CreateNewFullConstr(Sender: TObject; IsPlasticDoor: boolean);
     procedure CheckBox1Change(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
@@ -93,6 +97,7 @@ type
     RectWindow: TRectWindow;
     FRectHeight, FRectWidth: integer;
     WindowContainer: TWindowContainer;
+    FullContainer: TFullContainer;
     // Добавляем экземпляр WindowContainer
 
 
@@ -372,6 +377,7 @@ begin
     MenuItem6.Enabled := True;
     ComboBox1.Enabled := True;
     ComboBox1.ItemIndex := Window.GetType;
+
     if (Window.GetType <> 0) then
     begin
       CheckBox1.Visible := True;
@@ -527,6 +533,8 @@ begin
   MenuItem6.Enabled := False;
   CheckBox1.Visible := False;
   Label8.Visible := False;
+  Button2.Visible:=False;
+  Combobox3.Enabled:=False;
 end;
 
 
@@ -537,9 +545,6 @@ var
   RectWidth, RectHeight: integer;
 begin
 
-  if Button1.Enabled then
-  begin
-    Self.SetFocus;
     MenuItem2.Enabled := False;
     MenuItem3.Enabled := False;
     MenuItem5.Enabled := False;
@@ -556,7 +561,7 @@ begin
     ComboBox1.ItemIndex := 0;
     CheckBox1.Visible := False;
     Label8.Visible := False;
-
+    Button2.Visible:=True;
 
     Edit3.OnKeyPress := @EditKeyPress;
     // Обработчик события нажатия клавиши
@@ -577,7 +582,16 @@ begin
     Edit2.OnKeyPress := @EditKeyPress;
     // Обработчик события изменения значения
     Edit2.OnChange := @EditChange2;
+    Combobox3.Enabled:=True;
+
     WindowContainer := TWindowContainer.Create;
+    FullContainer.AddContainer(WindowContainer);
+    // Добавляем новый элемент в ComboBox3
+    ComboBox3.Items.Add('WindowContainer ' + IntToStr(FullContainer.Count));
+
+    // Делаем добавленный элемент текущим выбранным
+    ComboBox3.ItemIndex := ComboBox3.Items.Count - 1;
+    ShowMessage('Количество WindowContainer в FullContainer: ' + IntToStr(FullContainer.Count));
 
     if (isPlasticDoor = False) then
     begin
@@ -639,13 +653,35 @@ begin
     RectWindow.OnWindowDeselected := @RectWindowDeselected;
 
     PaintSizes;
-  end;
 end;
 
 
 
 
-procedure TForm1.ChooseTypeOfConstr(Sender: TObject);
+procedure TForm1.ChooseTypeOfNewConstr(Sender: TObject);
+begin
+  // Проверяем, существует ли уже FullContainer
+  if Assigned(FullContainer) then
+  begin
+    // Если существует, освобождаем память
+    FullContainer.Free;
+    FullContainer := nil; // Обнуляем ссылку для безопасности
+    Combobox3.Clear;
+  end;
+
+  // Создаем новый экземпляр FullContainer
+  FullContainer := TFullContainer.Create;
+
+  // Открываем Form2 как модальное окно
+  Form2 := TForm2.Create(Self); // Создаем экземпляр Form2
+  try
+    Form2.ShowModal; // Показываем Form2
+  finally
+    Form2.Free; // Освобождаем память после закрытия Form2
+  end;
+end;
+
+procedure TForm1.ChooseTypeOfAddingConstr(Sender: TObject);
 begin
   // Открываем Form2 как модальное окно
   Form2 := TForm2.Create(Self); // Создаем экземпляр Form2

@@ -11,7 +11,7 @@ uses
 type
   TPlasticDoorImpost = class
   private
-    ScaledFImpYOtstup: integer;
+    FImpYOtstup: integer;
     FImage: TImage;
   public
     constructor Create(AImpYOtstup: integer; AImage: TImage);
@@ -24,7 +24,7 @@ implementation
 constructor TPlasticDoorImpost.Create(AImpYOtstup: integer; AImage: TImage);
 begin
 
-  ScaledFImpYOtstup := AImpYOtstup;
+  FImpYOtstup := AImpYOtstup;
   FImage := AImage;
 
 end;
@@ -35,12 +35,12 @@ begin
   FImage.Canvas.Pen.Color := clBlack;
   FImage.Canvas.Brush.Color := clWhite;
   FImage.Canvas.Pen.Width := 2;
-  FImage.Canvas.Rectangle(ScaledXOtstup+37,ScaledYOtstup, ScaledXOtstup+ScaledImpWidth-33, ScaledYOtstup+20);
+  FImage.Canvas.Rectangle(ScaledXOtstup+Round(ZoomIndex / MaxZoom * 37),ScaledYOtstup, ScaledXOtstup+ScaledImpWidth-Round(ZoomIndex / MaxZoom * 33), ScaledYOtstup+Round(ZoomIndex / MaxZoom * 20));
 end;
 
-function TPlasticDoorImpost.GetScaledFImpYOtstup: integer;
+function TPlasticDoorImpost.GetFImpYOtstup: integer;
 begin
-  Result := ScaledFImpYOtstup;
+  Result := FImpYOtstup;
 end;
 
 end.

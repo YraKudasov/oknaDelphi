@@ -20,6 +20,7 @@ type
     function GetContainer(Index: Integer): TWindowContainer;
     function Count: Integer;
     function FindWindowInAllContainers(const ClickX, ClickY: Integer): TWindowContainer;
+    function IndexOfContainer(Container: TWindowContainer): Integer;
     // Other methods as needed
   end;
 
@@ -81,6 +82,11 @@ begin
       Break; // Stop searching once a match is found
     end;
   end;
+end;
+
+function TFullContainer.IndexOfContainer(Container: TWindowContainer): Integer;
+begin
+  Result := FContainers.IndexOf(Container);
 end;
 
 end.

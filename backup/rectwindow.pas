@@ -153,9 +153,9 @@ begin
     for i := 0 to FImpostsContainer.Count - 1 do
     begin
       Impost := FImpostsContainer.GetImpost(i);
-      ScaledImpYOtstup :=  Impost.GetScaledFImpYOtstup;
+      ScaledImpYOtstup :=  Impost.FImpYOtstup;
       ScaledImpYOtstup := Round(ScaledImpYOtstup * GetZoomIndex);
-      Impost.DrawDoorImp(ScaledRectWidth, ScaledXOtstup, ScaledImpYOtstup, ZoomIndex, MzxZoom);
+      Impost.DrawDoorImp(ScaledRectWidth, ScaledXOtstup, ScaledImpYOtstup, ZoomIndex, MaxZoom);
     end;
   end;
 end;

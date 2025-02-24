@@ -1,11 +1,11 @@
 object Form1: TForm1
-  Left = 259
+  Left = 256
   Height = 979
-  Top = 106
+  Top = 114
   Width = 1652
   Caption = 'Form1'
-  ClientHeight = 0
-  ClientWidth = 0
+  ClientHeight = 979
+  ClientWidth = 1652
   OnCreate = FormCreate
   PopupMenu = PopupMenu1
   LCLVersion = '3.2.0.0'

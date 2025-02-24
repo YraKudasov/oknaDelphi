@@ -10,6 +10,8 @@ type
   private
     FWindows: TObjectList;
     FCommonXOtstup: integer;
+    FConstrWidth: integer;
+    FConstrHeight: integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -23,6 +25,10 @@ type
     function GetSelectedIndex: integer;
     function FindWindow(const ClickX, ClickY: integer): integer;
     function GetIndexRowColumn(Row, Column: integer): Integer;
+    function GetConstrWidth: integer;
+    procedure SetConstrWidth(Value: integer);
+    function GetConstrHeight: integer;
+    procedure SetConstrHeight(Value: integer);
     // Другие методы, если необходимо
   end;
 
@@ -142,8 +148,25 @@ begin
   end;
 end;
 
+function TWindowContainer.GetConstrWidth: integer;
+begin
+  Result := FConstrWidth;
+end;
 
+procedure TWindowContainer.SetConstrWidth(Value: integer);
+begin
+  FConstrWidth := Value;
+end;
 
+function TWindowContainer.GetConstrHeight: integer;
+begin
+  Result := FConstrHeight;
+end;
+
+procedure TWindowContainer.SetConstrHeight(Value: integer);
+begin
+  FConstrHeight := Value;
+end;
 
 
 

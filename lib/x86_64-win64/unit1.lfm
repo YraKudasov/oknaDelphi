@@ -1,11 +1,11 @@
 object Form1: TForm1
-  Left = 256
+  Left = 318
   Height = 979
-  Top = 114
-  Width = 1652
+  Top = 79
+  Width = 1282
   Caption = 'Form1'
   ClientHeight = 979
-  ClientWidth = 1652
+  ClientWidth = 1282
   OnCreate = FormCreate
   PopupMenu = PopupMenu1
   LCLVersion = '3.2.0.0'
@@ -432,8 +432,8 @@ object Form1: TForm1
   end
   object Button2: TButton
     Left = 184
-    Height = 40
-    Top = 24
+    Height = 32
+    Top = 32
     Width = 144
     Caption = 'Добавить конструкцию'
     TabOrder = 6
@@ -457,9 +457,18 @@ object Form1: TForm1
     Width = 72
     Caption = 'Конструкции'
   end
+  object Button3: TButton
+    Left = 336
+    Height = 32
+    Top = 32
+    Width = 136
+    Caption = 'Удалить конструкцию'
+    TabOrder = 8
+    OnClick = DeleteConstr
+  end
   object PopupMenu1: TPopupMenu
-    Left = 464
-    Top = 24
+    Left = 552
+    Top = 16
     object MenuItem1: TMenuItem
       Caption = 'Добавить'
       object MenuItem2: TMenuItem

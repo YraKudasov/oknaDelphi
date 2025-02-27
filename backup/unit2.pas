@@ -55,15 +55,14 @@ procedure TForm2.ButtonOkonnyBlockClick(Sender: TObject);
 begin
   // Действие для "Оконный блок"
   // Call the procedure from Form1
-  Form1.CreateNewFullConstr(Self);
+  Form1.CreateNewFullConstr(Self, False);
 
   Close; // Закрываем форму
 end;
 
 procedure TForm2.ButtonBalkonnayaDverClick(Sender: TObject);
 begin
-  // Действие для "Балконная дверь"
-  ShowMessage('Вы выбрали "Балконная дверь". Выполняется соответствующее действие.');
+  Form1.CreateNewFullConstr(Self, True);
   Close; // Закрываем форму
 end;
 

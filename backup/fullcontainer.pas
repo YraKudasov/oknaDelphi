@@ -20,6 +20,7 @@ type
     function GetContainer(Index: Integer): TWindowContainer;
     function Count: Integer;
     function FindWindowInAllContainers(const ClickX, ClickY: Integer): TWindowContainer;
+    function IndexOfContainer(Container: TWindowContainer): Integer;
     // Other methods as needed
   end;
 
@@ -42,9 +43,23 @@ begin
 end;
 
 procedure TFullContainer.RemoveContainer(Index: Integer);
+var
+  ContainerToRemove: TWindowContainer; // Предполагается, что TWindowContainer - это тип контейнера
 begin
   if (Index >= 0) and (Index < FContainers.Count) then
+  begin
+    // Получаем контейнер, который нужно удалить с приведением типа
+    ContainerToRemove := TWindowContainer(FContainers[Index]); // Приведение типа
+
+    // Освобождаем память, если контейнер был динамически выделен
+    if Assigned(ContainerToRemove) then
+    begin
+      ContainerToRemove.Free; // Освобождаем память
+    end;
+
+    // Удаляем контейнер из списка
     FContainers.Delete(Index);
+  end;
 end;
 
 procedure TFullContainer.Clear;
@@ -81,6 +96,11 @@ begin
       Break; // Stop searching once a match is found
     end;
   end;
+end;
+
+function TFullContainer.IndexOfContainer(Container: TWindowContainer): Integer;
+begin
+  Result := FContainers.IndexOf(Container);
 end;
 
 end.

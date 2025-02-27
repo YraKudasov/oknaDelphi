@@ -23,6 +23,7 @@ type
     BitBtn4: TBitBtn;
     Button1: TButton;
     Button2: TButton;
+    Button3: TButton;
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
@@ -58,6 +59,7 @@ type
 
 
 
+    procedure DeleteConstr(Sender: TObject);
     procedure ChooseTypeOfNewConstr(Sender: TObject);
     procedure ChooseTypeOfAddingConstr(Sender: TObject);
     procedure ComboBox3Change(Sender: TObject);
@@ -158,7 +160,7 @@ begin
         if (Window.GetYOtstup = 0) then
         begin
           Window.SetHeight(Window.GetHeight + DiffY);
-          UpdateTable;
+
         end
         else
         begin
@@ -167,7 +169,7 @@ begin
         if (Window.GetXOtstup = 0) then
         begin
           Window.SetWidth(Window.GetWidth + DiffX);
-          UpdateTable;
+
         end
         else
         begin
@@ -271,20 +273,20 @@ begin
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetHeight(ChangedWindow.GetHeight + DiffY);
                 ChangedWindow.SetYOtstup(ChangedWindow.GetYOtstup - DiffY);
-                UpdateTable;
+
               end;
             end
             else if (WidthUp = Window.GetWidth) then
             begin
               Window.SetHeight(Window.GetHeight - DiffY);
               Window.SetYOtstup(Window.GetYOtstup + DiffY);
-              UpdateTable;
+
               for a := 0 to WUpCont.Count - 1 do
               begin
                 ind := integer(WUpCont.Items[a]);
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetHeight(ChangedWindow.GetHeight + DiffY);
-                UpdateTable;
+
               end;
             end
             else
@@ -327,7 +329,7 @@ begin
             if (HeightRight = Window.GetHeight) then
             begin
               Window.SetWidth(Window.GetWidth - DiffX);
-              UpdateTable;
+
               for a := 0 to HRightCont.Count - 1 do
               begin
                 ind := integer(HRightCont.Items[a]);
@@ -342,13 +344,13 @@ begin
             begin
               Window.SetWidth(Window.GetWidth - DiffX);
               Window.SetXOtstup(Window.GetXOtstup + DiffX);
-              UpdateTable;
+
               for a := 0 to HLeftCont.Count - 1 do
               begin
                 ind := integer(HLeftCont.Items[a]);
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetWidth(ChangedWindow.GetWidth + DiffX);
-                UpdateTable;
+
               end;
             end
             else
@@ -369,6 +371,8 @@ end;
 procedure TForm1.RectWindowSelected(Sender: TObject);
 var
   Window: TRectWindow;
+  ImpostsContainer: TImpostsContainer;
+  j: integer;
 begin
   Window := TRectWindow(Sender);
   if Assigned(Window) then
@@ -384,6 +388,7 @@ begin
     MenuItem5.Visible := True;
     MenuItem6.Enabled := True;
     ComboBox1.Enabled := True;
+    Panel3.Visible := True;
     ComboBox1.ItemIndex := Window.GetType;
 
     if (Window.GetType <> 0) then
@@ -391,6 +396,11 @@ begin
       CheckBox1.Visible := True;
       CheckBox1.Checked := Window.GetMoskit;
       Label8.Visible := True;
+    end
+    else
+    begin
+      CheckBox1.Visible := False;
+      Label8.Visible := False;
     end;
   end;
   if (Window.GetIsDoor = True) then
@@ -399,6 +409,24 @@ begin
     MenuItem5.Visible := False;
     CheckBox1.Visible := False;
     Label8.Visible := False;
+    ComboBox2.Clear;
+    ImpostsContainer := Window.GetImpostsContainer;
+    if (ImpostsContainer.Count > 0) then
+    begin
+      for j := 0 to ImpostsContainer.Count - 1 do
+      begin
+        // Добавляем каждый импост в ComboBox2
+        ComboBox2.Items.Add(Format('Импост : %d мм',
+          [ImpostsContainer.GetImpost(j).GetFImpYOtstup]));
+      end;
+    end;
+  end
+  else if (Window.GetIsDoor = False) then
+  begin
+    ComboBox1.Items[0] := 'Глухая';
+    ComboBox1.Items[3] := 'Откидная';
+    ComboBox2.Visible := False;
+    Label9.Visible := False;
   end;
 end;
 
@@ -412,10 +440,11 @@ begin
   MenuItem5.Enabled := False;
   MenuItem6.Enabled := False;
   Panel1.Enabled := False;
-  Panel3.Enabled := False;
+  Panel3.Visible := False;
   ComboBox1.Enabled := False;
   CheckBox1.Visible := False;
   Label8.Visible := False;
+
 end;
 
 
@@ -432,8 +461,8 @@ begin
     if Assigned(Window) then
     begin
       Window.SetType(ComboBox1.ItemIndex);
-      UpdateTable;
-      if (Window.GetType <> 0) then
+
+      if (ComboBox1.ItemIndex <> 0) then
       begin
         CheckBox1.Visible := True;
         CheckBox1.Checked := Window.GetMoskit;
@@ -492,14 +521,14 @@ begin
       if (CheckBox1.Checked) then
       begin
         Window.SetMoskit(True);
-        UpdateTable;
+
         Window.SetZoomIndex(DrawingIndex);
         Window.DrawWindow;
       end
       else
       begin
         Window.SetMoskit(False);
-        UpdateTable;
+
         Window.SetZoomIndex(DrawingIndex);
         Window.DrawWindow;
       end;
@@ -546,6 +575,7 @@ begin
   CheckBox1.Visible := False;
   Label8.Visible := False;
   Button2.Visible := False;
+  Button3.Visible := False;
   Combobox3.Enabled := False;
 end;
 
@@ -574,6 +604,7 @@ begin
   CheckBox1.Visible := False;
   Label8.Visible := False;
   Button2.Visible := True;
+  Button3.Visible := True;
 
   Edit3.OnKeyPress := @EditKeyPress;
   // Обработчик события нажатия клавиши
@@ -655,7 +686,7 @@ begin
   WindowContainer.AddWindow(RectWindow);
 
 
-  UpdateTable;
+
   // Отрисовка окна на изображении
   RectWindow.SetZoomIndex(DrawingIndex);
   RectWindow.DrawWindow;
@@ -699,6 +730,7 @@ begin
   end;
 end;
 
+
 procedure TForm1.ChooseTypeOfAddingConstr(Sender: TObject);
 begin
   // Открываем Form2 как модальное окно
@@ -710,6 +742,69 @@ begin
   end;
 end;
 
+procedure TForm1.DeleteConstr(Sender: TObject);
+var
+  SelectedIndex: integer;
+  i: integer;
+  CurrCont: TWindowContainer;
+  CurrWin: TRectWindow;
+begin
+  // Get the selected index from ComboBox3
+  SelectedIndex := ComboBox3.ItemIndex;
+
+  // Check if an item is selected
+  if SelectedIndex <> -1 then
+  begin
+    // Remove the container from FullContainer
+    FullContainer.RemoveContainer(SelectedIndex);
+
+    // Clear and repopulate ComboBox3
+    ComboBox3.Clear;
+    for  i := 0 to FullContainer.Count - 1 do
+    begin
+      ComboBox3.Items.Add('WindowContainer ' + IntToStr(i + 1));
+      // Update the items with new indices
+    end;
+
+    // Reset the selected index to the last item or -1 if there are no items left
+    if ComboBox3.Items.Count > 0 then
+      ComboBox3.ItemIndex := ComboBox3.Items.Count - 1
+    else
+      ComboBox3.ItemIndex := -1;
+  end
+  else
+  begin
+    ShowMessage('Выберите конструкцию для удаления');
+    // Inform the user if nothing is selected
+  end;
+  Image1.Canvas.Brush.Color := clWhite;
+  Image1.Canvas.FillRect(Image1.ClientRect);
+  if (ComboBox3.ItemIndex >= 0) then
+  begin
+    CurrentContainer := ComboBox3.ItemIndex;
+    CurrCont := FullContainer.GetContainer(CurrentContainer);
+    FRectHeight := CurrCont.GetConstrHeight;
+    FRectWidth := CurrCont.GetConstrWidth;
+    Edit3.Text := IntToStr(CurrCont.GetConstrHeight);
+    Edit4.Text := IntToStr(CurrCont.GetConstrWidth);
+    Panel1.Enabled := False;
+    Panel3.Enabled := False;
+    if Assigned(CurrCont) and (CurrCont.Count > 0) then
+    begin
+    for i := 0 to CurrCont.Count - 1 do
+    begin
+      CurrWin := CurrCont.GetWindow(i);
+      CurrWin.OnWindowSelected := @RectWindowSelected;
+      CurrWin.OnWindowDeselected := @RectWindowDeselected;
+    end;
+  end;
+  DrawWindows;
+  end;
+  Edit1.Text := '0';
+  Edit2.Text := '0';
+  Panel3.Visible := False;
+end;
+
 
 procedure TForm1.ComboBox3Change(Sender: TObject);
 var
@@ -718,6 +813,7 @@ var
   SelectedWindow: TRectWindow;
   ImpostsContainer: TImpostsContainer;
 begin
+  RectWindowDeselected(Self);
   // Получаем индекс выбранного элемента в ComboBox3
   SelectedIndex := ComboBox3.ItemIndex;
 
@@ -729,10 +825,13 @@ begin
     CurrentContainer := FullContainer.IndexOfContainer(SelectedContainer);
     Edit3.Text := IntToStr(SelectedContainer.GetConstrHeight);
     Edit4.Text := IntToStr(SelectedContainer.GetConstrWidth);
+    Edit1.Text := '0';
+    Edit2.Text := '0';
     // Очищаем холст перед отрисовкой
     Image1.Canvas.Brush.Color := clWhite;
     Image1.Canvas.FillRect(Image1.ClientRect);
-
+    Panel1.Enabled := False;
+    Panel3.Enabled := False;
 
 
     // Проверяем, есть ли окна в контейнере
@@ -749,6 +848,8 @@ begin
           ComboBox1.Items[3] := 'Откидная';
           ComboBox2.Visible := False;
           Label9.Visible := False;
+          CheckBox1.Visible := True;
+          Label8.Visible := True;
         end
         else if (RectWindow.GetIsDoor = True) then
         begin
@@ -758,15 +859,21 @@ begin
           ComboBox2.Visible := True;
           Label9.Visible := True;
           ComboBox2.Clear;
+          CheckBox1.Visible := False;
+          Label8.Visible := False;
           if Assigned(ImpostsContainer) then
           begin
             for j := 0 to ImpostsContainer.Count - 1 do
             begin
-              ComboBox2.Items.Add(Format('Импост : %d мм', [ImpostsContainer.GetImpost(j).GetFImpYOtstup]));
+              ComboBox2.Items.Add(Format('Импост : %d мм',
+                [ImpostsContainer.GetImpost(j).GetFImpYOtstup]));
             end;
           end;
 
         end;
+        if RectWindow.GetSelection then
+          RectWindowDeselected(RectWindow);
+
         // Подключаем функции выделения
         RectWindow.OnWindowSelected := @RectWindowSelected;
         RectWindow.OnWindowDeselected := @RectWindowDeselected;
@@ -776,9 +883,6 @@ begin
         FRectWidth := SelectedContainer.GetConstrWidth;
         FRectHeight := SelectedContainer.GetConstrHeight;
       end;
-
-      // Обновляем таблицу
-      UpdateTable;
 
     end;
     DrawWindows;
@@ -847,8 +951,8 @@ var
 begin
   CurrCont := FullContainer.GetContainer(CurrentContainer);
   KoefPaint := DrawingIndex;
-  ScaledWidth := Round((KoefPaint) * FRectWidth);
-  ScaledHeight := Round((KoefPaint) * FRectHeight);
+  ScaledWidth := Round((KoefPaint) * CurrCont.GetConstrWidth);
+  ScaledHeight := Round((KoefPaint) * CurrCont.GetConstrHeight);
   Image1.Canvas.Pen.Width := 1;
   Image1.Canvas.Pen.Color := clBlack;
   Image1.Canvas.Font.Size := 11;
@@ -857,7 +961,7 @@ begin
   Image1.Canvas.MoveTo(ScaledWidth + 45, 3);
   Image1.Canvas.LineTo(ScaledWidth + 45, ScaledHeight);
   Image1.Canvas.TextOut(ScaledWidth + 65, ScaledHeight div 2 - 10,
-    IntToStr(FRectHeight));
+    IntToStr(CurrCont.GetConstrHeight));
   //Маленькая линия высоты (сверху)
   Image1.Canvas.MoveTo(ScaledWidth, 3);
   Image1.Canvas.LineTo(ScaledWidth + 55, 3);
@@ -869,7 +973,8 @@ begin
   //Линия ширины
   Image1.Canvas.MoveTo(3, ScaledHeight + 30);
   Image1.Canvas.LineTo(ScaledWidth, ScaledHeight + 30);
-  Image1.Canvas.TextOut(ScaledWidth div 2 - 10, ScaledHeight + 42, IntToStr(FRectWidth));
+  Image1.Canvas.TextOut(ScaledWidth div 2 - 10, ScaledHeight + 42,
+    IntToStr(CurrCont.GetConstrWidth));
   //Маленькая линия ширины (слева)
   Image1.Canvas.MoveTo(3, ScaledHeight);
   Image1.Canvas.LineTo(3, ScaledHeight + 35);
@@ -1001,7 +1106,7 @@ begin
         CurrCont.AddWindow(Window2);
 
 
-        UpdateTable;
+
 
         if CurrCont.Count > 0 then
         begin
@@ -1074,7 +1179,7 @@ begin
         CurrCont.AddWindow(Window2);
 
 
-        UpdateTable;
+
 
         if CurrCont.Count > 0 then
         begin
@@ -1140,7 +1245,7 @@ begin
             CurrCont.RemoveWindow(CurrCont.IndexOf(Window));
 
 
-            UpdateTable;
+
             // Изменяем текст ширину окна
 
             RectWindowDeselected(Self);
@@ -1235,7 +1340,7 @@ begin
 
             CurrCont.RemoveWindow(CurrCont.IndexOf(Window));
 
-            UpdateTable;
+
 
             RectWindowDeselected(Self);
             Image1.Canvas.Brush.Color := clWhite;
@@ -1273,7 +1378,7 @@ begin
       if ((Window.GetRow = NewRow) and (Window.GetColumn >= NewCol)) then
       begin
         Window.SetColumn(Window.GetColumn + 1);
-        UpdateTable;
+
         // Добавляем текст из индекс окна
       end;
     end;
@@ -1288,7 +1393,7 @@ begin
       if ((Window.GetRow = NewRow) and (Window.GetColumn > NewCol)) then
       begin
         Window.SetColumn(Window.GetColumn - 1);
-        UpdateTable;
+
         // Добавляем текст из индекс окна
       end;
     end;
@@ -1308,7 +1413,7 @@ begin
         if (Window.GetXOtstup >= NewOtstup) then
         begin
           Window.SetColumn(Window.GetColumn + 1);
-          UpdateTable;
+
           // Добавляем текст из индекс окна
           RightWins := RightWins + 1;
         end;
@@ -1325,7 +1430,7 @@ begin
       if (Window.GetRow = NewRow) and (Window.GetColumn > NewCol) then
       begin
         Window.SetColumn(Window.GetColumn - 1);
-        UpdateTable;
+
         // Добавляем текст из индекс окна
       end;
     end;

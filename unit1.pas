@@ -33,6 +33,7 @@ type
     Edit3: TEdit;
     Edit4: TEdit;
     Image1: TImage;
+    Image2: TImage;
     Label1: TLabel;
     Label10: TLabel;
     Label2: TLabel;
@@ -54,6 +55,7 @@ type
     Panel3: TPanel;
     PopupMenu1: TPopupMenu;
     ScrollBox1: TScrollBox;
+    ScrollBox2: TScrollBox;
     StringGrid1: TStringGrid;
 
 
@@ -755,12 +757,19 @@ begin
   // Check if an item is selected
   if SelectedIndex <> -1 then
   begin
+    // Check if only one construction is left
+    if FullContainer.Count = 1 then
+    begin
+      ShowMessage('Невозможно удалить последнюю конструкцию');
+      Exit;
+    end;
+
     // Remove the container from FullContainer
     FullContainer.RemoveContainer(SelectedIndex);
 
     // Clear and repopulate ComboBox3
     ComboBox3.Clear;
-    for  i := 0 to FullContainer.Count - 1 do
+    for i := 0 to FullContainer.Count - 1 do
     begin
       ComboBox3.Items.Add('WindowContainer ' + IntToStr(i + 1));
       // Update the items with new indices
@@ -777,8 +786,12 @@ begin
     ShowMessage('Выберите конструкцию для удаления');
     // Inform the user if nothing is selected
   end;
+
+  // Clear the canvas
   Image1.Canvas.Brush.Color := clWhite;
   Image1.Canvas.FillRect(Image1.ClientRect);
+
+  // Update the UI if there are remaining items
   if (ComboBox3.ItemIndex >= 0) then
   begin
     CurrentContainer := ComboBox3.ItemIndex;
@@ -789,17 +802,21 @@ begin
     Edit4.Text := IntToStr(CurrCont.GetConstrWidth);
     Panel1.Enabled := False;
     Panel3.Enabled := False;
+
     if Assigned(CurrCont) and (CurrCont.Count > 0) then
     begin
-    for i := 0 to CurrCont.Count - 1 do
-    begin
-      CurrWin := CurrCont.GetWindow(i);
-      CurrWin.OnWindowSelected := @RectWindowSelected;
-      CurrWin.OnWindowDeselected := @RectWindowDeselected;
+      for i := 0 to CurrCont.Count - 1 do
+      begin
+        CurrWin := CurrCont.GetWindow(i);
+        CurrWin.OnWindowSelected := @RectWindowSelected;
+        CurrWin.OnWindowDeselected := @RectWindowDeselected;
+      end;
     end;
+
+    DrawWindows;
   end;
-  DrawWindows;
-  end;
+
+  // Reset additional UI elements
   Edit1.Text := '0';
   Edit2.Text := '0';
   Panel3.Visible := False;

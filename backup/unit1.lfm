@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 318
+  Left = 293
   Height = 979
-  Top = 79
+  Top = 37
   Width = 1282
   Caption = 'Form1'
   ClientHeight = 979
@@ -465,6 +465,23 @@ object Form1: TForm1
     Caption = 'Удалить конструкцию'
     TabOrder = 8
     OnClick = DeleteConstr
+  end
+  object ScrollBox2: TScrollBox
+    Left = 16
+    Height = 352
+    Top = 608
+    Width = 875
+    HorzScrollBar.Page = 854
+    VertScrollBar.Page = 331
+    ClientHeight = 331
+    ClientWidth = 854
+    TabOrder = 9
+    object Image2: TImage
+      Left = -1
+      Height = 352
+      Top = 0
+      Width = 875
+    end
   end
   object PopupMenu1: TPopupMenu
     Left = 552

@@ -33,6 +33,7 @@ type
     Edit3: TEdit;
     Edit4: TEdit;
     Image1: TImage;
+    Image2: TImage;
     Label1: TLabel;
     Label10: TLabel;
     Label2: TLabel;
@@ -54,6 +55,7 @@ type
     Panel3: TPanel;
     PopupMenu1: TPopupMenu;
     ScrollBox1: TScrollBox;
+    ScrollBox2: TScrollBox;
     StringGrid1: TStringGrid;
 
 
@@ -1199,7 +1201,7 @@ begin
         if CurrCont.Count > 0 then
         begin
           ShowMessage('Экземпляр окна был добавлен в контейнер.'
-            + IntToStr(WindowContainer.Count));
+            + IntToStr(CurrCont.Count));
         end;
         if CurrCont.Count = 0 then
         begin
@@ -1383,13 +1385,15 @@ function TForm1.UpdateIndexes(OperationNum, NewRow, NewCol, NewOtstup: integer):
 var
   Window: TRectWindow;
   CountWin, RightWins, i: integer;
+  CurrCont: TWindowContainer;
 begin
+  CurrCont := FullContainer.GetContainer(CurrentContainer);
   // Добавление вертикального импоста
   if (OperationNum = 0) then
   begin
-    for i := 0 to WindowContainer.Count - 1 do
+    for i := 0 to CurrCont.Count - 1 do
     begin
-      Window := TRectWindow(WindowContainer.GetWindow(i));
+      Window := TRectWindow(CurrCont.GetWindow(i));
       if ((Window.GetRow = NewRow) and (Window.GetColumn >= NewCol)) then
       begin
         Window.SetColumn(Window.GetColumn + 1);
@@ -1402,9 +1406,9 @@ begin
   // Удаление вертикального импоста
   if (OperationNum = 1) then
   begin
-    for i := 0 to WindowContainer.Count - 1 do
+    for i := 0 to CurrCont.Count - 1 do
     begin
-      Window := TRectWindow(WindowContainer.GetWindow(i));
+      Window := TRectWindow(CurrCont.GetWindow(i));
       if ((Window.GetRow = NewRow) and (Window.GetColumn > NewCol)) then
       begin
         Window.SetColumn(Window.GetColumn - 1);
@@ -1419,9 +1423,9 @@ begin
   begin
     CountWin := 0;
     RightWins := 0;
-    for i := 0 to WindowContainer.Count - 1 do
+    for i := 0 to CurrCont.Count - 1 do
     begin
-      Window := TRectWindow(WindowContainer.GetWindow(i));
+      Window := TRectWindow(CurrCont.GetWindow(i));
       if (Window.GetRow = NewRow) then
       begin
         CountWin := CountWin + 1;
@@ -1439,9 +1443,9 @@ begin
   // Удаление горизонтального импоста
   if (OperationNum = 3) then
   begin
-    for i := 0 to WindowContainer.Count - 1 do
+    for i := 0 to CurrCont.Count - 1 do
     begin
-      Window := TRectWindow(WindowContainer.GetWindow(i));
+      Window := TRectWindow(CurrCont.GetWindow(i));
       if (Window.GetRow = NewRow) and (Window.GetColumn > NewCol) then
       begin
         Window.SetColumn(Window.GetColumn - 1);
@@ -1567,10 +1571,12 @@ function TForm1.CheckHeightChange: boolean;
 var
   Window: TRectWindow;
   Diff, I: integer;
+  CurrCont: TWindowContainer;
 begin
-  for I := 0 to WindowContainer.Count - 1 do
+  CurrCont := FullContainer.GetContainer(CurrentContainer);
+  for I := 0 to CurrCont.Count - 1 do
   begin
-    Window := TRectWindow(WindowContainer.GetWindow(I));
+    Window := CurrCont.GetWindow(I);
     if (Window.GetYOtstup = 0) then
     begin
       Diff := StrToInt(Edit3.Text) - FRectHeight;
@@ -1590,10 +1596,12 @@ function TForm1.CheckWidthChange: boolean;
 var
   Window: TRectWindow;
   Diff, I: integer;
+  CurrCont: TWindowContainer;
 begin
-  for I := 0 to WindowContainer.Count - 1 do
+  CurrCont := FullContainer.GetContainer(CurrentContainer);
+  for I := 0 to CurrCont.Count - 1 do
   begin
-    Window := TRectWindow(WindowContainer.GetWindow(I));
+    Window := CurrCont.GetWindow(I);
     if (Window.GetXOtstup = 0) then
     begin
       Diff := StrToInt(Edit4.Text) - FRectWidth;

@@ -104,6 +104,8 @@ type
     WindowContainer: TWindowContainer;
     FullContainer: TFullContainer;
     CurrentContainer: integer;
+    FullConstrHeight: integer;
+    FullConstrWidth: integer;
     // Добавляем экземпляр WindowContainer
 
 
@@ -138,7 +140,7 @@ end;
 procedure TForm1.SizeConstruction(Sender: TObject);
 var
   Window: TRectWindow;
-  I, DiffX, DiffY: integer;
+  DiffXOtstup, I, DiffX, DiffY, maxHeight: integer;
   CurrCont: TWindowContainer;
 begin
   CurrCont := FullContainer.GetContainer(CurrentContainer);
@@ -154,6 +156,43 @@ begin
     end
     else
     begin
+      if (StrToInt(Edit3.Text) > FullConstrHeight) then
+      begin
+        FullConstrHeight := StrToInt(Edit3.Text);
+        ShowMessage('Высота всего изделия увеличена!');
+      end;
+      if ((CurrCont.GetConstrHeight = FullConstrHeight) and
+        (StrToInt(Edit3.Text) < FullConstrHeight)) then
+      begin
+        maxHeight := 0;
+        CurrCont.SetConstrHeight(CurrCont.GetConstrHeight - StrToInt(Edit3.Text));
+        for I := 0 to FullContainer.Count - 1 do
+        begin
+          if (FullContainer.GetContainer(I).GetConstrHeight > maxHeight) then
+            maxHeight := FullContainer.GetContainer(I).GetConstrHeight;
+        end;
+        FullConstrHeight := maxHeight;
+        ShowMessage('Высота всего изделия могла быть уменьшена!');
+      end;
+      if ((StrToInt(Edit4.Text) <> CurrCont.GetConstrWidth) and
+        (FullContainer.Count > 1) and (FullContainer.IndexOfContainer(CurrCont) <>
+        FullContainer.Count - 1)) then
+      begin
+        DiffXOtstup := StrToInt(Edit4.Text) - CurrCont.GetConstrWidth;
+        for I := FullContainer.IndexOfContainer(CurrCont) + 1 to
+          FullContainer.Count - 1 do
+        begin
+          FullContainer.GetContainer(I).SetCommonXOtstup(
+            FullContainer.GetContainer(I).GetCommonXOtstup + DiffXOtstup);
+        end;
+        FullConstrWidth := FullConstrWidth + DiffXOtstup;
+      end;
+      if ((StrToInt(Edit4.Text) <> CurrCont.GetConstrWidth) and
+        (FullContainer.Count = 1)) then
+      begin
+        DiffXOtstup := StrToInt(Edit4.Text) - CurrCont.GetConstrWidth;
+        FullConstrWidth := FullConstrWidth + DiffXOtstup;
+      end;
       for I := 0 to CurrCont.Count - 1 do
       begin
         Window := TRectWindow(CurrCont.GetWindow(I));
@@ -162,7 +201,6 @@ begin
         if (Window.GetYOtstup = 0) then
         begin
           Window.SetHeight(Window.GetHeight + DiffY);
-
         end
         else
         begin
@@ -171,7 +209,6 @@ begin
         if (Window.GetXOtstup = 0) then
         begin
           Window.SetWidth(Window.GetWidth + DiffX);
-
         end
         else
         begin
@@ -641,8 +678,15 @@ begin
 
   if (isPlasticDoor = False) then
   begin
-    Edit3.Text := '1000';
-    Edit4.Text := '1000';
+
+    if ((FullConstrHeight < 1000)) then
+      FullConstrHeight := 1000;
+
+    WindowContainer.SetCommonXOtstup(FullConstrWidth);
+    FullConstrWidth := FullConstrWidth + 1000;
+
+    Edit3.Text := IntToStr(FullConstrHeight);
+    Edit4.Text := IntToStr(1000);
 
     // Получение значений из Edit3 и Edit4
     RectHeight := StrToInt(Edit3.Text);
@@ -652,19 +696,29 @@ begin
     FRectHeight := RectHeight;
     WindowContainer.SetConstrWidth(FRectWidth);
     WindowContainer.SetConstrHeight(FRectHeight);
+
     ComboBox1.Items[0] := 'Глухая';
     ComboBox1.Items[3] := 'Откидная';
     ComboBox2.Visible := False;
     Label9.Visible := False;
-    // Инициализация окна
+
+
     RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
       Image1, 0, 0, ComboBox1.ItemIndex, False);
     RectWindow.SetIsDoor(False);
   end
+
+
   else if (isPlasticDoor = True) then
   begin
-    Edit3.Text := '2100';
-    Edit4.Text := '600';
+    if (FullConstrHeight < 2100) then
+      FullConstrHeight := 2100;
+
+    WindowContainer.SetCommonXOtstup(FullConstrWidth);
+    FullConstrWidth := FullConstrWidth + 600;
+
+    Edit3.Text := IntToStr(FullConstrHeight);
+    Edit4.Text := IntToStr(600);
 
     // Получение значений из Edit3 и Edit4
     RectHeight := StrToInt(Edit3.Text);
@@ -674,6 +728,7 @@ begin
     FRectHeight := RectHeight;
     WindowContainer.SetConstrWidth(FRectWidth);
     WindowContainer.SetConstrHeight(FRectHeight);
+
     ComboBox1.Items[0] := '(недоступно)';
     ComboBox1.Items[3] := '(недоступно)';
     ComboBox2.Visible := True;
@@ -718,6 +773,8 @@ begin
     FullContainer := nil;
     // Обнуляем ссылку для безопасности
     Combobox3.Clear;
+    FullConstrHeight := 0;
+    FullConstrWidth := 0;
   end;
 
   // Создаем новый экземпляр FullContainer
@@ -747,7 +804,7 @@ end;
 procedure TForm1.DeleteConstr(Sender: TObject);
 var
   SelectedIndex: integer;
-  i: integer;
+  i, maxHeight, DiffXOtstup: integer;
   CurrCont: TWindowContainer;
   CurrWin: TRectWindow;
 begin
@@ -763,7 +820,29 @@ begin
       ShowMessage('Невозможно удалить последнюю конструкцию');
       Exit;
     end;
-
+    CurrCont := FullContainer.GetContainer(SelectedIndex);
+    if (CurrCont.GetConstrHeight = FullConstrHeight) then
+    begin
+      maxHeight := 0;
+      for I := 0 to FullContainer.Count - 1 do
+      begin
+        if ((FullContainer.GetContainer(I).GetConstrHeight > maxHeight) and (I <> SelectedIndex)) then
+          maxHeight := FullContainer.GetContainer(I).GetConstrHeight;
+      end;
+      FullConstrHeight := maxHeight;
+      ShowMessage('Высота всего изделия могла быть уменьшена!');
+    end;
+     if ((FullContainer.Count > 1) and (FullContainer.IndexOfContainer(CurrCont) <>
+        FullContainer.Count - 1)) then
+      begin
+        for I := FullContainer.IndexOfContainer(CurrCont) + 1 to
+          FullContainer.Count - 1 do
+        begin
+          FullContainer.GetContainer(I).SetCommonXOtstup(
+            FullContainer.GetContainer(I).GetCommonXOtstup - CurrCont.GetConstrWidth);
+        end;
+        FullConstrWidth := FullConstrWidth - CurrCont.GetConstrWidth;
+      end;
     // Remove the container from FullContainer
     FullContainer.RemoveContainer(SelectedIndex);
 

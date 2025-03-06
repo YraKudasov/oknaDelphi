@@ -29,6 +29,8 @@ type
     procedure SetConstrWidth(Value: integer);
     function GetConstrHeight: integer;
     procedure SetConstrHeight(Value: integer);
+    procedure SetCommonXOtstup(Value: integer);
+    function GetCommonXOtstup: integer;
     // Другие методы, если необходимо
   end;
 
@@ -166,6 +168,16 @@ end;
 procedure TWindowContainer.SetConstrHeight(Value: integer);
 begin
   FConstrHeight := Value;
+end;
+
+function TWindowContainer.GetCommonXOtstup: integer;
+begin
+  Result := FCommonXOtstup;
+end;
+
+procedure TWindowContainer.SetCommonXOtstup(Value: integer);
+begin
+  FCommonXOtstup := Value;
 end;
 
 

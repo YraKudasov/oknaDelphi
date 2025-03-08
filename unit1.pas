@@ -630,6 +630,7 @@ begin
   Button2.Visible := False;
   Button3.Visible := False;
   Combobox3.Enabled := False;
+  Button4.Enabled := False;
 end;
 
 
@@ -650,6 +651,7 @@ begin
 
   Image1.Canvas.Brush.Color := clWhite;
   Image1.Canvas.FillRect(Image1.ClientRect);
+
 
   StringGrid1.RowCount := 1;
   ComboBox1.Enabled := False;
@@ -688,7 +690,7 @@ begin
 
   // Делаем добавленный элемент текущим выбранным
   ComboBox3.ItemIndex := ComboBox3.Items.Count - 1;
-
+  Button4.Enabled := True;
 
   if (isPlasticDoor = False) then
   begin
@@ -801,6 +803,9 @@ begin
   finally
     Form2.Free; // Освобождаем память после закрытия Form2
   end;
+
+  Image2.Canvas.Brush.Color := clWhite;
+  Image2.Canvas.FillRect(Image2.ClientRect);
 end;
 
 
@@ -856,8 +861,8 @@ begin
         FullContainer.GetContainer(I).SetCommonXOtstup(
           FullContainer.GetContainer(I).GetCommonXOtstup - CurrCont.GetConstrWidth);
       end;
-      FullConstrWidth := FullConstrWidth - CurrCont.GetConstrWidth;
     end;
+    FullConstrWidth := FullConstrWidth - CurrCont.GetConstrWidth;
     // Remove the container from FullContainer
     FullContainer.RemoveContainer(SelectedIndex);
 

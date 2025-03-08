@@ -552,9 +552,9 @@ function TForm1.DrawingFullConstrIndex: double;
 var
   DIndex: double;
 begin
-  if ((FullConstrWidth < 3000)) then
+  if ((FullConstrWidth < 10000)) then
     DIndex := 0.15
-  else if ((FullConstrWidth >= 3000)) then
+  else if ((FullConstrWidth >= 10000)) then
     DIndex := 0.12;
   Result := DIndex;
 end;
@@ -630,6 +630,7 @@ begin
   Button2.Visible := False;
   Button3.Visible := False;
   Combobox3.Enabled := False;
+  Button4.Enabled := False;
 end;
 
 
@@ -650,6 +651,9 @@ begin
 
   Image1.Canvas.Brush.Color := clWhite;
   Image1.Canvas.FillRect(Image1.ClientRect);
+
+  Image2.Canvas.Brush.Color := clWhite;
+  Image2.Canvas.FillRect(Image2.ClientRect);
 
   StringGrid1.RowCount := 1;
   ComboBox1.Enabled := False;
@@ -688,7 +692,7 @@ begin
 
   // Делаем добавленный элемент текущим выбранным
   ComboBox3.ItemIndex := ComboBox3.Items.Count - 1;
-
+  Button4.Enabled := True;
 
   if (isPlasticDoor = False) then
   begin
@@ -856,8 +860,8 @@ begin
         FullContainer.GetContainer(I).SetCommonXOtstup(
           FullContainer.GetContainer(I).GetCommonXOtstup - CurrCont.GetConstrWidth);
       end;
-      FullConstrWidth := FullConstrWidth - CurrCont.GetConstrWidth;
     end;
+    FullConstrWidth := FullConstrWidth - CurrCont.GetConstrWidth;
     // Remove the container from FullContainer
     FullContainer.RemoveContainer(SelectedIndex);
 

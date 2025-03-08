@@ -53,6 +53,7 @@ type
     procedure DrawMoskit(ScaledRectW, ScaledRectH, ScaledXOt, ScaledYOt: integer);
     procedure SetMoskit(Value: boolean);
     procedure SetZoomIndex(Value: double);
+    procedure SetImage (Value: TImage);
     procedure SetIsDoor(Value: boolean);
     procedure PaintSize(ScaledConstructW, ScaledConstructH, ScaledXOt, ScaledYOt: integer; NoOneW, NoOneH: boolean);
     procedure DrawImposts;
@@ -568,6 +569,12 @@ end;
 function TRectWindow.GetImpostsContainer: TImpostsContainer;
 begin
   Result := FImpostsContainer;
+end;
+
+
+procedure TRectWindow.SetImage(Value: TImage);
+begin
+  FImage := Value;
 end;
 
 end.

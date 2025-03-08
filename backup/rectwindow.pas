@@ -53,6 +53,7 @@ type
     procedure DrawMoskit(ScaledRectW, ScaledRectH, ScaledXOt, ScaledYOt: integer);
     procedure SetMoskit(Value: boolean);
     procedure SetZoomIndex(Value: double);
+    procedure SetImage (Value: TImage);
     procedure SetIsDoor(Value: boolean);
     procedure PaintSize(ScaledConstructW, ScaledConstructH, ScaledXOt, ScaledYOt: integer; NoOneW, NoOneH: boolean);
     procedure DrawImposts;
@@ -153,7 +154,7 @@ begin
     for i := 0 to FImpostsContainer.Count - 1 do
     begin
       Impost := FImpostsContainer.GetImpost(i);
-      ScaledImpYOtstup :=  Impost.FImpYOtstup;
+      ScaledImpYOtstup :=  Impost.GetFImpYOtstup;
       ScaledImpYOtstup := Round(ScaledImpYOtstup * GetZoomIndex);
       Impost.DrawDoorImp(ScaledRectWidth, ScaledXOtstup, ScaledImpYOtstup, ZoomIndex, MaxZoom);
     end;

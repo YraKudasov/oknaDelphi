@@ -16,7 +16,7 @@ type
   public
     constructor Create(AImpYOtstup: integer; AImage: TImage);
     procedure DrawDoorImp(ScaledImpWidth, ScaledXOtstup, ScaledYOtstup: integer; ZoomIndex, MaxZoom: double);
-    function GetScaledFImpYOtstup: integer;
+    function GetFImpYOtstup: integer;
   end;
 
 implementation
@@ -41,6 +41,11 @@ end;
 function TPlasticDoorImpost.GetFImpYOtstup: integer;
 begin
   Result := FImpYOtstup;
+end;
+
+procedure TPlasticDoorImpost.SetImage(Value: TImage);
+begin
+  FImage := Value;
 end;
 
 end.

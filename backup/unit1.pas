@@ -24,6 +24,7 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
+    Button4: TButton;
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
@@ -61,6 +62,7 @@ type
 
 
 
+    procedure DrawFullConstruction(Sender: TObject);
     procedure DeleteConstr(Sender: TObject);
     procedure ChooseTypeOfNewConstr(Sender: TObject);
     procedure ChooseTypeOfAddingConstr(Sender: TObject);
@@ -93,6 +95,7 @@ type
     function DrawingIndex: double;
     procedure UpdateTable;
     procedure PaintSizes;
+    function DrawingFullConstrIndex: double;
 
 
 
@@ -175,12 +178,12 @@ begin
         ShowMessage('Высота всего изделия могла быть уменьшена!');
       end;
       if ((StrToInt(Edit4.Text) <> CurrCont.GetConstrWidth) and
-        (FullContainer.Count > 1) and (FullContainer.IndexOfContainer(CurrCont) =
+        (FullContainer.Count > 1) and (FullContainer.IndexOfContainer(CurrCont) <>
         FullContainer.Count - 1)) then
       begin
         DiffXOtstup := StrToInt(Edit4.Text) - CurrCont.GetConstrWidth;
-        for I := FullContainer.IndexOfContainer(CurrCont) + 1 to
-          FullContainer.Count - 1 do
+        for I := FullContainer.IndexOfContainer(CurrCont) +
+          1 to FullContainer.Count - 1 do
         begin
           FullContainer.GetContainer(I).SetCommonXOtstup(
             FullContainer.GetContainer(I).GetCommonXOtstup + DiffXOtstup);
@@ -545,6 +548,17 @@ begin
   Result := DIndex;
 end;
 
+function TForm1.DrawingFullConstrIndex: double;
+var
+  DIndex: double;
+begin
+  if ((FullConstrWidth < 3000)) then
+    DIndex := 0.15
+  else if ((FullConstrWidth >= 3000)) then
+    DIndex := 0.12;
+  Result := DIndex;
+end;
+
 {******** ИЗМЕНЕНИЕ НАЛИЧИЯ МОСКИТНОЙ СЕТКИ **********}
 procedure TForm1.CheckBox1Change(Sender: TObject);
 var
@@ -804,7 +818,7 @@ end;
 procedure TForm1.DeleteConstr(Sender: TObject);
 var
   SelectedIndex: integer;
-  i, maxHeight, DiffXOtstup: integer;
+  i, maxHeight: integer;
   CurrCont: TWindowContainer;
   CurrWin: TRectWindow;
 begin
@@ -826,23 +840,24 @@ begin
       maxHeight := 0;
       for I := 0 to FullContainer.Count - 1 do
       begin
-        if ((FullContainer.GetContainer(I).GetConstrHeight > maxHeight) and (I <> SelectedIndex)) then
+        if ((FullContainer.GetContainer(I).GetConstrHeight > maxHeight) and
+          (I <> SelectedIndex)) then
           maxHeight := FullContainer.GetContainer(I).GetConstrHeight;
       end;
       FullConstrHeight := maxHeight;
       ShowMessage('Высота всего изделия могла быть уменьшена!');
     end;
-     if ((FullContainer.Count > 1) and (FullContainer.IndexOfContainer(CurrCont) =
-        FullContainer.Count - 1)) then
+    if ((FullContainer.Count > 1) and (FullContainer.IndexOfContainer(CurrCont) <>
+      FullContainer.Count - 1)) then
+    begin
+      for I := FullContainer.IndexOfContainer(CurrCont) +
+        1 to FullContainer.Count - 1 do
       begin
-        for I := FullContainer.IndexOfContainer(CurrCont) + 1 to
-          FullContainer.Count - 1 do
-        begin
-          FullContainer.GetContainer(I).SetCommonXOtstup(
-            FullContainer.GetContainer(I).GetCommonXOtstup - CurrCont.GetConstrWidth);
-        end;
-        FullConstrWidth := FullConstrWidth - CurrCont.GetConstrWidth;
+        FullContainer.GetContainer(I).SetCommonXOtstup(
+          FullContainer.GetContainer(I).GetCommonXOtstup - CurrCont.GetConstrWidth);
       end;
+      FullConstrWidth := FullConstrWidth - CurrCont.GetConstrWidth;
+    end;
     // Remove the container from FullContainer
     FullContainer.RemoveContainer(SelectedIndex);
 
@@ -904,6 +919,53 @@ begin
   Edit1.Text := '0';
   Edit2.Text := '0';
   Panel3.Visible := False;
+end;
+
+procedure TForm1.DrawFullConstruction(Sender: TObject);
+var
+  i, j, k: integer;
+  CurrCont: TWindowContainer;
+  CurrWin: TRectWindow;
+begin
+  Image2.Canvas.Brush.Color := clWhite;
+  Image2.Canvas.FillRect(Image2.ClientRect);
+  for i := 0 to FullContainer.Count - 1 do
+  begin
+    CurrCont := FullContainer.GetContainer(i);
+    for j := 0 to CurrCont.Count - 1 do
+    begin
+      CurrWin := CurrCont.GetWindow(j);
+      CurrWin.SetImage(Image2);
+      CurrWin.SetXOtstup(CurrWin.GetXOtstup + CurrCont.GetCommonXOtstup);
+      CurrWin.SetZoomIndex(DrawingFullConstrIndex);
+      if (CurrWin.GetIsDoor) then
+      begin
+        for k := 0 to CurrWin.GetImpostsContainer.Count - 1 do begin
+           CurrWin.GetImpostsContainer.GetImpost(k).SetImage(Image2);
+        end;
+      end;
+      CurrWin.DrawWindow;
+    end;
+  end;
+
+  for i := 0 to FullContainer.Count - 1 do
+  begin
+    CurrCont := FullContainer.GetContainer(i);
+    for j := 0 to CurrCont.Count - 1 do
+    begin
+      CurrWin := CurrCont.GetWindow(j);
+      CurrWin.SetImage(Image1);
+      CurrWin.SetXOtstup(CurrWin.GetXOtstup - CurrCont.GetCommonXOtstup);
+      CurrWin.SetZoomIndex(DrawingIndex);
+      if (CurrWin.GetIsDoor) then
+      begin
+        for k := 0 to CurrWin.GetImpostsContainer.Count - 1 do begin
+           CurrWin.GetImpostsContainer.GetImpost(k).SetImage(Image1);
+        end;
+      end;
+    end;
+  end;
+  ComboBox3Change(Self);
 end;
 
 

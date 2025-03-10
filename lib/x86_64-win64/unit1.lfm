@@ -1,11 +1,11 @@
 object Form1: TForm1
-  Left = 370
+  Left = 261
   Height = 979
-  Top = 40
-  Width = 1282
+  Top = 233
+  Width = 1536
   Caption = 'Form1'
   ClientHeight = 979
-  ClientWidth = 1282
+  ClientWidth = 1536
   OnCreate = FormCreate
   PopupMenu = PopupMenu1
   LCLVersion = '3.2.0.0'
@@ -29,7 +29,7 @@ object Form1: TForm1
   object Panel1: TPanel
     Left = 912
     Height = 160
-    Top = 320
+    Top = 272
     Width = 272
     ClientHeight = 160
     ClientWidth = 272
@@ -177,7 +177,7 @@ object Form1: TForm1
   object Panel2: TPanel
     Left = 912
     Height = 164
-    Top = 122
+    Top = 96
     Width = 272
     ClientHeight = 164
     ClientWidth = 272
@@ -325,7 +325,7 @@ object Form1: TForm1
   object Panel3: TPanel
     Left = 912
     Height = 158
-    Top = 504
+    Top = 440
     Width = 272
     ClientHeight = 158
     ClientWidth = 272
@@ -391,43 +391,13 @@ object Form1: TForm1
       Caption = 'Импосты'
     end
   end
-  object StringGrid1: TStringGrid
-    Left = 1296
-    Height = 224
-    Top = 122
-    Width = 293
-    ColCount = 4
-    RowCount = 1
-    TabOrder = 4
-    ColWidths = (
-      64
-      64
-      64
-      98
-    )
-    Cells = (
-      4
-      0
-      0
-      'Индекс'
-      1
-      0
-      'Высота'
-      2
-      0
-      'Ширина'
-      3
-      0
-      'Тип открывания'
-    )
-  end
   object Button1: TButton
     Left = 16
     Height = 40
     Top = 24
     Width = 144
     Caption = 'Создать новое изделие'
-    TabOrder = 5
+    TabOrder = 4
     OnClick = ChooseTypeOfNewConstr
   end
   object Button2: TButton
@@ -436,24 +406,24 @@ object Form1: TForm1
     Top = 32
     Width = 144
     Caption = 'Добавить конструкцию'
-    TabOrder = 6
+    TabOrder = 5
     OnClick = ChooseTypeOfAddingConstr
   end
   object ComboBox3: TComboBox
     Left = 920
     Height = 23
-    Top = 80
+    Top = 58
     Width = 136
     ItemHeight = 15
     ReadOnly = True
     Style = csDropDownList
-    TabOrder = 7
+    TabOrder = 6
     OnChange = ComboBox3Change
   end
   object Label10: TLabel
     Left = 924
     Height = 15
-    Top = 54
+    Top = 32
     Width = 72
     Caption = 'Конструкции'
   end
@@ -463,33 +433,33 @@ object Form1: TForm1
     Top = 32
     Width = 136
     Caption = 'Удалить конструкцию'
-    TabOrder = 8
+    TabOrder = 7
     OnClick = DeleteConstr
   end
   object ScrollBox2: TScrollBox
     Left = 16
     Height = 352
     Top = 608
-    Width = 875
-    HorzScrollBar.Page = 854
+    Width = 1192
+    HorzScrollBar.Page = 1171
     VertScrollBar.Page = 331
     ClientHeight = 331
-    ClientWidth = 854
-    TabOrder = 9
+    ClientWidth = 1171
+    TabOrder = 8
     object Image2: TImage
       Left = -1
       Height = 352
       Top = 0
-      Width = 875
+      Width = 1192
     end
   end
   object Button4: TButton
-    Left = 952
+    Left = 1288
     Height = 58
-    Top = 768
+    Top = 736
     Width = 200
     Caption = 'Отрисовать полное изделие'
-    TabOrder = 10
+    TabOrder = 9
     OnClick = DrawFullConstruction
   end
   object PopupMenu1: TPopupMenu

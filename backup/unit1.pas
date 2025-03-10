@@ -57,7 +57,6 @@ type
     PopupMenu1: TPopupMenu;
     ScrollBox1: TScrollBox;
     ScrollBox2: TScrollBox;
-    StringGrid1: TStringGrid;
 
 
 
@@ -178,8 +177,7 @@ begin
         ShowMessage('Высота всего изделия могла быть уменьшена!');
       end;
       if ((StrToInt(Edit4.Text) <> CurrCont.GetConstrWidth) and
-        (FullContainer.Count > 1) and (FullContainer.IndexOfContainer(CurrCont) <>
-        FullContainer.Count - 1)) then
+        (FullContainer.Count > 1)) then
       begin
         DiffXOtstup := StrToInt(Edit4.Text) - CurrCont.GetConstrWidth;
         for I := FullContainer.IndexOfContainer(CurrCont) +
@@ -223,6 +221,10 @@ begin
     FRectWidth := StrToInt(Edit4.Text);
     CurrCont.SetConstrWidth(FRectWidth);
     CurrCont.SetConstrHeight(FRectHeight);
+    Edit1.Text := '0';
+    Edit2.Text := '0';
+    Panel1.Enabled := False;
+    Panel3.Visible := False;
   end;
   Image1.Canvas.Brush.Color := clWhite;
   Image1.Canvas.FillRect(0, 0, 3500, 2000);
@@ -378,8 +380,6 @@ begin
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetWidth(ChangedWindow.GetWidth + DiffX);
                 ChangedWindow.SetXOtstup(ChangedWindow.GetXOtstup - DiffX);
-                StringGrid1.Cells[2, ChangedWindow.GetTableIdx] :=
-                  IntToStr(Window.GetWidth);
               end;
             end
             else if (HeightLeft = Window.GetHeight) then
@@ -553,9 +553,9 @@ var
   DIndex: double;
 begin
   if ((FullConstrWidth < 10000)) then
-    DIndex := 0.15
+    DIndex := 0.13
   else if ((FullConstrWidth >= 10000)) then
-    DIndex := 0.12;
+    DIndex := 0.10;
   Result := DIndex;
 end;
 
@@ -652,10 +652,7 @@ begin
   Image1.Canvas.Brush.Color := clWhite;
   Image1.Canvas.FillRect(Image1.ClientRect);
 
-  Image2.Canvas.Brush.Color := clWhite;
-  Image2.Canvas.FillRect(Image2.ClientRect);
 
-  StringGrid1.RowCount := 1;
   ComboBox1.Enabled := False;
   ComboBox1.ItemIndex := 0;
   CheckBox1.Visible := False;
@@ -805,6 +802,9 @@ begin
   finally
     Form2.Free; // Освобождаем память после закрытия Form2
   end;
+
+  Image2.Canvas.Brush.Color := clWhite;
+  Image2.Canvas.FillRect(Image2.ClientRect);
 end;
 
 
@@ -1766,6 +1766,7 @@ begin
   end;
 end;
 
+
 {******** ОБНОВЛЕНИЕ ТАБЛИЦЫ **********}
 procedure TForm1.UpdateTable;
 var
@@ -1773,6 +1774,7 @@ var
   TempString: string;
   WindowList: TStringList;
 begin
+  {
   // Создаем список окон с их индексами
   WindowList := TStringList.Create;
   try
@@ -1807,8 +1809,9 @@ begin
     end;
   finally
     WindowList.Free;
+    }
   end;
-end;
+
 
 
 

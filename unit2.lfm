@@ -1,9 +1,10 @@
 object Form2: TForm2
-  Left = 1579
+  Left = 857
   Height = 138
-  Top = 175
+  Top = 164
   Width = 258
   Caption = 'Form2'
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '3.2.0.0'
 end

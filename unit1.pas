@@ -54,10 +54,11 @@ type
     Panel1: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
+    Panel4: TPanel;
     PopupMenu1: TPopupMenu;
     ScrollBox1: TScrollBox;
     ScrollBox2: TScrollBox;
-
+    ScrollBox3: TScrollBox;
 
 
 
@@ -514,6 +515,7 @@ begin
       begin
         CheckBox1.Visible := False;
         Label8.Visible := False;
+        Window.SetMoskit(False);
       end;
       if (Window.GetIsDoor = True) then
       begin
@@ -552,8 +554,8 @@ function TForm1.DrawingFullConstrIndex: double;
 var
   DIndex: double;
 begin
-  if ((FullConstrWidth < 10000)) then
-    DIndex := 0.13
+  if ((FullConstrWidth < 9000)) then
+    DIndex := 0.12
   else if ((FullConstrWidth >= 9000)) then
     DIndex := 0.10;
   Result := DIndex;
@@ -618,6 +620,12 @@ end;
 {******** СОЗДАНИЕ ФОРМЫ **********}
 procedure TForm1.FormCreate(Sender: TObject);
 begin
+  Width := Round(Screen.Width);
+  Height := Round(Screen.Height);
+  WindowState := wsMaximized;
+  Left := 0; // Устанавливаем положение формы в левый верхний угол
+  Top := 0;  // Устанавливаем положение формы в верхний угол
+  // Настройка панелей и элементов управления
   Panel1.Enabled := False;
   Panel2.Enabled := False;
   Panel3.Enabled := False;
@@ -631,6 +639,7 @@ begin
   Button3.Visible := False;
   Combobox3.Enabled := False;
   Button4.Enabled := False;
+
 end;
 
 
@@ -1032,7 +1041,7 @@ begin
           begin
             for j := 0 to ImpostsContainer.Count - 1 do
             begin
-              ComboBox2.Items.Add(Format('Импост : %d мм',
+              ComboBox2.Items.Add(Format('%d мм',
                 [ImpostsContainer.GetImpost(j).GetFImpYOtstup]));
             end;
           end;
@@ -1215,7 +1224,7 @@ begin
       begin
         DoorImpost := TPlasticDoorImpost.Create(HorizImpost, Image1);
         Window.GetImpostsContainer.AddImpost(DoorImpost);
-        ComboBox2.Items.Add(Format('Импост : %d мм', [HorizImpost]));
+        ComboBox2.Items.Add(Format('%d мм', [HorizImpost]));
         ComboBox2.ItemIndex := ComboBox2.Items.Count - 1;
         DrawWindows;
       end

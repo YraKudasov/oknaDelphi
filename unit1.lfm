@@ -1,34 +1,35 @@
 object Form1: TForm1
-  Left = 170
-  Height = 896
-  Top = 186
-  Width = 1542
+  Left = 147
+  Height = 694
+  Top = 181
+  Width = 1276
   Align = alClient
   Caption = 'Form1'
-  ClientHeight = 896
-  ClientWidth = 1542
+  ClientHeight = 694
+  ClientWidth = 1276
   OnCreate = FormCreate
   PopupMenu = PopupMenu1
   Position = poScreenCenter
   LCLVersion = '3.2.0.0'
   object ScrollBox3: TScrollBox
     Left = 0
-    Height = 896
+    Height = 694
     Top = 0
-    Width = 1542
-    HorzScrollBar.Page = 1521
-    VertScrollBar.Page = 875
+    Width = 1276
+    HorzScrollBar.Page = 1089
+    VertScrollBar.Page = 690
     Align = alClient
-    ClientHeight = 875
-    ClientWidth = 1521
+    ClientHeight = 690
+    ClientWidth = 1255
     TabOrder = 0
     object Panel4: TPanel
       Left = 0
-      Height = 1080
+      Height = 726
       Top = 0
-      Width = 1920
-      ClientHeight = 1080
-      ClientWidth = 1920
+      Width = 1089
+      AutoSize = True
+      ClientHeight = 726
+      ClientWidth = 1089
       TabOrder = 0
       object Panel2: TPanel
         Left = 889
@@ -398,7 +399,7 @@ object Form1: TForm1
       object Button1: TButton
         Left = 1
         Height = 25
-        Top = 16
+        Top = 1
         Width = 152
         Caption = 'Создать новое изделие'
         TabOrder = 3
@@ -407,7 +408,7 @@ object Form1: TForm1
       object Button2: TButton
         Left = 560
         Height = 25
-        Top = 16
+        Top = 1
         Width = 155
         Caption = 'Добавить конструкцию'
         TabOrder = 4
@@ -434,42 +435,42 @@ object Form1: TForm1
       end
       object ScrollBox1: TScrollBox
         Left = 1
-        Height = 495
-        Top = 49
+        Height = 388
+        Top = 32
         Width = 876
         HorzScrollBar.Page = 872
-        VertScrollBar.Page = 491
-        ClientHeight = 491
+        VertScrollBar.Page = 384
+        ClientHeight = 384
         ClientWidth = 872
         TabOrder = 6
         object Image1: TImage
           Left = 0
-          Height = 491
+          Height = 384
           Top = 0
           Width = 872
         end
       end
       object ScrollBox2: TScrollBox
         Left = 1
-        Height = 339
-        Top = 552
+        Height = 301
+        Top = 424
         Width = 877
         HorzScrollBar.Page = 873
-        VertScrollBar.Page = 318
-        ClientHeight = 318
+        VertScrollBar.Page = 280
+        ClientHeight = 280
         ClientWidth = 873
         TabOrder = 7
         object Image2: TImage
           Left = 0
-          Height = 318
+          Height = 280
           Top = 0
           Width = 1248
         end
       end
       object Button3: TButton
-        Left = 731
+        Left = 728
         Height = 25
-        Top = 16
+        Top = 1
         Width = 147
         Caption = 'Удалить конструкцию'
         TabOrder = 8
@@ -487,7 +488,7 @@ object Form1: TForm1
     end
   end
   object PopupMenu1: TPopupMenu
-    Left = 1272
+    Left = 1120
     Top = 24
     object MenuItem1: TMenuItem
       Caption = 'Добавить'

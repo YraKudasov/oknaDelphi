@@ -542,11 +542,11 @@ begin
   if ((FrectHeight < 1300) and (FRectWidth < 1895)) then
     DIndex := 0.24
   else if ((FrectHeight < 1800) and (FRectWidth < 2625)) then
-    DIndex := 0.22
+    DIndex := 0.17
   else if ((FrectHeight < 2101) and (FRectWidth < 3062)) then
-    DIndex := 0.20
+    DIndex := 0.15
   else if ((FrectHeight >= 2101) or (FRectWidth >= 3062)) then
-    DIndex := 0.17;
+    DIndex := 0.13;
   Result := DIndex;
 end;
 
@@ -555,8 +555,6 @@ var
   DIndex: double;
 begin
   if ((FullConstrWidth < 9000)) then
-    DIndex := 0.12
-  else if ((FullConstrWidth >= 9000)) then
     DIndex := 0.10;
   Result := DIndex;
 end;
@@ -1224,7 +1222,7 @@ begin
       begin
         DoorImpost := TPlasticDoorImpost.Create(HorizImpost, Image1);
         Window.GetImpostsContainer.AddImpost(DoorImpost);
-        ComboBox2.Items.Add(Format('Импост : %d мм', [HorizImpost]));
+        ComboBox2.Items.Add(Format('%d мм', [HorizImpost]));
         ComboBox2.ItemIndex := ComboBox2.Items.Count - 1;
         DrawWindows;
       end

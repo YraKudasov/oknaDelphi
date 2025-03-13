@@ -172,14 +172,14 @@ begin
   while x < ScaledXOt + ScaledRectW - Round(ZoomIndex / MaxZoom * 30) do
   begin
     FImage.Canvas.Line(x, ScaledYOt + Round(ZoomIndex / MaxZoom * 36), x, ScaledRectH - Round(ZoomIndex / MaxZoom * 34) + ScaledYOt);
-    x := x + Round(ZoomIndex / MaxZoom * 6); // 6-pixel interval
+    x := x + Round(ZoomIndex / MaxZoom * 10); // 6-pixel interval
   end;
 
   y := ScaledYOt + Round(ZoomIndex / MaxZoom * 36);
   while y < ScaledYOt + ScaledRectH - Round(ZoomIndex / MaxZoom * 30) do
   begin
     FImage.Canvas.Line(ScaledXOt + Round(ZoomIndex / MaxZoom * 36), y, ScaledRectW - Round(ZoomIndex / MaxZoom * 34) + ScaledXOt, y);
-    y := y + Round(ZoomIndex / MaxZoom * 6); // 6-pixel interval
+    y := y + Round(ZoomIndex / MaxZoom * 10); // 6-pixel interval
   end;
 end;
 
@@ -569,6 +569,12 @@ end;
 function TRectWindow.GetImpostsContainer: TImpostsContainer;
 begin
   Result := FImpostsContainer;
+end;
+
+
+procedure TRectWindow.SetImage(Value: TImage);
+begin
+  FImage := Value;
 end;
 
 end.

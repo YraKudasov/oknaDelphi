@@ -169,17 +169,17 @@ begin
   FImage.Canvas.Pen.Width := 1;
 
   x := ScaledXOt + Round(ZoomIndex / MaxZoom * 36);
-  while x < ScaledXOt + ScaledRectW - Round(ZoomIndex / MaxZoom * 30) do
+  while x < ScaledXOt + ScaledRectW - Round(ZoomIndex / MaxZoom * 40) do
   begin
     FImage.Canvas.Line(x, ScaledYOt + Round(ZoomIndex / MaxZoom * 36), x, ScaledRectH - Round(ZoomIndex / MaxZoom * 34) + ScaledYOt);
-    x := x + Round(ZoomIndex / MaxZoom * 6); // 6-pixel interval
+    x := x + Round(ZoomIndex / MaxZoom * 10); // 6-pixel interval
   end;
 
   y := ScaledYOt + Round(ZoomIndex / MaxZoom * 36);
-  while y < ScaledYOt + ScaledRectH - Round(ZoomIndex / MaxZoom * 30) do
+  while y < ScaledYOt + ScaledRectH - Round(ZoomIndex / MaxZoom * 40) do
   begin
     FImage.Canvas.Line(ScaledXOt + Round(ZoomIndex / MaxZoom * 36), y, ScaledRectW - Round(ZoomIndex / MaxZoom * 34) + ScaledXOt, y);
-    y := y + Round(ZoomIndex / MaxZoom * 6); // 6-pixel interval
+    y := y + Round(ZoomIndex / MaxZoom * 10); // 6-pixel interval
   end;
 end;
 

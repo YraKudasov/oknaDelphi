@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 147
+  Left = 557
   Height = 694
-  Top = 181
+  Top = 173
   Width = 1276
   Align = alClient
   Caption = 'Form1'

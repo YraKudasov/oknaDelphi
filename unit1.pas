@@ -494,7 +494,8 @@ end;
 {******** ИЗМЕНЕНИЕ ТИПА ОКНА **********}
 procedure TForm1.ComboBox1Change(Sender: TObject);
 var
-  Window: TRectWindow;
+  i: integer;
+  Window, NearWin: TRectWindow;
   CurrCont: TWindowContainer;
 begin
   CurrCont := FullContainer.GetContainer(CurrentContainer);
@@ -504,6 +505,33 @@ begin
     if Assigned(Window) then
     begin
       Window.SetType(ComboBox1.ItemIndex);
+
+      if((ComboBox1.ItemIndex = 1) or (ComboBox1.ItemIndex = 2))then
+      begin
+        for i:=0 to CurrCont.Count - 1 do begin
+          NearWin := CurrCont.GetWindow(i);
+          if((NearWin.GetXOtstup + NearWin.GetWidth = Window.GetXOtstup) and (NearWin.GetType = 4) or (NearWin.GetType = 5))then
+          begin
+             Window.SetType(0);
+             ComboBox1.ItemIndex := 0;
+             ShowMessage('Предупреждение: Невозможно установить данный тип открывания, так как окно слева уже имеет крепежи на данном импосте.');
+             Break;
+          end;
+        end;
+      end;
+      if((ComboBox1.ItemIndex = 4) or (ComboBox1.ItemIndex = 5))then
+      begin
+        for i:=0 to CurrCont.Count - 1 do begin
+          NearWin := CurrCont.GetWindow(i);
+          if((Window.GetXOtstup + Window.GetWidth = NearWin.GetXOtstup) and (NearWin.GetType = 1) or (NearWin.GetType = 2))then
+          begin
+             Window.SetType(0);
+             ComboBox1.ItemIndex := 0;
+             ShowMessage('Предупреждение: Невозможно установить данный тип открывания, так как окно справа уже имеет крепежи на данном импосте.');
+             Break;
+          end;
+        end;
+      end;
 
       if (ComboBox1.ItemIndex <> 0) then
       begin

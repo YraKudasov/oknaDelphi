@@ -1,26 +1,26 @@
 object Form1: TForm1
-  Left = 253
-  Height = 836
-  Top = 118
-  Width = 1390
+  Left = 557
+  Height = 694
+  Top = 173
+  Width = 1276
   Align = alClient
   Caption = 'Form1'
-  ClientHeight = 836
-  ClientWidth = 1390
+  ClientHeight = 694
+  ClientWidth = 1276
   OnCreate = FormCreate
   PopupMenu = PopupMenu1
   Position = poScreenCenter
   LCLVersion = '3.2.0.0'
   object ScrollBox3: TScrollBox
     Left = 0
-    Height = 836
+    Height = 694
     Top = 0
-    Width = 1390
+    Width = 1276
     HorzScrollBar.Page = 1089
-    VertScrollBar.Page = 726
+    VertScrollBar.Page = 690
     Align = alClient
-    ClientHeight = 832
-    ClientWidth = 1386
+    ClientHeight = 690
+    ClientWidth = 1255
     TabOrder = 0
     object Panel4: TPanel
       Left = 0

@@ -506,29 +506,39 @@ begin
     begin
       Window.SetType(ComboBox1.ItemIndex);
 
-      if((ComboBox1.ItemIndex = 1) or (ComboBox1.ItemIndex = 2))then
+      if ((ComboBox1.ItemIndex = 1) or (ComboBox1.ItemIndex = 2)) then
       begin
-        for i:=0 to CurrCont.Count - 1 do begin
+        for i := 0 to CurrCont.Count - 1 do
+        begin
           NearWin := CurrCont.GetWindow(i);
-          if((NearWin.GetXOtstup + NearWin.GetWidth = Window.GetXOtstup) and (NearWin.GetType = 4) or (NearWin.GetType = 5))then
+          if ((NearWin.GetXOtstup + NearWin.GetWidth = Window.GetXOtstup) and
+            ((NearWin.GetType = 4) or (NearWin.GetType = 5)) and
+            (((Window.GetYOtstup <= NearWin.GetYOtstup) and
+            (Window.GetYOtstup + Window.GetWidth > NearWin.GetYOtstup)) or
+            ((NearWin.GetYOtstup < Window.GetYOtstup) and
+            (NearWin.GetYOtstup + NearWin.GetWidth > Window.GetYOtstup)))) then
           begin
-             Window.SetType(0);
-             ComboBox1.ItemIndex := 0;
-             ShowMessage('Предупреждение: Невозможно установить данный тип открывания, так как окно слева уже имеет крепежи на данном импосте.');
-             Break;
+            Window.SetType(0);
+            ComboBox1.ItemIndex := 0;
+            ShowMessage(
+              'Предупреждение: Невозможно установить данный тип открывания, так как окно слева уже имеет крепежи на данном импосте.');
+            Break;
           end;
         end;
       end;
-      if((ComboBox1.ItemIndex = 4) or (ComboBox1.ItemIndex = 5))then
+      if ((ComboBox1.ItemIndex = 4) or (ComboBox1.ItemIndex = 5)) then
       begin
-        for i:=0 to CurrCont.Count - 1 do begin
+        for i := 0 to CurrCont.Count - 1 do
+        begin
           NearWin := CurrCont.GetWindow(i);
-          if((Window.GetXOtstup + Window.GetWidth = NearWin.GetXOtstup) and (NearWin.GetType = 1) or (NearWin.GetType = 2))then
+          if ((Window.GetXOtstup + Window.GetWidth = NearWin.GetXOtstup) and
+            ((NearWin.GetType = 1) or (NearWin.GetType = 2))) then
           begin
-             Window.SetType(0);
-             ComboBox1.ItemIndex := 0;
-             ShowMessage('Предупреждение: Невозможно установить данный тип открывания, так как окно слева уже имеет крепежи на данном импосте.');
-             Break;
+            Window.SetType(0);
+            ComboBox1.ItemIndex := 0;
+            ShowMessage(
+              'Предупреждение: Невозможно установить данный тип открывания, так как окно справа уже имеет крепежи на данном импосте.');
+            Break;
           end;
         end;
       end;
@@ -649,8 +659,10 @@ begin
   Width := Round(Screen.Width);
   Height := Round(Screen.Height);
   WindowState := wsMaximized;
-  Left := 0; // Устанавливаем положение формы в левый верхний угол
-  Top := 0;  // Устанавливаем положение формы в верхний угол
+  Left := 0;
+  // Устанавливаем положение формы в левый верхний угол
+  Top := 0;
+  // Устанавливаем положение формы в верхний угол
   // Настройка панелей и элементов управления
   Panel1.Enabled := False;
   Panel2.Enabled := False;
@@ -979,8 +991,9 @@ begin
       CurrWin.SetZoomIndex(DrawingFullConstrIndex);
       if (CurrWin.GetIsDoor) then
       begin
-        for k := 0 to CurrWin.GetImpostsContainer.Count - 1 do begin
-           CurrWin.GetImpostsContainer.GetImpost(k).SetImage(Image2);
+        for k := 0 to CurrWin.GetImpostsContainer.Count - 1 do
+        begin
+          CurrWin.GetImpostsContainer.GetImpost(k).SetImage(Image2);
         end;
       end;
       CurrWin.DrawWindow;
@@ -998,8 +1011,9 @@ begin
       CurrWin.SetZoomIndex(DrawingIndex);
       if (CurrWin.GetIsDoor) then
       begin
-        for k := 0 to CurrWin.GetImpostsContainer.Count - 1 do begin
-           CurrWin.GetImpostsContainer.GetImpost(k).SetImage(Image1);
+        for k := 0 to CurrWin.GetImpostsContainer.Count - 1 do
+        begin
+          CurrWin.GetImpostsContainer.GetImpost(k).SetImage(Image1);
         end;
       end;
     end;
@@ -1845,7 +1859,7 @@ begin
   finally
     WindowList.Free;
     }
-  end;
+end;
 
 
 

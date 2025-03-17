@@ -25,6 +25,7 @@ type
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
+    Button5: TButton;
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
@@ -62,6 +63,7 @@ type
 
 
 
+    procedure AlignWidth(Sender: TObject);
     procedure DrawFullConstruction(Sender: TObject);
     procedure DeleteConstr(Sender: TObject);
     procedure ChooseTypeOfNewConstr(Sender: TObject);
@@ -681,6 +683,7 @@ begin
   Button3.Visible := False;
   Combobox3.Enabled := False;
   Button4.Enabled := False;
+  Button5.Enabled := False;
 
 end;
 
@@ -741,7 +744,7 @@ begin
   // Делаем добавленный элемент текущим выбранным
   ComboBox3.ItemIndex := ComboBox3.Items.Count - 1;
   Button4.Enabled := True;
-
+  Button5.Enabled := True;
   if (isPlasticDoor = False) then
   begin
 
@@ -1023,6 +1026,77 @@ begin
     end;
   end;
   ComboBox3Change(Self);
+end;
+
+procedure TForm1.AlignWidth(Sender: TObject);
+var
+  CurrIndexes, UsedIndexes: array of integer;
+  i, j, k, l: integer;
+  CurrCont: TWindowContainer;
+  CountWin, SumWidth, WidthOfWin, Ostatok, OldWidth, DiffOtstup: integer;
+begin
+  CurrCont := FullContainer.GetContainer(CurrentContainer);
+  SetLength(CurrIndexes, CurrCont.Count);
+  SetLength(UsedIndexes, CurrCont.Count);
+  for i := 0 to CurrCont.Count - 1 do
+  begin
+    UsedIndexes[i] := -1;
+  end;
+  for i := 0 to CurrCont.Count - 1 do
+  begin
+    for l := 0 to CurrCont.Count - 1 do
+    begin
+      CurrIndexes[i] := -1;
+    end;
+    if (UsedIndexes[i] = -1) then
+    begin
+      CountWin := 1;
+      CurrIndexes[i] := i;
+      UsedIndexes[i] := i;
+      SumWidth := CurrCont.GetWindow(i).GetWidth;
+      for j := i + 1 to CurrCont.Count - 1 do
+      begin
+        if ((CurrCont.GetWindow(j).GetHeight = CurrCont.GetWindow(i).GetHeight) and
+          (CurrCont.GetWindow(j).GetYOtstup =
+          CurrCont.GetWindow(i).GetYOtstup) and
+          (CurrCont.GetWindow(j).GetXOtstup = SumWidth)) then
+        begin
+          CountWin := CountWin + 1;
+          CurrIndexes[j] := j;
+          UsedIndexes[j] := j;
+          SumWidth := SumWidth + CurrCont.GetWindow(j).GetWidth;
+        end;
+      end;
+      if (SumWidth <> CurrCont.GetWindow(i).GetWidth) then
+      begin
+        WidthOfWin := SumWidth div CountWin;
+        Ostatok := SumWidth mod CountWin;
+        DiffOtstup := 0;
+        for l := i to CurrCont.Count - 1 do
+        begin
+          if (CurrIndexes[l] <> -1) then
+          begin
+            CurrCont.GetWindow(l).SetXOtstup(CurrCont.GetWindow(l).GetXOtstup +
+              DiffOtstup);
+            OldWidth := CurrCont.GetWindow(l).GetWidth;
+            DiffOtstup := DiffOtstup + WidthOfWin - OldWidth;
+            if (Ostatok > 0) then
+            begin
+              Ostatok := Ostatok - 1;
+              CurrCont.GetWindow(l).SetWidth(WidthOfWin + 1);
+              CurrCont.GetWindow(l).SetXOtstup(CurrCont.GetWindow(l).GetXOtstup +
+                1);
+            end
+            else
+              CurrCont.GetWindow(l).SetWidth(WidthOfWin);
+          end;
+        end;
+      end;
+    end;
+  end;
+  Image1.Canvas.Brush.Color := clWhite;
+  Image1.Canvas.FillRect(Image1.ClientRect);
+  DrawWindows;
 end;
 
 

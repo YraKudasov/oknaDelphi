@@ -1,7 +1,7 @@
 object Form2: TForm2
-  Left = 864
+  Left = 534
   Height = 138
-  Top = 172
+  Top = 110
   Width = 258
   Caption = 'Form2'
   OnCreate = FormCreate

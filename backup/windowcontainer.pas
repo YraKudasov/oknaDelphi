@@ -24,13 +24,15 @@ type
     function IndexOf(const AWindow: TRectWindow): integer;
     function GetSelectedIndex: integer;
     function FindWindow(const ClickX, ClickY: integer): integer;
-    function GetIndexRowColumn(Row, Column: integer): Integer;
+    function GetIndexRowColumn(Row, Column: integer): integer;
     function GetConstrWidth: integer;
     procedure SetConstrWidth(Value: integer);
     function GetConstrHeight: integer;
     procedure SetConstrHeight(Value: integer);
     procedure SetCommonXOtstup(Value: integer);
-    function TWindowContainer.GetCommonXOtstup: integer;
+    function GetCommonXOtstup: integer;
+    function GetMaxRow: integer;
+    function GetMaxColumn: integer;
     // Другие методы, если необходимо
   end;
 
@@ -57,26 +59,27 @@ begin
   Result := TRectWindow(FWindows[index]);
 end;
 
-  function TWindowContainer.GetIndexRowColumn(Row, Column: integer): Integer;
-  var
-    Index: integer;
+function TWindowContainer.GetIndexRowColumn(Row, Column: integer): integer;
+var
+  Index: integer;
+begin
+  Result := -1;
+  // Инициализируем результат, если ничего не выбрано
+  for Index := 0 to Count - 1 do
   begin
-    Result := -1;
-    // Инициализируем результат, если ничего не выбрано
-    for Index := 0 to Count - 1 do
+    if FWindows[Index] is TRectWindow then
     begin
-      if FWindows[Index] is TRectWindow then
+      if ((TRectWindow(FWindows[Index]).GetRow = Row) and
+        (TRectWindow(FWindows[Index]).GetColumn = Column)) then
       begin
-        if ((TRectWindow(FWindows[Index]).GetRow = Row) and (TRectWindow(FWindows[Index]).GetRow = Column)) then
-        begin
-          Result := Index;
-          // Возвращаем индекс выбранного экземпляра
-          Break;
-          // Прерываем цикл, так как нашли выбранный экземпляр
-        end;
+        Result := Index;
+        // Возвращаем индекс выбранного экземпляра
+        Break;
+        // Прерываем цикл, так как нашли выбранный экземпляр
       end;
     end;
   end;
+end;
 
 function TWindowContainer.Count: integer;
 begin
@@ -88,15 +91,15 @@ begin
   Result := FWindows;
 end;
 
-procedure TWindowContainer.RemoveWindow(Index: Integer);
+procedure TWindowContainer.RemoveWindow(Index: integer);
 var
-  i: Integer;
+  i: integer;
 begin
   if (Index >= 0) and (Index < FWindows.Count) then
   begin
     FWindows.Delete(Index);
 
-end;
+  end;
 end;
 
 procedure TWindowContainer.Clear;
@@ -180,6 +183,36 @@ begin
   FCommonXOtstup := Value;
 end;
 
+
+function TWindowContainer.GetMaxRow: integer;
+var
+  Index, MaxRow: integer;
+  Window: TRectWindow;
+begin
+  MaxRow := 1;
+  for Index := 0 to Count - 1 do
+  begin
+    Window := GetWindow(Index);
+    if (Window.GetRow > MaxRow) then
+      MaxRow := Window.GetRow;
+  end;
+  Result := MaxRow;
+end;
+
+function TWindowContainer.GetMaxColumn: integer;
+var
+  Index, MaxCol: integer;
+  Window: TRectWindow;
+begin
+  MaxCol := 1;
+  for Index := 0 to Count - 1 do
+  begin
+    Window := GetWindow(Index);
+    if (Window.GetColumn > MaxCol) then
+      MaxCol := Window.GetColumn;
+  end;
+  Result := MaxCol;
+end;
 
 
 end.

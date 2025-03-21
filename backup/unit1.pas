@@ -415,6 +415,7 @@ end;
 {******** ВЫДЕЛЕНИЕ ОКНА ПРИ КЛИКЕ **********}
 procedure TForm1.RectWindowSelected(Sender: TObject);
 var
+  CurrCont: TWindowContainer;
   Window: TRectWindow;
   ImpostsContainer: TImpostsContainer;
   j: integer;
@@ -473,6 +474,7 @@ begin
     ComboBox2.Visible := False;
     Label9.Visible := False;
   end;
+
 end;
 
 {******** ОТМЕНА ВЫДЕЛЕНИЯ **********}
@@ -683,6 +685,7 @@ begin
   Button3.Visible := False;
   Combobox3.Enabled := False;
   Button4.Enabled := False;
+  Button5.Enabled := False;
 
 end;
 
@@ -743,7 +746,7 @@ begin
   // Делаем добавленный элемент текущим выбранным
   ComboBox3.ItemIndex := ComboBox3.Items.Count - 1;
   Button4.Enabled := True;
-
+  Button5.Enabled := True;
   if (isPlasticDoor = False) then
   begin
 
@@ -1029,65 +1032,92 @@ end;
 
 procedure TForm1.AlignWidth(Sender: TObject);
 var
-  CurrIndexes, UsedIndexes: array of integer;
-  i, j, k, l: integer;
+  CurrIndexes, UsedIndexes: array of array of integer;
+  i, t, j, k, l: integer;
   CurrCont: TWindowContainer;
   CountWin, SumWidth, WidthOfWin, Ostatok, OldWidth, DiffOtstup: integer;
 begin
   CurrCont := FullContainer.GetContainer(CurrentContainer);
-  SetLength(CurrIndexes, CurrCont.Count);
-  SetLength(UsedIndexes, CurrCont.Count);
-  for i := 0 to CurrCont.Count - 1 do
+  ShowMessage(IntToStr(CurrCont.GetMaxRow) + ' ' + IntToStr(CurrCont.GetMaxColumn));
+  SetLength(CurrIndexes, CurrCont.GetMaxRow + 1, CurrCont.GetMaxColumn + 1);
+  SetLength(UsedIndexes, CurrCont.GetMaxRow + 1, CurrCont.GetMaxColumn + 1);
+  for i := 1 to CurrCont.GetMaxRow do
   begin
-    UsedIndexes[i] := -1;
-  end;
-  for i := 0 to CurrCont.Count - 1 do
-  begin
-    for l := 0 to CurrCont.Count - 1 do
+    for t := 1 to CurrCont.GetMaxColumn do
     begin
-      CurrIndexes[i] := -1;
+      UsedIndexes[i][t] := -1;
     end;
-    if (UsedIndexes[i] = -1) then
+  end;
+  for i := 1 to CurrCont.GetMaxRow do
+  begin
+    for t := 1 to CurrCont.GetMaxColumn do
     begin
-      CountWin := 1;
-      CurrIndexes[i] := i;
-      UsedIndexes[i] := i;
-      SumWidth := CurrCont.GetWindow(i).GetWidth;
-      for j := i + 1 to CurrCont.Count - 1 do
+
+      for l := 1 to CurrCont.GetMaxRow do
       begin
-        if ((CurrCont.GetWindow(j).GetHeight = CurrCont.GetWindow(i).GetHeight) and
-          (CurrCont.GetWindow(j).GetYOtstup =
-          CurrCont.GetWindow(i).GetYOtstup) and
-          (CurrCont.GetWindow(j).GetXOtstup = SumWidth)) then
+        for k := 1 to CurrCont.GetMaxColumn do
         begin
-          CountWin := CountWin + 1;
-          CurrIndexes[j] := j;
-          UsedIndexes[j] := j;
-          SumWidth := SumWidth + CurrCont.GetWindow(j).GetWidth;
+          CurrIndexes[l][k] := -1;
         end;
       end;
-      if (SumWidth <> CurrCont.GetWindow(i).GetWidth) then
+
+      if ((UsedIndexes[i][t] = -1) and (CurrCont.GetIndexRowColumn(i, t) <> -1)) then
       begin
-        WidthOfWin := SumWidth div CountWin;
-        Ostatok := SumWidth mod CountWin;
-        DiffOtstup := 0;
-        for l := i to CurrCont.Count - 1 do
+        CountWin := 1;
+        CurrIndexes[i][t] := i;
+        UsedIndexes[i][t] := i;
+        SumWidth := CurrCont.GetWindow(CurrCont.GetIndexRowColumn(i, t)).GetWidth;
+
+        for j := 1 to CurrCont.GetMaxRow do
         begin
-          if (CurrIndexes[l] <> -1) then
+          for k := 1 to CurrCont.GetMaxColumn do
           begin
-            CurrCont.GetWindow(l).SetXOtstup(CurrCont.GetWindow(l).GetXOtstup +
-              DiffOtstup);
-            OldWidth := CurrCont.GetWindow(l).GetWidth;
-            DiffOtstup := DiffOtstup + WidthOfWin - OldWidth;
-            if (Ostatok > 0) then
+            if ((CurrCont.GetWindow(CurrCont.GetIndexRowColumn(j, k)).GetHeight =
+              CurrCont.GetWindow(CurrCont.GetIndexRowColumn(i, t)).GetHeight) and
+              (CurrCont.GetWindow(CurrCont.GetIndexRowColumn(j, k)).GetYOtstup =
+              CurrCont.GetWindow(CurrCont.GetIndexRowColumn(i, t)).GetYOtstup) and
+              (CurrCont.GetWindow(CurrCont.GetIndexRowColumn(j, k)).GetXOtstup =
+              SumWidth) and (UsedIndexes[j][k] = -1) and (CurrCont.GetIndexRowColumn(j, k) <> -1)) then
             begin
-              Ostatok := Ostatok - 1;
-              CurrCont.GetWindow(l).SetWidth(WidthOfWin + 1);
-              CurrCont.GetWindow(l).SetXOtstup(CurrCont.GetWindow(l).GetXOtstup +
-                1);
-            end
-            else
-              CurrCont.GetWindow(l).SetWidth(WidthOfWin);
+              CountWin := CountWin + 1;
+              CurrIndexes[j][k] := j;
+              UsedIndexes[j][k] := j;
+              SumWidth := SumWidth + CurrCont.GetWindow(
+                CurrCont.GetIndexRowColumn(j, k)).GetWidth;
+            end;
+          end;
+        end;
+        if ((SumWidth <> CurrCont.GetWindow(CurrCont.GetIndexRowColumn(i, t)).GetWidth))
+        then
+        begin
+          WidthOfWin := SumWidth div CountWin;
+          Ostatok := SumWidth mod CountWin;
+          DiffOtstup := 0;
+          for l := 1 to CurrCont.GetMaxRow do
+          begin
+            for k := 1 to CurrCont.GetMaxColumn do
+            begin
+              if (CurrIndexes[l][k] <> -1) then
+              begin
+                CurrCont.GetWindow(CurrCont.GetIndexRowColumn(l, k)).SetXOtstup(
+                  CurrCont.GetWindow(CurrCont.GetIndexRowColumn(l, k)).GetXOtstup +
+                  DiffOtstup);
+                OldWidth := CurrCont.GetWindow(CurrCont.GetIndexRowColumn(l,
+                  k)).GetWidth;
+                DiffOtstup := DiffOtstup + WidthOfWin - OldWidth;
+                if (Ostatok > 0) then
+                begin
+                  Ostatok := Ostatok - 1;
+                  CurrCont.GetWindow(CurrCont.GetIndexRowColumn(l, k)).SetWidth(
+                    WidthOfWin + 1);
+                  CurrCont.GetWindow(CurrCont.GetIndexRowColumn(l, k)).SetXOtstup(
+                    CurrCont.GetWindow(CurrCont.GetIndexRowColumn(l, k)).GetXOtstup + 1);
+                end
+                else
+                  CurrCont.GetWindow(CurrCont.GetIndexRowColumn(l, k)).SetWidth(
+                    WidthOfWin);
+              end;
+            end;
           end;
         end;
       end;

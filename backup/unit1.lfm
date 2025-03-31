@@ -130,9 +130,9 @@ object Form1: TForm1
         OnClick = ChooseTypeOfNewConstr
       end
       object Panel3: TPanel
-        Left = 889
+        Left = 888
         Height = 113
-        Top = 360
+        Top = 368
         Width = 199
         ClientHeight = 113
         ClientWidth = 199
@@ -493,6 +493,15 @@ object Form1: TForm1
           OnClick = BitBtn4Click
           TabOrder = 3
         end
+      end
+      object Button6: TButton
+        Left = 904
+        Height = 22
+        Top = 344
+        Width = 163
+        Caption = 'Выровнить по свету'
+        TabOrder = 11
+        OnClick = AlignForSun
       end
     end
   end

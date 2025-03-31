@@ -1304,6 +1304,7 @@ var
   SelectedWindow: TRectWindow;
   ImpostsContainer: TImpostsContainer;
 begin
+  ResetAllWindowSelections;
   RectWindowDeselected(Self);
   // Получаем индекс выбранного элемента в ComboBox3
   SelectedIndex := ComboBox3.ItemIndex;
@@ -1376,7 +1377,6 @@ begin
       end;
 
     end;
-    ResetAllWindowSelections;
     DrawWindows;
   end;
 end;

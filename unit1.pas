@@ -1599,17 +1599,6 @@ begin
 
 
 
-
-        if CurrCont.Count > 0 then
-        begin
-          ShowMessage('Экземпляр окна был добавлен в контейнер.'
-            + IntToStr(WindowContainer.Count));
-        end;
-        if CurrCont.Count = 0 then
-        begin
-          ShowMessage('Контейнер пустой');
-        end;
-
         RectWindowDeselected(Self);
         Window1.OnWindowSelected := @RectWindowSelected;
         Window2.OnWindowSelected := @RectWindowSelected;
@@ -1671,18 +1660,6 @@ begin
         CurrCont.AddWindow(Window2);
 
 
-
-
-        if CurrCont.Count > 0 then
-        begin
-          ShowMessage('Экземпляр окна был добавлен в контейнер.'
-            + IntToStr(CurrCont.Count));
-        end;
-        if CurrCont.Count = 0 then
-        begin
-          ShowMessage('Контейнер пустой');
-        end;
-
         RectWindowDeselected(Self);
         Window1.OnWindowSelected := @RectWindowSelected;
         Window2.OnWindowSelected := @RectWindowSelected;
@@ -1743,7 +1720,6 @@ begin
             RectWindowDeselected(Self);
             Image1.Canvas.Brush.Color := clWhite;
             Image1.Canvas.FillRect(Image1.ClientRect);
-            ShowMessage('Размер массива' + IntToStr(CurrCont.Count));
             DrawWindows;
             Break;
 
@@ -1837,7 +1813,6 @@ begin
             RectWindowDeselected(Self);
             Image1.Canvas.Brush.Color := clWhite;
             Image1.Canvas.FillRect(Image1.ClientRect);
-            ShowMessage('Размер массива' + IntToStr(WindowContainer.Count));
             DrawWindows;
             Break;
 

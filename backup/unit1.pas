@@ -101,6 +101,7 @@ type
     procedure PaintSizes;
     function DrawingFullConstrIndex: double;
     function ChooseProfileOtstup(Row, Col: integer): integer;
+    procedure ResetAllWindowSelections;
 
 
 
@@ -232,6 +233,7 @@ begin
     Panel1.Enabled := False;
     Panel3.Visible := False;
   end;
+  ResetAllWindowSelections;
   Image1.Canvas.Brush.Color := clWhite;
   Image1.Canvas.FillRect(0, 0, 3500, 2000);
   DrawWindows;
@@ -407,6 +409,7 @@ begin
           end;
         end;
         Window.Select(Self);
+        ResetAllWindowSelections;
         Image1.Canvas.Brush.Color := clWhite;
         Image1.Canvas.FillRect(0, 0, 3500, 2000);
         DrawWindows;
@@ -477,7 +480,6 @@ begin
     ComboBox2.Visible := False;
     Label9.Visible := False;
   end;
-  ShowMessage(IntToStr(Window.GetXOtstup));
 end;
 
 {******** ОТМЕНА ВЫДЕЛЕНИЯ **********}
@@ -582,6 +584,8 @@ begin
     end;
   end;
 end;
+
+
 
 {******** ПОДСЧЕТ ИНДЕКСА ОТРИСОВКИ **********}
 function TForm1.DrawingIndex: double;
@@ -879,6 +883,7 @@ begin
   finally
     Form2.Free; // Освобождаем память после закрытия Form2
   end;
+  ResetAllWindowSelections;
 end;
 
 procedure TForm1.DeleteConstr(Sender: TObject);
@@ -977,7 +982,7 @@ begin
         CurrWin.OnWindowDeselected := @RectWindowDeselected;
       end;
     end;
-
+    ResetAllWindowSelections;
     DrawWindows;
   end;
 
@@ -993,6 +998,7 @@ var
   CurrCont: TWindowContainer;
   CurrWin: TRectWindow;
 begin
+  ResetAllWindowSelections;
   Image2.Canvas.Brush.Color := clWhite;
   Image2.Canvas.FillRect(Image2.ClientRect);
   for i := 0 to FullContainer.Count - 1 do
@@ -1118,7 +1124,7 @@ begin
                   Ostatok := Ostatok - 1;
                   CurrCont.GetWindow(CurrCont.GetIndexRowColumn(l, k)).SetWidth(
                     WidthOfWin + 1);
-                  DiffOtstup := DiffOtstup + WidthOfWin - OldWidth+1;
+                  DiffOtstup := DiffOtstup + WidthOfWin - OldWidth + 1;
                 end
                 else
                 begin
@@ -1133,6 +1139,7 @@ begin
       end;
     end;
   end;
+  ResetAllWindowSelections;
   Image1.Canvas.Brush.Color := clWhite;
   Image1.Canvas.FillRect(Image1.ClientRect);
   DrawWindows;
@@ -1240,14 +1247,14 @@ begin
 
                   CurrCont.GetWindow(CurrCont.GetIndexRowColumn(l, k)).SetWidth(
                     WidthOfGlass + ProfilOtstup + 1);
-                  DiffOtstup := DiffOtstup + WidthOfGlass - OldWidth + ProfilOtstup+1;
+                  DiffOtstup := DiffOtstup + WidthOfGlass - OldWidth + ProfilOtstup + 1;
 
                 end
                 else
                 begin
                   CurrCont.GetWindow(CurrCont.GetIndexRowColumn(l, k)).SetWidth(
                     WidthOfGlass + ProfilOtstup);
-                    DiffOtstup := DiffOtstup + WidthOfGlass - OldWidth + ProfilOtstup;
+                  DiffOtstup := DiffOtstup + WidthOfGlass - OldWidth + ProfilOtstup;
                 end;
               end;
             end;
@@ -1256,10 +1263,10 @@ begin
       end;
     end;
   end;
+  ResetAllWindowSelections;
   Image1.Canvas.Brush.Color := clWhite;
   Image1.Canvas.FillRect(Image1.ClientRect);
   DrawWindows;
-
 end;
 
 function TForm1.ChooseProfileOtstup(Row, Col: integer): integer;
@@ -1270,16 +1277,18 @@ begin
   CurrCont := FullContainer.GetContainer(CurrentContainer);
   if (CurrCont.GetWindow(CurrCont.GetIndexRowColumn(Row, Col)).GetType = 0) then
   begin
-    if ((CurrCont.GetWindow(CurrCont.GetIndexRowColumn(Row, Col)).GetColumn =
-      1) or (CurrCont.GetWindow(CurrCont.GetIndexRowColumn(Row, Col)).GetColumn = CurrCont.GetMaxColumn)) then
+    if ((CurrCont.GetWindow(CurrCont.GetIndexRowColumn(Row, Col)).GetColumn = 1) or
+      (CurrCont.GetWindow(CurrCont.GetIndexRowColumn(Row, Col)).GetColumn =
+      CurrCont.GetMaxColumn)) then
       ProfilOtstup := 71
     else
       ProfilOtstup := 52;
   end
   else
   begin
-    if ((CurrCont.GetWindow(CurrCont.GetIndexRowColumn(Row, Col)).GetColumn =
-      1) or (CurrCont.GetWindow(CurrCont.GetIndexRowColumn(Row, Col)).GetColumn = CurrCont.GetMaxColumn)) then
+    if ((CurrCont.GetWindow(CurrCont.GetIndexRowColumn(Row, Col)).GetColumn = 1) or
+      (CurrCont.GetWindow(CurrCont.GetIndexRowColumn(Row, Col)).GetColumn =
+      CurrCont.GetMaxColumn)) then
       ProfilOtstup := 169
     else
       ProfilOtstup := 150;
@@ -1367,6 +1376,7 @@ begin
       end;
 
     end;
+    ResetAllWindowSelections;
     DrawWindows;
   end;
 end;
@@ -2080,6 +2090,31 @@ begin
     end;
   end;
 end;
+
+{******** CБРОС ВЫДЕЛЕНИЯ ВСЕХ ОКОН **********}
+procedure TForm1.ResetAllWindowSelections;
+var
+  i, j: integer;
+  Window: TRectWindow;
+  CurrCont: TWindowContainer;
+begin
+  for i := 0 to FullContainer.Count - 1 do
+  begin
+    CurrCont := FullContainer.GetContainer(i);
+    // Iterate through all windows in the current container
+    for j := 0 to CurrCont.Count - 1 do
+    begin
+      Window := TRectWindow(CurrCont.GetWindow(j)); // Corrected index to j
+      if Assigned(Window) and Window.FSelected then // Check if the window is selected
+      begin
+        Window.Select(nil); // Call Select to deselect the window
+      end;
+    end;
+  end;
+  // Call the existing method to reset UI elements
+  RectWindowDeselected(nil);
+end;
+
 
 
 {******** ОБНОВЛЕНИЕ ТАБЛИЦЫ **********}

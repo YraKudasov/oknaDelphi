@@ -506,7 +506,8 @@ begin
     ComboBox2.Visible := False;
     Label9.Visible := False;
   end;
-  if (Window.GetForm = 1) then  begin
+  if (Window.GetForm = 1) then
+  begin
     MenuItem2.Enabled := False;
     MenuItem5.Enabled := False;
     ComboBox1.Visible := False;
@@ -1326,7 +1327,8 @@ begin
       + #13#10 +
       '- В изделии должна быть только ОДНА конструкция'
       +
-      #13#10 + '- Ширина и высота окна должны быть ОДИНАКОВЫМИ');
+      #13#10 +
+      '- Ширина и высота окна должны быть ОДИНАКОВЫМИ');
   end;
   CurrWin.SetForm(ComboBox4.ItemIndex);
   if (CurrWin.GetForm = 1) then
@@ -1339,6 +1341,7 @@ begin
     CheckBox1.Visible := False;
     MenuItem2.Enabled := False;
     MenuItem5.Enabled := False;
+    CurrWin.SetCircleWinFramuga(False);
   end
   else
   begin
@@ -1608,31 +1611,38 @@ var
 begin
   CurrCont := FullContainer.GetContainer(CurrentContainer);
   Number := '0';
-  // Создаем диалог для ввода числа
-  if InputQuery('Размер горизонтального импоста',
-    'Расстояние от верхней границы окна (мм):',
-    Number) then
+  WindowIndex := CurrCont.GetSelectedIndex;
+  Window := TRectWindow(CurrCont.GetWindow(WindowIndex));
+  if (Window.GetForm = 1) then
   begin
-    if TryStrToInt(Number, HorizImpost) then
+    Window.SetCircleWinFramuga(True);
+    DrawWindows;
+  end
+  else
+  begin
+    // Создаем диалог для ввода числа
+    if InputQuery('Размер горизонтального импоста',
+      'Расстояние от верхней границы окна (мм):',
+      Number) then
     begin
-      WindowIndex := CurrCont.GetSelectedIndex;
-      Window := TRectWindow(CurrCont.GetWindow(WindowIndex));
-      if (Window.GetIsDoor = True) then
+      if TryStrToInt(Number, HorizImpost) then
       begin
-        DoorImpost := TPlasticDoorImpost.Create(HorizImpost, Image1);
-        Window.GetImpostsContainer.AddImpost(DoorImpost);
-        ComboBox2.Items.Add(Format('%d мм', [HorizImpost]));
-        ComboBox2.ItemIndex := ComboBox2.Items.Count - 1;
-        DrawWindows;
+        if (Window.GetIsDoor = True) then
+        begin
+          DoorImpost := TPlasticDoorImpost.Create(HorizImpost, Image1);
+          Window.GetImpostsContainer.AddImpost(DoorImpost);
+          ComboBox2.Items.Add(Format('%d мм', [HorizImpost]));
+          ComboBox2.ItemIndex := ComboBox2.Items.Count - 1;
+          DrawWindows;
+        end
+        else
+          HorizontalImpost(HorizImpost);
       end
       else
-        HorizontalImpost(HorizImpost);
-    end
-    else
-    begin
-      ShowMessage('Некорректный ввод числа');
+      begin
+        ShowMessage('Некорректный ввод числа');
+      end;
     end;
-
   end;
 end;
 
@@ -1766,7 +1776,7 @@ var
   CurrCont: TWindowContainer;
 begin
   CurrCont := FullContainer.GetContainer(CurrentContainer);
-  // Находим индекс окна, которое нужно разделить
+  // Находим индекс окна, которое нужно соединить
   WindowIndex := CurrCont.GetSelectedIndex;
   if WindowIndex >= 0 then
   begin
@@ -1831,10 +1841,16 @@ begin
   CurrCont := FullContainer.GetContainer(CurrentContainer);
   // Находим индекс окна, которое нужно разделить
   WindowIndex := CurrCont.GetSelectedIndex;
+  Window := TRectWindow(CurrCont.GetWindow(WindowIndex));
+  if (Window.GetForm = 1) then
+  begin
+    Window.SetCircleWinFramuga(False);
+    DrawWindows;
+  end
+  else
+  begin
   if WindowIndex >= 0 then
   begin
-    // Получаем экземпляр окна
-    Window := TRectWindow(CurrCont.GetWindow(WindowIndex));
     if Assigned(Window) then
     begin
       if (Window.GetIsDoor = True) then
@@ -1909,7 +1925,7 @@ begin
     end;
   end;
 end;
-
+ end;
 
 {******** ОБНОВЛЕНИЕ ИНДЕКСОВ **********}
 function TForm1.UpdateIndexes(OperationNum, NewRow, NewCol, NewOtstup: integer): integer;

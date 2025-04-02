@@ -18,6 +18,7 @@ type
     ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup: integer;
     ZoomIndex: double;
     IsDoor: boolean;
+    IsCircleWinFramuga: boolean;
     FImpostsContainer: TImpostsContainer;
   public
     FSelected: boolean;
@@ -49,12 +50,14 @@ type
     function GetTableIdx: integer;
     procedure DrawGluxar;
     procedure DrawNeGluxar;
+    procedure DrawCircleWinFramuga;
 
     procedure DrawMoskit(ScaledRectW, ScaledRectH, ScaledXOt, ScaledYOt: integer);
     procedure SetMoskit(Value: boolean);
     procedure SetZoomIndex(Value: double);
     procedure SetImage(Value: TImage);
     procedure SetIsDoor(Value: boolean);
+    procedure SetCircleWinFramuga(Value: boolean);
     procedure PaintSize(ScaledConstructW, ScaledConstructH, ScaledXOt,
       ScaledYOt: integer; NoOneW, NoOneH: boolean);
     procedure DrawImposts;
@@ -203,6 +206,7 @@ begin
   if (FType = 0) then
   begin
     DrawGluxar;
+    DrawCircleWinFramuga;
   end
   else
   begin
@@ -212,7 +216,6 @@ begin
     DrawImposts;
   end;
 end;
-
 
 
 procedure TRectWindow.PaintSize(ScaledConstructW, ScaledConstructH,
@@ -266,6 +269,74 @@ begin
 
 end;
 
+procedure TRectWindow.DrawCircleWinFramuga;
+var
+  CenterX, CenterY: integer;
+  BorderRadius, Radius: integer;
+begin
+  if ((FForm = 1) and (IsCircleWinFramuga = True)) then
+  begin
+    FImage.Canvas.Pen.Color := clBlack;
+    FImage.Canvas.Pen.Width := 2;
+    FImage.Canvas.Brush.Color := clWhite;
+
+    CenterX := (ScaledRectWidth div 2) + Round(ZoomIndex / MaxZoom * 3);
+    CenterY := (ScaledRectHeight div 2) + Round(ZoomIndex / MaxZoom * 3);
+    Radius := (ScaledRectWidth div 2) - Round(ZoomIndex / MaxZoom * 15);
+    BorderRadius := (ScaledRectWidth div 2) - Round(ZoomIndex / MaxZoom * 2);
+    //Закраска половины окна
+    FImage.Canvas.FillRect(3, 3, ScaledRectWidth, CenterY);
+
+    FImage.Canvas.Pen.Color := clSkyBlue;
+    FImage.Canvas.Brush.Color := clSkyBlue;
+
+    FImage.Canvas.Ellipse(Round(ZoomIndex / MaxZoom * 36),
+      Round(ZoomIndex / MaxZoom * 36),
+      ScaledRectWidth - Round(ZoomIndex / MaxZoom * 31),
+      ScaledRectHeight - Round(ZoomIndex / MaxZoom * 31));
+
+    FImage.Canvas.Pen.Color := clBlack;
+    FImage.Canvas.Brush.Color := clWhite;
+
+    //Граница окна
+    FImage.Canvas.Arc(CenterX - BorderRadius, CenterY - BorderRadius,
+      CenterX + BorderRadius, CenterY + BorderRadius,
+      CenterX + BorderRadius, CenterY, CenterX - BorderRadius, CenterY);
+
+
+    //Внешняя линия створки
+    FImage.Canvas.MoveTo(ScaledRectWidth - Round(ZoomIndex / MaxZoom * 30), CenterY);
+    FImage.Canvas.AngleArc(CenterX, CenterY, Radius, 0, 180);
+
+
+    //Внутренняя линия створки
+    FImage.Canvas.AngleArc(CenterX, CenterY, BorderRadius -
+      Round(ZoomIndex / MaxZoom * 30), 0, 180);
+
+    //Линии открывания
+    FImage.Canvas.Pen.Width := 1;
+    FImage.Canvas.Line(Round(ZoomIndex / MaxZoom * 36), CenterY,
+      CenterX, Round(ZoomIndex / MaxZoom * 36));
+    FImage.Canvas.Line(CenterX, Round(ZoomIndex / MaxZoom * 36),
+      ScaledRectWidth - Round(ZoomIndex / MaxZoom * 31), CenterY);
+
+    //Линия импоста
+    FImage.Canvas.Pen.Width := 2;
+    FImage.Canvas.Rectangle(Round(ZoomIndex / MaxZoom * 18), CenterY -
+      Round(ZoomIndex / MaxZoom * 10), ScaledRectWidth - Round(ZoomIndex / MaxZoom * 11),
+      CenterY + Round(ZoomIndex / MaxZoom * 10));
+
+    // Ручка сверху
+    FImage.Canvas.Brush.Color := clWhite;
+    FImage.Canvas.Rectangle(ScaledXOtstup + (ScaledRectWidth div 2) -
+      Round(ZoomIndex / MaxZoom * 5),
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 22),
+      ScaledXOtstup + (ScaledRectWidth div 2) + Round(ZoomIndex / MaxZoom * 5),
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 32));
+  end;
+
+end;
+
 
 procedure TRectWindow.DrawGluxar;
 var
@@ -283,7 +354,8 @@ begin
 
   if (FForm = 0) then
   begin
-    FImage.Canvas.Rectangle(ScaledXOtstup + 4, ScaledYOtstup + 4,
+    FImage.Canvas.Rectangle(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 4),
       ScaledRectWidth + ScaledXOtstup,
       ScaledRectHeight + ScaledYOtstup);
 
@@ -296,15 +368,20 @@ begin
   end
   else if (FForm = 1) then
   begin
-    CenterX := (ScaledRectWidth div 2)+3;
-    CenterY := (ScaledRectHeight div 2)+3;
-    Radius := (ScaledRectWidth div 2)-2;
-    FImage.Canvas.Ellipse(CenterX - Radius, CenterY - Radius, CenterX + Radius, CenterY + Radius);
-
-    CenterXGlass := (ScaledRectWidth div 2)+3;
-    CenterYGlass := (ScaledRectHeight div 2)+3;
-    RadiusGlass := (ScaledRectWidth div 2)- 2 -Round(ZoomIndex / MaxZoom * 24);
-    FImage.Canvas.Ellipse(CenterXGlass - RadiusGlass, CenterYGlass - RadiusGlass, CenterXGlass + RadiusGlass, CenterYGlass + RadiusGlass);
+    //Внешний круг
+    CenterX := (ScaledRectWidth div 2) + Round(ZoomIndex / MaxZoom * 3);
+    CenterY := (ScaledRectHeight div 2) + Round(ZoomIndex / MaxZoom * 3);
+    Radius := (ScaledRectWidth div 2) - Round(ZoomIndex / MaxZoom * 2);
+    FImage.Canvas.Ellipse(CenterX - Radius, CenterY - Radius, CenterX +
+      Radius, CenterY + Radius);
+    //Внутренний круг
+    FImage.Canvas.Brush.Color := clSkyBlue;
+    CenterXGlass := (ScaledRectWidth div 2) + Round(ZoomIndex / MaxZoom * 3);
+    CenterYGlass := (ScaledRectHeight div 2) + Round(ZoomIndex / MaxZoom * 3);
+    RadiusGlass := (ScaledRectWidth div 2) - Round(ZoomIndex / MaxZoom * 2) -
+      Round(ZoomIndex / MaxZoom * 24);
+    FImage.Canvas.Ellipse(CenterXGlass - RadiusGlass, CenterYGlass -
+      RadiusGlass, CenterXGlass + RadiusGlass, CenterYGlass + RadiusGlass);
   end;
 end;
 
@@ -319,7 +396,8 @@ begin
 
   FImage.Canvas.Pen.Color := clBlack;
   FImage.Canvas.Pen.Width := 2;
-  FImage.Canvas.Rectangle(ScaledXOtstup + 4, ScaledYOtstup + 4,
+  FImage.Canvas.Rectangle(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),
+    ScaledYOtstup + Round(ZoomIndex / MaxZoom * 4),
     ScaledRectWidth + ScaledXOtstup,
     ScaledRectHeight + ScaledYOtstup);
 
@@ -644,6 +722,11 @@ end;
 procedure TRectWindow.SetIsDoor(Value: boolean);
 begin
   IsDoor := Value;
+end;
+
+procedure TRectWindow.SetCircleWinFramuga(Value: boolean);
+begin
+  IsCircleWinFramuga := Value;
 end;
 
 function TRectWindow.GetImpostsContainer: TImpostsContainer;

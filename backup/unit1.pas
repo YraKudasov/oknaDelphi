@@ -31,6 +31,7 @@ type
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
     ComboBox3: TComboBox;
+    ComboBox4: TComboBox;
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
@@ -39,6 +40,7 @@ type
     Image2: TImage;
     Label1: TLabel;
     Label10: TLabel;
+    Label11: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -66,6 +68,7 @@ type
 
     procedure AlignWidth(Sender: TObject);
     procedure AlignForSun(Sender: TObject);
+    procedure ComboBox4Change(Sender: TObject);
     procedure DrawFullConstruction(Sender: TObject);
     procedure DeleteConstr(Sender: TObject);
     procedure ChooseTypeOfNewConstr(Sender: TObject);
@@ -165,62 +168,79 @@ begin
     end
     else
     begin
-      if (StrToInt(Edit3.Text) > FullConstrHeight) then
+      if (CurrCont.GetWindow(0).GetForm = 1) then
       begin
-        FullConstrHeight := StrToInt(Edit3.Text);
-        ShowMessage('Высота всего изделия увеличена!');
-      end;
-      if ((CurrCont.GetConstrHeight = FullConstrHeight) and
-        (StrToInt(Edit3.Text) < FullConstrHeight)) then
-      begin
-        maxHeight := 0;
-        CurrCont.SetConstrHeight(CurrCont.GetConstrHeight - StrToInt(Edit3.Text));
-        for I := 0 to FullContainer.Count - 1 do
+        if (StrToInt(Edit3.Text) <> StrToInt(Edit4.Text)) then
         begin
-          if (FullContainer.GetContainer(I).GetConstrHeight > maxHeight) then
-            maxHeight := FullContainer.GetContainer(I).GetConstrHeight;
+          if (StrToInt(Edit3.Text) > StrToInt(Edit4.Text)) then
+          begin
+            Edit4.Text := Edit3.Text;
+          end
+          else
+            Edit3.Text := Edit4.Text;
         end;
-        FullConstrHeight := maxHeight;
-        ShowMessage('Высота всего изделия могла быть уменьшена!');
-      end;
-      if ((StrToInt(Edit4.Text) <> CurrCont.GetConstrWidth) and
-        (FullContainer.Count > 1)) then
+        CurrCont.GetWindow(0).SetHeight(StrToInt(Edit3.Text));
+        CurrCont.GetWindow(0).SetWidth(StrToInt(Edit4.Text));
+      end
+      else
       begin
-        DiffXOtstup := StrToInt(Edit4.Text) - CurrCont.GetConstrWidth;
-        for I := FullContainer.IndexOfContainer(CurrCont) +
-          1 to FullContainer.Count - 1 do
+        if (StrToInt(Edit3.Text) > FullConstrHeight) then
         begin
-          FullContainer.GetContainer(I).SetCommonXOtstup(
-            FullContainer.GetContainer(I).GetCommonXOtstup + DiffXOtstup);
+          FullConstrHeight := StrToInt(Edit3.Text);
+          ShowMessage('Высота всего изделия увеличена!');
         end;
-        FullConstrWidth := FullConstrWidth + DiffXOtstup;
-      end;
-      if ((StrToInt(Edit4.Text) <> CurrCont.GetConstrWidth) and
-        (FullContainer.Count = 1)) then
-      begin
-        DiffXOtstup := StrToInt(Edit4.Text) - CurrCont.GetConstrWidth;
-        FullConstrWidth := FullConstrWidth + DiffXOtstup;
-      end;
-      for I := 0 to CurrCont.Count - 1 do
-      begin
-        Window := TRectWindow(CurrCont.GetWindow(I));
-        DiffY := StrToInt(Edit3.Text) - FRectHeight;
-        DiffX := StrToInt(Edit4.Text) - FRectWidth;
-        if (Window.GetYOtstup = 0) then
+        if ((CurrCont.GetConstrHeight = FullConstrHeight) and
+          (StrToInt(Edit3.Text) < FullConstrHeight)) then
         begin
-          Window.SetHeight(Window.GetHeight + DiffY);
-        end
-        else
-        begin
-          Window.SetYOtstup(Window.GetYOtstup + DiffY);
+          maxHeight := 0;
+          CurrCont.SetConstrHeight(CurrCont.GetConstrHeight - StrToInt(Edit3.Text));
+          for I := 0 to FullContainer.Count - 1 do
+          begin
+            if (FullContainer.GetContainer(I).GetConstrHeight > maxHeight) then
+              maxHeight := FullContainer.GetContainer(I).GetConstrHeight;
+          end;
+          FullConstrHeight := maxHeight;
+          ShowMessage('Высота всего изделия могла быть уменьшена!');
         end;
-        if (Window.GetXOtstup = 0) then
+        if ((StrToInt(Edit4.Text) <> CurrCont.GetConstrWidth) and
+          (FullContainer.Count > 1)) then
         begin
-          Window.SetWidth(Window.GetWidth + DiffX);
-        end
-        else
+          DiffXOtstup := StrToInt(Edit4.Text) - CurrCont.GetConstrWidth;
+          for I := FullContainer.IndexOfContainer(CurrCont) +
+            1 to FullContainer.Count - 1 do
+          begin
+            FullContainer.GetContainer(I).SetCommonXOtstup(
+              FullContainer.GetContainer(I).GetCommonXOtstup + DiffXOtstup);
+          end;
+          FullConstrWidth := FullConstrWidth + DiffXOtstup;
+        end;
+        if ((StrToInt(Edit4.Text) <> CurrCont.GetConstrWidth) and
+          (FullContainer.Count = 1)) then
         begin
-          Window.SetXOtstup(Window.GetXOtstup + DiffX);
+          DiffXOtstup := StrToInt(Edit4.Text) - CurrCont.GetConstrWidth;
+          FullConstrWidth := FullConstrWidth + DiffXOtstup;
+        end;
+        for I := 0 to CurrCont.Count - 1 do
+        begin
+          Window := TRectWindow(CurrCont.GetWindow(I));
+          DiffY := StrToInt(Edit3.Text) - FRectHeight;
+          DiffX := StrToInt(Edit4.Text) - FRectWidth;
+          if (Window.GetYOtstup = 0) then
+          begin
+            Window.SetHeight(Window.GetHeight + DiffY);
+          end
+          else
+          begin
+            Window.SetYOtstup(Window.GetYOtstup + DiffY);
+          end;
+          if (Window.GetXOtstup = 0) then
+          begin
+            Window.SetWidth(Window.GetWidth + DiffX);
+          end
+          else
+          begin
+            Window.SetXOtstup(Window.GetXOtstup + DiffX);
+          end;
         end;
       end;
     end;
@@ -440,9 +460,13 @@ begin
     MenuItem5.Visible := True;
     MenuItem6.Enabled := True;
     ComboBox1.Enabled := True;
+    ComboBox1.Visible := True;
+    Label7.Visible := True;
     Panel3.Visible := True;
+    Label11.Visible := True;
+    ComboBox4.Visible := True;
     ComboBox1.ItemIndex := Window.GetType;
-
+    ComboBox4.ItemIndex := Window.GetForm;
     if (Window.GetType <> 0) then
     begin
       CheckBox1.Visible := True;
@@ -460,6 +484,8 @@ begin
     MenuItem2.Visible := False;
     MenuItem5.Visible := False;
     CheckBox1.Visible := False;
+    Label11.Visible := False;
+    ComboBox4.Visible := False;
     Label8.Visible := False;
     ComboBox2.Clear;
     ImpostsContainer := Window.GetImpostsContainer;
@@ -479,6 +505,10 @@ begin
     ComboBox1.Items[3] := 'Откидная';
     ComboBox2.Visible := False;
     Label9.Visible := False;
+  end;
+  if (Window.GetForm = 1) then  begin
+    MenuItem2.Enabled := False;
+    MenuItem5.Enabled := False;
   end;
 end;
 
@@ -681,7 +711,7 @@ begin
   // Настройка панелей и элементов управления
   Panel1.Enabled := False;
   Panel2.Enabled := False;
-  Panel3.Enabled := False;
+  Panel3.Visible := False;
   MenuItem2.Enabled := False;
   MenuItem3.Enabled := False;
   MenuItem5.Enabled := False;
@@ -785,7 +815,7 @@ begin
 
 
     RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
-      Image1, 0, 0, ComboBox1.ItemIndex, False);
+      Image1, 0, 0, ComboBox1.ItemIndex, 0, False);
     RectWindow.SetIsDoor(False);
   end
 
@@ -817,7 +847,7 @@ begin
     ComboBox2.Clear;
     // Инициализация окна
     RectWindow := TRectWindow.Create(1, 1, RectHeight, RectWidth,
-      Image1, 0, 0, 1, False);
+      Image1, 0, 0, 1, 0, False);
     RectWindow.SetIsDoor(True);
   end;
 
@@ -876,14 +906,20 @@ end;
 
 procedure TForm1.ChooseTypeOfAddingConstr(Sender: TObject);
 begin
-  // Открываем Form2 как модальное окно
-  Form2 := TForm2.Create(Self); // Создаем экземпляр Form2
-  try
-    Form2.ShowModal; // Показываем Form2
-  finally
-    Form2.Free; // Освобождаем память после закрытия Form2
+  if (FullContainer.GetContainer(CurrentContainer).GetWindow(0).GetForm = 1) then
+    ShowMessage(
+      'В изделии с КРУГЛЫМ окном не может быть больше одной конструкции')
+  else
+  begin
+    // Открываем Form2 как модальное окно
+    Form2 := TForm2.Create(Self); // Создаем экземпляр Form2
+    try
+      Form2.ShowModal; // Показываем Form2
+    finally
+      Form2.Free; // Освобождаем память после закрытия Form2
+    end;
+
   end;
-  ResetAllWindowSelections;
 end;
 
 procedure TForm1.DeleteConstr(Sender: TObject);
@@ -1269,6 +1305,49 @@ begin
   DrawWindows;
 end;
 
+procedure TForm1.ComboBox4Change(Sender: TObject);
+var
+  CurrWin: TRectWindow;
+  CurrCont: TWindowContainer;
+  SelectedIndex: integer;
+begin
+  SelectedIndex := ComboBox4.ItemIndex;
+  CurrCont := FullContainer.GetContainer(CurrentContainer);
+  CurrWin := CurrCont.GetWindow(CurrCont.GetSelectedIndex);
+  if ((SelectedIndex = 1) and ((FullContainer.Count <> 1) or
+    (CurrCont.Count <> 1) or (CurrWin.GetHeight <> CurrWin.GetWidth))) then
+  begin
+    ComboBox4.ItemIndex := 0;
+    ShowMessage('Ошибка: Невозможно поменять форму окна на КРУГ:'
+      + #13#10 +
+      '- В одной конструкции должно быть только ОДНО окно'
+      + #13#10 +
+      '- В изделии должна быть только ОДНА конструкция'
+      +
+      #13#10 + '- Ширина и высота окна должны быть ОДИНАКОВЫМИ');
+  end;
+  CurrWin.SetForm(ComboBox4.ItemIndex);
+  if (CurrWin.GetForm = 1) then
+  begin
+    CurrWin.SetType(0);
+    CurrWin.SetMoskit(False);
+    Label7.Visible := False;
+    Combobox1.Visible := False;
+    Label8.Visible := False;
+    CheckBox1.Visible := False;
+    MenuItem2.Enabled := False;
+    MenuItem5.Enabled := False;
+  end
+  else
+  begin
+    Label7.Visible := True;
+    Combobox1.Visible := True;
+    Combobox1.ItemIndex := 0;
+  end;
+
+  DrawWindows;
+end;
+
 function TForm1.ChooseProfileOtstup(Row, Col: integer): integer;
 var
   ProfilOtstup: integer;
@@ -1582,10 +1661,10 @@ begin
         // Разделяем окно на два новых экземпляра
         Window1 := TRectWindow.Create(Window.GetRow, Window.GetColumn,
           Window.GetSize.X, VertImpost, Image1, Otstup, Window.GetYOtstup,
-          ComboBox1.ItemIndex, False);
+          ComboBox1.ItemIndex, 0, False);
         Window2 := TRectWindow.Create(Window.GetRow, Window.GetColumn +
           1, Window.GetSize.X, Window.GetSize.Y - VertImpost, Image1,
-          Otstup + VertImpost, Window.GetYOtstup, ComboBox1.ItemIndex, False);
+          Otstup + VertImpost, Window.GetYOtstup, ComboBox1.ItemIndex, 0, False);
 
         UpdateIndexes(0, Window.GetRow, Window.GetColumn + 1, Otstup);
 
@@ -1598,17 +1677,6 @@ begin
         CurrCont.AddWindow(Window2);
 
 
-
-
-        if CurrCont.Count > 0 then
-        begin
-          ShowMessage('Экземпляр окна был добавлен в контейнер.'
-            + IntToStr(WindowContainer.Count));
-        end;
-        if CurrCont.Count = 0 then
-        begin
-          ShowMessage('Контейнер пустой');
-        end;
 
         RectWindowDeselected(Self);
         Window1.OnWindowSelected := @RectWindowSelected;
@@ -1653,7 +1721,7 @@ begin
         // Разделяем окно на два новых экземпляра
         Window1 := TRectWindow.Create(Window.GetRow, Window.GetColumn,
           HorizImpost, Window.GetWidth, Image1, Window.GetXOtstup,
-          Window.GetYOtstup, ComboBox1.ItemIndex, False);
+          Window.GetYOtstup, ComboBox1.ItemIndex, 0, False);
 
         NewCol := UpdateIndexes(2, Window.GetRow + 1, Window.GetColumn,
           Window.GetXOtstup);
@@ -1661,7 +1729,7 @@ begin
         Window2 := TRectWindow.Create(Window.GetRow + 1, NewCol,
           Window.GetSize.X - HorizImpost, Window.GetWidth, Image1,
           Window.GetXOtstup, Window.GetYOtstup + HorizImpost,
-          ComboBox1.ItemIndex, False);
+          ComboBox1.ItemIndex, 0, False);
 
         // Удаляем исходное окно из контейнера
         CurrCont.RemoveWindow(WindowIndex);
@@ -1670,18 +1738,6 @@ begin
         CurrCont.AddWindow(Window1);
         CurrCont.AddWindow(Window2);
 
-
-
-
-        if CurrCont.Count > 0 then
-        begin
-          ShowMessage('Экземпляр окна был добавлен в контейнер.'
-            + IntToStr(CurrCont.Count));
-        end;
-        if CurrCont.Count = 0 then
-        begin
-          ShowMessage('Контейнер пустой');
-        end;
 
         RectWindowDeselected(Self);
         Window1.OnWindowSelected := @RectWindowSelected;
@@ -1743,7 +1799,6 @@ begin
             RectWindowDeselected(Self);
             Image1.Canvas.Brush.Color := clWhite;
             Image1.Canvas.FillRect(Image1.ClientRect);
-            ShowMessage('Размер массива' + IntToStr(CurrCont.Count));
             DrawWindows;
             Break;
 
@@ -1837,7 +1892,6 @@ begin
             RectWindowDeselected(Self);
             Image1.Canvas.Brush.Color := clWhite;
             Image1.Canvas.FillRect(Image1.ClientRect);
-            ShowMessage('Размер массива' + IntToStr(WindowContainer.Count));
             DrawWindows;
             Break;
 

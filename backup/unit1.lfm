@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 558
+  Left = 306
   Height = 705
-  Top = 74
+  Top = 113
   Width = 1558
   Align = alClient
   Caption = 'Form1'
@@ -32,7 +32,7 @@ object Form1: TForm1
       ClientWidth = 1089
       TabOrder = 0
       object Button5: TButton
-        Left = 904
+        Left = 907
         Height = 22
         Top = 320
         Width = 163
@@ -148,7 +148,7 @@ object Form1: TForm1
           Left = 1
           Height = 23
           Top = 25
-          Width = 96
+          Width = 89
           ItemHeight = 15
           ItemIndex = 0
           Items.Strings = (
@@ -168,14 +168,14 @@ object Form1: TForm1
         object Label8: TLabel
           Left = 104
           Height = 15
-          Top = 3
+          Top = 65
           Width = 93
           Caption = 'Москитная сетка'
         end
         object CheckBox1: TCheckBox
           Left = 113
           Height = 17
-          Top = 25
+          Top = 87
           Width = 18
           TabOrder = 1
           OnChange = CheckBox1Change
@@ -183,7 +183,7 @@ object Form1: TForm1
         object ComboBox2: TComboBox
           Left = 0
           Height = 23
-          Top = 88
+          Top = 81
           Width = 96
           ItemHeight = 15
           ReadOnly = True
@@ -196,6 +196,27 @@ object Form1: TForm1
           Top = 65
           Width = 52
           Caption = 'Импосты'
+        end
+        object Label11: TLabel
+          Left = 96
+          Height = 15
+          Top = 2
+          Width = 67
+          Caption = 'Форма окна'
+        end
+        object ComboBox4: TComboBox
+          Left = 96
+          Height = 23
+          Top = 25
+          Width = 98
+          ItemHeight = 15
+          Items.Strings = (
+            'Прямоугольник'
+            'Круг'
+          )
+          Style = csDropDownList
+          TabOrder = 3
+          OnChange = ComboBox4Change
         end
       end
       object Panel1: TPanel
@@ -495,7 +516,7 @@ object Form1: TForm1
         end
       end
       object Button6: TButton
-        Left = 904
+        Left = 907
         Height = 22
         Top = 344
         Width = 163

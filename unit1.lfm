@@ -524,6 +524,15 @@ object Form1: TForm1
         TabOrder = 11
         OnClick = AlignForSun
       end
+      object Button7: TButton
+        Left = 224
+        Height = 25
+        Top = 3
+        Width = 75
+        Caption = 'Сохранить'
+        TabOrder = 12
+        OnClick = Button7Click
+      end
     end
   end
   object PopupMenu1: TPopupMenu

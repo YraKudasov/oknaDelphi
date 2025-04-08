@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
   ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2,
   PlasticDoorImpost, ImpostsContainer, FullContainer,
-  LCLType, Grids, ActnList, Generics.Collections;
+  LCLType, Grids, ActnList, Generics.Collections, SQLite3, SQLite3Conn, SQLDB;
 
 const
   tfInputMask = 'InputMask';
@@ -27,6 +27,7 @@ type
     Button4: TButton;
     Button5: TButton;
     Button6: TButton;
+    Button7: TButton;
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
@@ -68,6 +69,7 @@ type
 
     procedure AlignWidth(Sender: TObject);
     procedure AlignForSun(Sender: TObject);
+    procedure Button7Click(Sender: TObject);
     procedure ComboBox4Change(Sender: TObject);
     procedure DrawFullConstruction(Sender: TObject);
     procedure DeleteConstr(Sender: TObject);
@@ -105,7 +107,7 @@ type
     function DrawingFullConstrIndex: double;
     function ChooseProfileOtstup(Row, Col: integer): integer;
     procedure ResetAllWindowSelections;
-
+    procedure SaveWindowsToDatabase;
 
 
 
@@ -118,7 +120,10 @@ type
     CurrentContainer: integer;
     FullConstrHeight: integer;
     FullConstrWidth: integer;
-    // Добавляем экземпляр WindowContainer
+    CurrentContainerID: Integer;
+    FDatabase: TSQLite3Connection; // Database connection
+    FTransaction: TSQLTransaction; // Transaction object //
+
 
 
   public
@@ -727,6 +732,43 @@ begin
   Button4.Enabled := False;
   Button5.Enabled := False;
   Button6.Enabled := False;
+  Button7.Enabled := False;
+
+  FDatabase := TSQLite3Connection.Create(Self);
+  FTransaction := TSQLTransaction.Create(Self); // Создаем объект транзакции
+  FDatabase.Transaction := FTransaction; // Присваиваем транзакцию соединению с базой данных
+
+  FDatabase.DatabaseName := 'WinDB.db'; // Устанавливаем имя базы данных
+  try
+    FDatabase.Connected := True; // Подключаемся к базе данных
+  except
+    on E: Exception do
+    begin
+      ShowMessage('Ошибка подключения к базе данных: ' + E.Message);
+      Exit; // Выходим, если подключение не удалось
+    end;
+  end;
+
+  // Создаем таблицы, если они не существуют
+  FDatabase.ExecuteDirect(
+    'CREATE TABLE IF NOT EXISTS Containers (' +
+    'ID INTEGER PRIMARY KEY AUTOINCREMENT)');
+
+  FDatabase.ExecuteDirect(
+    'CREATE TABLE IF NOT EXISTS Constructions (' +
+    'ID INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+    'ContainerID INTEGER, ' +
+    'FOREIGN KEY(ContainerID) REFERENCES Containers(ID))');
+
+  FDatabase.ExecuteDirect(
+    'CREATE TABLE IF NOT EXISTS Windows (' +
+    'ID INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+    'ConstructionID INTEGER, ' +
+    'Height INTEGER, ' +
+    'Width INTEGER, ' +
+    'FOREIGN KEY(ContainerID) REFERENCES Constructions(ID))');
+
+   CurrentContainerID := 0;
 
 end;
 
@@ -789,6 +831,7 @@ begin
   Button4.Enabled := True;
   Button5.Enabled := True;
   Button6.Enabled := True;
+  Button7.Enabled := True;
 
   if (isPlasticDoor = False) then
   begin
@@ -1306,6 +1349,11 @@ begin
   Image1.Canvas.Brush.Color := clWhite;
   Image1.Canvas.FillRect(Image1.ClientRect);
   DrawWindows;
+end;
+
+procedure TForm1.Button7Click(Sender: TObject);
+begin
+  SaveWindowsToDatabase;
 end;
 
 procedure TForm1.ComboBox4Change(Sender: TObject);
@@ -1844,7 +1892,7 @@ begin
   Window := TRectWindow(CurrCont.GetWindow(WindowIndex));
   if (Window.GetForm = 1) then
   begin
-    Window.SetCircleWinFramuga(True);
+    Window.SetCircleWinFramuga(False);
     DrawWindows;
   end
   else
@@ -2234,6 +2282,101 @@ begin
     }
 end;
 
+
+procedure TForm1.SaveWindowsToDatabase;
+var
+  i, j: Integer;
+  Container: TWindowContainer;
+  Window: TRectWindow;
+  Query: TSQLQuery;
+  NewConstructionID: Integer;
+begin
+  Query := TSQLQuery.Create(nil);
+  try
+    Query.SQLConnection := FDatabase;
+
+    if not Assigned(FDatabase) or not FDatabase.Connected then
+    begin
+      ShowMessage('Database connection is not initialized or not connected.');
+      Exit;
+    end;
+
+    try
+      if not FTransaction.Active then
+        FTransaction.StartTransaction;
+
+      // Удаляем старые данные только для текущего контейнера
+      if CurrentContainerID > 0 then
+      begin
+        Query.SQL.Text := 'DELETE FROM Windows WHERE ConstructionID IN (SELECT ID FROM Constructions WHERE ContainerID = :ContainerID);';
+        Query.ParamByName('ContainerID').AsInteger := CurrentContainerID;
+        Query.ExecSQL;
+
+        Query.SQL.Text := 'DELETE FROM Constructions WHERE ContainerID = :ContainerID;';
+        Query.ParamByName('ContainerID').AsInteger := CurrentContainerID;
+        Query.ExecSQL;
+      end;
+
+      // Итерация по контейнерам (должен быть только один, если мы обновляем)
+      for i := 0 to FullContainer.Count - 1 do
+      begin
+        Container := TWindowContainer(FullContainer.GetContainer(i));
+
+        // Если ID контейнера еще не задан, создаем новую запись
+        if CurrentContainerID = 0 then
+        begin
+          // Вставляем контейнер и получаем его ID
+          Query.SQL.Text := 'INSERT INTO Containers DEFAULT VALUES';
+          Query.ExecSQL;
+
+          // Получаем ID последнего вставленного контейнера
+          Query.SQL.Text := 'SELECT LAST_INSERT_ROWID()';
+          Query.Open;
+          CurrentContainerID := Query.Fields[0].AsInteger;
+          Query.Close;
+        end;
+
+        // Вставляем конструкцию для контейнера
+        Query.SQL.Text := 'INSERT INTO Constructions (ContainerID) VALUES (:ContainerID)';
+        Query.ParamByName('ContainerID').AsInteger := CurrentContainerID;
+        Query.ExecSQL;
+
+        // Получаем ID последней конструкции
+        Query.SQL.Text := 'SELECT LAST_INSERT_ROWID()';
+        Query.Open;
+        NewConstructionID := Query.Fields[0].AsInteger;
+        Query.Close;
+
+        // Вставляем окна для этой конструкции
+        for j := 0 to Container.Count - 1 do
+        begin
+          Window := Container.GetWindow(j);
+
+          // Исправлено название столбца на ConstructionID
+          Query.SQL.Text := 'INSERT INTO Windows (ConstructionID, Height, Width) ' +
+                            'VALUES (:ConstructionID, :Height, :Width)';
+          Query.ParamByName('ConstructionID').AsInteger := NewConstructionID; // Используем ID конструкции
+          Query.ParamByName('Height').AsInteger := Window.GetHeight;
+          Query.ParamByName('Width').AsInteger := Window.GetWidth;
+          Query.ExecSQL;
+        end;
+      end;
+
+      if FTransaction.Active then
+        FTransaction.Commit;
+      ShowMessage('Data saved successfully!');
+    except
+      on E: Exception do
+      begin
+        if FTransaction.Active then
+          FTransaction.Rollback;
+        ShowMessage('Error saving ' + E.Message);
+      end;
+    end;
+  finally
+    Query.Free;
+  end;
+end;
 
 
 

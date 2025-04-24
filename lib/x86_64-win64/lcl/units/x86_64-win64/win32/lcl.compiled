@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Lazarus Version="3.2"/>
+  <Compiler Value="D:\lazarus\fpc\3.2.2\bin\x86_64-win64\fpc.exe" Date="1482330472"/>
+  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -vm5044,5025 -FiD:\lazarus\lcl\interfaces\win32 -FuD:\lazarus\lcl\interfaces\win32 -FuD:\lazarus\packager\units\x86_64-win64 -FuD:\lazarus\components\lazutils\lib\x86_64-win64 -FuD:\lazarus\components\freetype\lib\x86_64-win64 -FuD:\lazarus\lcl\units\x86_64-win64 -FuD:\lazarus\lcl\interfaces\ -FUD:\lazarus\lcl\units\x86_64-win64\win32\ lcl.pas"/>
+</CONFIG>

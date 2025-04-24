@@ -1,0 +1,73 @@
+unit TestCase2;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils, fpcunit, testutils, testregistry, Forms, Controls, Unit1;
+
+type
+
+  TTestCase2 = class(TTestCase)
+  private
+    Form: TForm1; // Экземпляр формы для тестирования
+  published
+    procedure TestWidthChange_ValidWidth;
+    procedure TestWidthChange_InvalidWidth;
+    procedure TestWidthChange_InvalidEditText;
+  end;
+
+implementation
+
+procedure TTestCase2.TestWidthChange_ValidWidth;
+begin
+  Form := TForm1.Create(nil);
+  try
+    Form.RectWidth1 := 400; // Используем свойство RectWidth
+    Form.Edit4.Text := '500'; // Новая ширина
+
+    AssertTrue('Ширина должна быть валидной (True)', Form.CheckWidthChange);
+  finally
+    Form.Free;
+  end;
+end;
+
+procedure TTestCase2.TestWidthChange_InvalidWidth;
+begin
+  Form := TForm1.Create(nil);
+  try
+    Form.RectWidth1 := 400; // Используем свойство RectWidth
+    Form.Edit4.Text := '400'; // Новая ширина меньше 450
+
+    AssertFalse('Ширина должна быть невалидной (False)', Form.CheckWidthChange);
+  finally
+    Form.Free;
+  end;
+end;
+
+procedure TTestCase2.TestWidthChange_InvalidEditText;
+begin
+  Form := TForm1.Create(nil);
+  try
+    Form.RectWidth1 := 400; // Используем свойство RectWidth
+    Form.Edit4.Text := 'abc'; // Некорректное значение
+
+    try
+      Form.CheckWidthChange;
+      Fail('Функция должна выбросить исключение при некорректном вводе');
+    except
+      on E: EConvertError do
+        AssertTrue('Исключение EConvertError выброшено корректно', True);
+    end;
+  finally
+    Form.Free;
+  end;
+end;
+
+initialization
+
+  RegisterTest(TTestCase2);
+
+end.
+

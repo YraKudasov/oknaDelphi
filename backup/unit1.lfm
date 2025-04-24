@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 306
+  Left = 431
   Height = 705
-  Top = 113
+  Top = 157
   Width = 1558
   Align = alClient
   Caption = 'Form1'
@@ -217,6 +217,15 @@ object Form1: TForm1
           Style = csDropDownList
           TabOrder = 3
           OnChange = ComboBox4Change
+        end
+        object CheckBox2: TCheckBox
+          Left = 96
+          Height = 19
+          Top = 65
+          Width = 63
+          Caption = 'Створка'
+          TabOrder = 4
+          OnChange = AddDeleteCircleStvorka
         end
       end
       object Panel1: TPanel

@@ -156,6 +156,20 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="FullContainer"/>
       </Unit>
+      <Unit>
+        <Filename Value="tests.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="testcase1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestCase1"/>
+      </Unit>
+      <Unit>
+        <Filename Value="testcase2.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestCase2"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

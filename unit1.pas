@@ -29,6 +29,7 @@ type
     Button6: TButton;
     Button7: TButton;
     CheckBox1: TCheckBox;
+    CheckBox2: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
     ComboBox3: TComboBox;
@@ -108,6 +109,7 @@ type
     function ChooseProfileOtstup(Row, Col: integer): integer;
     procedure ResetAllWindowSelections;
     procedure SaveWindowsToDatabase;
+    procedure AddDeleteCircleStvorka(Sender: TObject);
 
 
 
@@ -120,7 +122,7 @@ type
     CurrentContainer: integer;
     FullConstrHeight: integer;
     FullConstrWidth: integer;
-    CurrentContainerID: Integer;
+    CurrentContainerID: integer;
     FDatabase: TSQLite3Connection; // Database connection
     FTransaction: TSQLTransaction; // Transaction object //
 
@@ -130,6 +132,9 @@ type
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     constructor CreateWithParams(AOwner: TComponent);
+    property FullContainerProperty: TFullContainer read FullContainer;
+    property CurrentContainerProperty: integer read CurrentContainer;
+
   end;
 
 var
@@ -733,18 +738,23 @@ begin
   Button5.Enabled := False;
   Button6.Enabled := False;
   Button7.Enabled := False;
+  CheckBox2.Visible := False;
 
   FDatabase := TSQLite3Connection.Create(Self);
-  FTransaction := TSQLTransaction.Create(Self); // Создаем объект транзакции
-  FDatabase.Transaction := FTransaction; // Присваиваем транзакцию соединению с базой данных
+  FTransaction := TSQLTransaction.Create(Self);
+  // Создаем объект транзакции
+  FDatabase.Transaction := FTransaction;
+  // Присваиваем транзакцию соединению с базой данных
 
-  FDatabase.DatabaseName := 'WinDB.db'; // Устанавливаем имя базы данных
+  FDatabase.DatabaseName := 'WinDB.db';
+  // Устанавливаем имя базы данных
   try
     FDatabase.Connected := True; // Подключаемся к базе данных
   except
     on E: Exception do
     begin
-      ShowMessage('Ошибка подключения к базе данных: ' + E.Message);
+      ShowMessage('Ошибка подключения к базе данных: ' +
+        E.Message);
       Exit; // Выходим, если подключение не удалось
     end;
   end;
@@ -756,19 +766,16 @@ begin
 
   FDatabase.ExecuteDirect(
     'CREATE TABLE IF NOT EXISTS Constructions (' +
-    'ID INTEGER PRIMARY KEY AUTOINCREMENT, ' +
-    'ContainerID INTEGER, ' +
+    'ID INTEGER PRIMARY KEY AUTOINCREMENT, ' + 'ContainerID INTEGER, ' +
     'FOREIGN KEY(ContainerID) REFERENCES Containers(ID))');
 
   FDatabase.ExecuteDirect(
     'CREATE TABLE IF NOT EXISTS Windows (' +
-    'ID INTEGER PRIMARY KEY AUTOINCREMENT, ' +
-    'ConstructionID INTEGER, ' +
-    'Height INTEGER, ' +
-    'Width INTEGER, ' +
+    'ID INTEGER PRIMARY KEY AUTOINCREMENT, ' + 'ConstructionID INTEGER, ' +
+    'Height INTEGER, ' + 'Width INTEGER, ' +
     'FOREIGN KEY(ContainerID) REFERENCES Constructions(ID))');
 
-   CurrentContainerID := 0;
+  CurrentContainerID := 0;
 
 end;
 
@@ -1356,6 +1363,8 @@ begin
   SaveWindowsToDatabase;
 end;
 
+
+
 procedure TForm1.ComboBox4Change(Sender: TObject);
 var
   CurrWin: TRectWindow;
@@ -1389,13 +1398,16 @@ begin
     CheckBox1.Visible := False;
     MenuItem2.Enabled := False;
     MenuItem5.Enabled := False;
-    CurrWin.SetCircleWinFramuga(False);
+    CheckBox2.Visible := True;
   end
   else
   begin
     Label7.Visible := True;
     Combobox1.Visible := True;
     Combobox1.ItemIndex := 0;
+    CheckBox2.Checked:=False;
+    CurrWin.SetCircleWinFramuga(False);
+    CheckBox2.Visible := False;
   end;
 
   DrawWindows;
@@ -1661,35 +1673,27 @@ begin
   Number := '0';
   WindowIndex := CurrCont.GetSelectedIndex;
   Window := TRectWindow(CurrCont.GetWindow(WindowIndex));
-  if (Window.GetForm = 1) then
+  // Создаем диалог для ввода числа
+  if InputQuery('Размер горизонтального импоста',
+    'Расстояние от верхней границы окна (мм):',
+    Number) then
   begin
-    Window.SetCircleWinFramuga(True);
-    DrawWindows;
-  end
-  else
-  begin
-    // Создаем диалог для ввода числа
-    if InputQuery('Размер горизонтального импоста',
-      'Расстояние от верхней границы окна (мм):',
-      Number) then
+    if TryStrToInt(Number, HorizImpost) then
     begin
-      if TryStrToInt(Number, HorizImpost) then
+      if (Window.GetIsDoor = True) then
       begin
-        if (Window.GetIsDoor = True) then
-        begin
-          DoorImpost := TPlasticDoorImpost.Create(HorizImpost, Image1);
-          Window.GetImpostsContainer.AddImpost(DoorImpost);
-          ComboBox2.Items.Add(Format('%d мм', [HorizImpost]));
-          ComboBox2.ItemIndex := ComboBox2.Items.Count - 1;
-          DrawWindows;
-        end
-        else
-          HorizontalImpost(HorizImpost);
+        DoorImpost := TPlasticDoorImpost.Create(HorizImpost, Image1);
+        Window.GetImpostsContainer.AddImpost(DoorImpost);
+        ComboBox2.Items.Add(Format('%d мм', [HorizImpost]));
+        ComboBox2.ItemIndex := ComboBox2.Items.Count - 1;
+        DrawWindows;
       end
       else
-      begin
-        ShowMessage('Некорректный ввод числа');
-      end;
+        HorizontalImpost(HorizImpost);
+    end
+    else
+    begin
+      ShowMessage('Некорректный ввод числа');
     end;
   end;
 end;
@@ -1890,90 +1894,105 @@ begin
   // Находим индекс окна, которое нужно разделить
   WindowIndex := CurrCont.GetSelectedIndex;
   Window := TRectWindow(CurrCont.GetWindow(WindowIndex));
-  if (Window.GetForm = 1) then
-  begin
-    Window.SetCircleWinFramuga(False);
-    DrawWindows;
-  end
-  else
-  begin
-  if WindowIndex >= 0 then
-  begin
-    if Assigned(Window) then
+    if WindowIndex >= 0 then
     begin
-      if (Window.GetIsDoor = True) then
+      if Assigned(Window) then
       begin
-        ImpostsContainer := Window.GetImpostsContainer;
-
-        // Check if the container is not empty
-        if (ImpostsContainer <> nil) and (ImpostsContainer.Count > 0) then
+        if (Window.GetIsDoor = True) then
         begin
-          // Get the selected index from ComboBox2
-          SelectedIndex := ComboBox2.ItemIndex;
+          ImpostsContainer := Window.GetImpostsContainer;
 
-          // Ensure the selected index is valid
-          if (SelectedIndex >= 0) and (SelectedIndex < ImpostsContainer.Count) then
+          // Check if the container is not empty
+          if (ImpostsContainer <> nil) and (ImpostsContainer.Count > 0) then
           begin
-            // Remove the impost at the selected index
-            ImpostsContainer.RemoveImpostByIndex(SelectedIndex);
+            // Get the selected index from ComboBox2
+            SelectedIndex := ComboBox2.ItemIndex;
 
-            // Remove the corresponding item from ComboBox2
-            ComboBox2.Items.Delete(SelectedIndex);
+            // Ensure the selected index is valid
+            if (SelectedIndex >= 0) and (SelectedIndex < ImpostsContainer.Count) then
+            begin
+              // Remove the impost at the selected index
+              ImpostsContainer.RemoveImpostByIndex(SelectedIndex);
+
+              // Remove the corresponding item from ComboBox2
+              ComboBox2.Items.Delete(SelectedIndex);
+            end
+            else
+            begin
+              // Handle invalid index (optional)
+              ShowMessage('Импост для удаления не найден');
+            end;
           end
           else
           begin
-            // Handle invalid index (optional)
-            ShowMessage('Импост для удаления не найден');
+            // Handle empty container (optional)
+            ShowMessage('Импостов нет');
+          end;
+          DrawWindows;
+        end;
+        // Проверяем высоту окна
+        if ((Window.GetYOtstup > 0) and (Window.GetIsDoor <> True)) then
+        begin
+          for Index := 0 to CurrCont.Count - 1 do
+          begin
+            UpWindow := TRectWindow(CurrCont.GetWindow(Index));
+            if Assigned(Window) and (UpWindow.GetYOtstup =
+              (Window.GetYOtstup - UpWindow.GetHeight)) and
+              (UpWindow.GetWidth = Window.GetWidth) and
+              (UpWindow.GetXOtstup = Window.GetXOtstup) then
+            begin
+
+              // Удаляем 1 окно из контейнера, а размеры второго изменяем
+              UpWindow.SetHeight(UpWindow.GetHeight + Window.GetHeight);
+              NewCol := UpdateIndexes(3, Window.GetRow, Window.GetColumn,
+                Window.GetXOtstup);
+
+
+              CurrCont.RemoveWindow(CurrCont.IndexOf(Window));
+
+
+
+              RectWindowDeselected(Self);
+              Image1.Canvas.Brush.Color := clWhite;
+              Image1.Canvas.FillRect(Image1.ClientRect);
+              DrawWindows;
+              Break;
+
+            end;
           end;
         end
         else
         begin
-          // Handle empty container (optional)
-          ShowMessage('Импостов нет');
+          if (Window.GetIsDoor <> True) then
+            ShowMessage(
+              'Возможно вы выбрали самое верхнее окно');
         end;
-        DrawWindows;
-      end;
-      // Проверяем высоту окна
-      if ((Window.GetYOtstup > 0) and (Window.GetIsDoor <> True)) then
-      begin
-        for Index := 0 to CurrCont.Count - 1 do
-        begin
-          UpWindow := TRectWindow(CurrCont.GetWindow(Index));
-          if Assigned(Window) and (UpWindow.GetYOtstup =
-            (Window.GetYOtstup - UpWindow.GetHeight)) and
-            (UpWindow.GetWidth = Window.GetWidth) and
-            (UpWindow.GetXOtstup = Window.GetXOtstup) then
-          begin
-
-            // Удаляем 1 окно из контейнера, а размеры второго изменяем
-            UpWindow.SetHeight(UpWindow.GetHeight + Window.GetHeight);
-            NewCol := UpdateIndexes(3, Window.GetRow, Window.GetColumn,
-              Window.GetXOtstup);
-
-
-            CurrCont.RemoveWindow(CurrCont.IndexOf(Window));
-
-
-
-            RectWindowDeselected(Self);
-            Image1.Canvas.Brush.Color := clWhite;
-            Image1.Canvas.FillRect(Image1.ClientRect);
-            DrawWindows;
-            Break;
-
-          end;
-        end;
-      end
-      else
-      begin
-        if (Window.GetIsDoor <> True) then
-          ShowMessage(
-            'Возможно вы выбрали самое верхнее окно');
       end;
     end;
   end;
+
+
+
+procedure TForm1.AddDeleteCircleStvorka(Sender: TObject);
+var
+  NewCol: integer;
+  WindowIndex: integer;
+  Window: TRectWindow;
+  CurrCont: TWindowContainer;
+begin
+  CurrCont := FullContainer.GetContainer(CurrentContainer);
+  // Находим индекс окна, которое нужно разделить
+  WindowIndex := CurrCont.GetSelectedIndex;
+  // Получаем экземпляр окна
+  Window := TRectWindow(CurrCont.GetWindow(WindowIndex));
+
+  // Проверяем состояние CheckBox1 и устанавливаем значение для SetCircleWinFramuga
+  if (Window.GetForm = 1) then
+  begin
+    Window.SetCircleWinFramuga(CheckBox2.Checked); // Устанавливаем значение в зависимости от состояния CheckBox1
+    DrawWindows;
+  end
 end;
- end;
 
 {******** ОБНОВЛЕНИЕ ИНДЕКСОВ **********}
 function TForm1.UpdateIndexes(OperationNum, NewRow, NewCol, NewOtstup: integer): integer;
@@ -2285,11 +2304,11 @@ end;
 
 procedure TForm1.SaveWindowsToDatabase;
 var
-  i, j: Integer;
+  i, j: integer;
   Container: TWindowContainer;
   Window: TRectWindow;
   Query: TSQLQuery;
-  NewConstructionID: Integer;
+  NewConstructionID: integer;
 begin
   Query := TSQLQuery.Create(nil);
   try
@@ -2308,7 +2327,8 @@ begin
       // Удаляем старые данные только для текущего контейнера
       if CurrentContainerID > 0 then
       begin
-        Query.SQL.Text := 'DELETE FROM Windows WHERE ConstructionID IN (SELECT ID FROM Constructions WHERE ContainerID = :ContainerID);';
+        Query.SQL.Text :=
+          'DELETE FROM Windows WHERE ConstructionID IN (SELECT ID FROM Constructions WHERE ContainerID = :ContainerID);';
         Query.ParamByName('ContainerID').AsInteger := CurrentContainerID;
         Query.ExecSQL;
 
@@ -2337,7 +2357,8 @@ begin
         end;
 
         // Вставляем конструкцию для контейнера
-        Query.SQL.Text := 'INSERT INTO Constructions (ContainerID) VALUES (:ContainerID)';
+        Query.SQL.Text :=
+          'INSERT INTO Constructions (ContainerID) VALUES (:ContainerID)';
         Query.ParamByName('ContainerID').AsInteger := CurrentContainerID;
         Query.ExecSQL;
 
@@ -2354,8 +2375,9 @@ begin
 
           // Исправлено название столбца на ConstructionID
           Query.SQL.Text := 'INSERT INTO Windows (ConstructionID, Height, Width) ' +
-                            'VALUES (:ConstructionID, :Height, :Width)';
-          Query.ParamByName('ConstructionID').AsInteger := NewConstructionID; // Используем ID конструкции
+            'VALUES (:ConstructionID, :Height, :Width)';
+          Query.ParamByName('ConstructionID').AsInteger := NewConstructionID;
+          // Используем ID конструкции
           Query.ParamByName('Height').AsInteger := Window.GetHeight;
           Query.ParamByName('Width').AsInteger := Window.GetWidth;
           Query.ExecSQL;

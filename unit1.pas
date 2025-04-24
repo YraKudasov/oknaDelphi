@@ -191,6 +191,9 @@ begin
         end;
         CurrCont.GetWindow(0).SetHeight(StrToInt(Edit3.Text));
         CurrCont.GetWindow(0).SetWidth(StrToInt(Edit4.Text));
+        if (CurrCont.GetWindow(0).GetImpostsContainer.Count = 1) then
+          CurrCont.GetWindow(0).GetImpostsContainer.GetImpost(
+            0).SetImpYOtstup(CurrCont.GetWindow(0).GetHeight div 2);
       end
       else
       begin
@@ -1099,7 +1102,7 @@ begin
       CurrWin.SetImage(Image2);
       CurrWin.SetXOtstup(CurrWin.GetXOtstup + CurrCont.GetCommonXOtstup);
       CurrWin.SetZoomIndex(DrawingFullConstrIndex);
-      if (CurrWin.GetIsDoor) then
+      if ((CurrWin.GetIsDoor) or (CurrWin.GetForm = 1)) then
       begin
         for k := 0 to CurrWin.GetImpostsContainer.Count - 1 do
         begin
@@ -1119,7 +1122,7 @@ begin
       CurrWin.SetImage(Image1);
       CurrWin.SetXOtstup(CurrWin.GetXOtstup - CurrCont.GetCommonXOtstup);
       CurrWin.SetZoomIndex(DrawingIndex);
-      if (CurrWin.GetIsDoor) then
+      if ((CurrWin.GetIsDoor) or (CurrWin.GetForm = 1)) then
       begin
         for k := 0 to CurrWin.GetImpostsContainer.Count - 1 do
         begin
@@ -1405,9 +1408,12 @@ begin
     Label7.Visible := True;
     Combobox1.Visible := True;
     Combobox1.ItemIndex := 0;
-    CheckBox2.Checked:=False;
+    CheckBox2.Checked := False;
     CurrWin.SetCircleWinFramuga(False);
     CheckBox2.Visible := False;
+    CurrWin.SetCircleWinFramuga(False);
+    if (CurrWin.GetImpostsContainer.Count = 1) then
+      CurrWin.GetImpostsContainer.RemoveImpostByIndex(0);
   end;
 
   DrawWindows;
@@ -1673,27 +1679,43 @@ begin
   Number := '0';
   WindowIndex := CurrCont.GetSelectedIndex;
   Window := TRectWindow(CurrCont.GetWindow(WindowIndex));
-  // Создаем диалог для ввода числа
-  if InputQuery('Размер горизонтального импоста',
-    'Расстояние от верхней границы окна (мм):',
-    Number) then
+  if (Window.GetForm = 1) then
   begin
-    if TryStrToInt(Number, HorizImpost) then
+    if ((Window.GetImpostsContainer.Count = 0) and
+      (Window.GetCircleWinFramuga = False)) then
     begin
-      if (Window.GetIsDoor = True) then
-      begin
-        DoorImpost := TPlasticDoorImpost.Create(HorizImpost, Image1);
-        Window.GetImpostsContainer.AddImpost(DoorImpost);
-        ComboBox2.Items.Add(Format('%d мм', [HorizImpost]));
-        ComboBox2.ItemIndex := ComboBox2.Items.Count - 1;
-        DrawWindows;
-      end
-      else
-        HorizontalImpost(HorizImpost);
+      DoorImpost := TPlasticDoorImpost.Create(Window.GetHeight div 2, Image1);
+      Window.GetImpostsContainer.AddImpost(DoorImpost);
+      DrawWindows;
     end
     else
+      ShowMessage(
+        'Импост или створка уже добавлены. Уберите это перед добавлением створки');
+  end
+  else
+  begin
+    // Создаем диалог для ввода числа
+    if InputQuery('Размер горизонтального импоста',
+      'Расстояние от верхней границы окна (мм):',
+      Number) then
     begin
-      ShowMessage('Некорректный ввод числа');
+      if TryStrToInt(Number, HorizImpost) then
+      begin
+        if (Window.GetIsDoor = True) then
+        begin
+          DoorImpost := TPlasticDoorImpost.Create(HorizImpost, Image1);
+          Window.GetImpostsContainer.AddImpost(DoorImpost);
+          ComboBox2.Items.Add(Format('%d мм', [HorizImpost]));
+          ComboBox2.ItemIndex := ComboBox2.Items.Count - 1;
+          DrawWindows;
+        end
+        else
+          HorizontalImpost(HorizImpost);
+      end
+      else
+      begin
+        ShowMessage('Некорректный ввод числа');
+      end;
     end;
   end;
 end;
@@ -1894,7 +1916,15 @@ begin
   // Находим индекс окна, которое нужно разделить
   WindowIndex := CurrCont.GetSelectedIndex;
   Window := TRectWindow(CurrCont.GetWindow(WindowIndex));
-    if WindowIndex >= 0 then
+  if WindowIndex >= 0 then
+  begin
+    if (Window.GetForm = 1) then
+    begin
+      if (Window.GetImpostsContainer.Count = 1) then
+        Window.GetImpostsContainer.RemoveImpostByIndex(0);
+      DrawWindows;
+    end
+    else
     begin
       if Assigned(Window) then
       begin
@@ -1970,12 +2000,10 @@ begin
       end;
     end;
   end;
-
-
+end;
 
 procedure TForm1.AddDeleteCircleStvorka(Sender: TObject);
 var
-  NewCol: integer;
   WindowIndex: integer;
   Window: TRectWindow;
   CurrCont: TWindowContainer;
@@ -1987,11 +2015,17 @@ begin
   Window := TRectWindow(CurrCont.GetWindow(WindowIndex));
 
   // Проверяем состояние CheckBox1 и устанавливаем значение для SetCircleWinFramuga
-  if (Window.GetForm = 1) then
+  if ((Window.GetForm = 1) and (Window.GetImpostsContainer.Count = 0)) then
   begin
-    Window.SetCircleWinFramuga(CheckBox2.Checked); // Устанавливаем значение в зависимости от состояния CheckBox1
+    Window.SetCircleWinFramuga(CheckBox2.Checked);
+    // Устанавливаем значение в зависимости от состояния CheckBox1
     DrawWindows;
   end
+  else if (CheckBox2.Checked = True) then begin
+    ShowMessage(
+      'На окно уже добавлен импост. Уберите его перед добавлением створки');
+    CheckBox2.Checked := False;
+  end;
 end;
 
 {******** ОБНОВЛЕНИЕ ИНДЕКСОВ **********}

@@ -77,6 +77,7 @@ type
     function GetIsDoor: boolean;
     function GetImpostsContainer: TImpostsContainer;
     function GetForm: integer;
+   function GetCircleWinFramuga: boolean;
 
 
   end;
@@ -161,8 +162,9 @@ begin
       Impost := FImpostsContainer.GetImpost(i);
       ScaledImpYOtstup := Impost.GetFImpYOtstup;
       ScaledImpYOtstup := Round(ScaledImpYOtstup * GetZoomIndex);
-      Impost.DrawDoorImp(ScaledRectWidth, ScaledXOtstup, ScaledImpYOtstup,
-        ZoomIndex, MaxZoom);
+
+        Impost.DrawDoorImp(ScaledRectWidth, ScaledXOtstup, ScaledImpYOtstup,
+          ZoomIndex, MaxZoom, False);
     end;
   end;
 end;
@@ -215,6 +217,8 @@ begin
       DrawMoskit(ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup);
     DrawImposts;
   end;
+  if (GetForm = 1) then
+    DrawImposts;
 end;
 
 
@@ -333,6 +337,12 @@ begin
       ScaledYOtstup + Round(ZoomIndex / MaxZoom * 22),
       ScaledXOtstup + (ScaledRectWidth div 2) + Round(ZoomIndex / MaxZoom * 5),
       ScaledYOtstup + Round(ZoomIndex / MaxZoom * 32));
+
+    FImage.Canvas.Rectangle(ScaledXOtstup + (ScaledRectWidth div 2) -
+      Round(ZoomIndex / MaxZoom * 2),
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 24),
+      ScaledXOtstup + (ScaledRectWidth div 2) + Round(ZoomIndex / MaxZoom * 28),
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 30));
   end;
 
 end;
@@ -727,6 +737,11 @@ end;
 procedure TRectWindow.SetCircleWinFramuga(Value: boolean);
 begin
   IsCircleWinFramuga := Value;
+end;
+
+function TRectWindow.GetCircleWinFramuga: boolean;
+begin
+   Result := IsCircleWinFramuga;
 end;
 
 function TRectWindow.GetImpostsContainer: TImpostsContainer;

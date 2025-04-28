@@ -29,7 +29,6 @@ type
     Button6: TButton;
     Button7: TButton;
     CheckBox1: TCheckBox;
-    CheckBox2: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
     ComboBox3: TComboBox;
@@ -109,7 +108,6 @@ type
     function ChooseProfileOtstup(Row, Col: integer): integer;
     procedure ResetAllWindowSelections;
     procedure SaveWindowsToDatabase;
-    procedure AddDeleteCircleStvorka(Sender: TObject);
 
 
 
@@ -523,8 +521,8 @@ begin
   begin
     MenuItem2.Enabled := False;
     MenuItem5.Enabled := False;
-    ComboBox1.Visible := False;
-    Label7.Visible := False;
+    Label8.Visible := False;
+    CheckBox1.Visible:=False;
   end;
 end;
 
@@ -624,6 +622,29 @@ begin
         end;
         CheckBox1.Visible := False;
         Label8.Visible := False;
+      end;
+      if (Window.GetForm = 1) or (Window.GetForm = 2) or (Window.GetForm = 3) then
+      begin
+        if (ComboBox1.ItemIndex = 1) or (ComboBox1.ItemIndex = 2) or
+          (ComboBox1.ItemIndex = 4) or (ComboBox1.ItemIndex = 5) then
+        begin
+          ShowMessage('Этот элемент недоступен.');
+          ComboBox1.ItemIndex := 0; // Сбрасываем выбор
+          Window.SetType(0);
+          CheckBox1.Visible := False;
+          Label8.Visible := False;
+        end
+        else if (ComboBox1.ItemIndex = 3) and (Window.GetImpostsContainer.Count <> 0) then
+        begin
+          Window.SetType(0);
+          ComboBox1.ItemIndex := 0;
+          ShowMessage(
+            'Предупреждение: На окно уже добавлен импост. Уберите его перед добавлением створки');
+        end;
+
+        Label8.Visible := false;
+        CheckBox1.Visible := false;
+
       end;
       Window.SetZoomIndex(DrawingIndex);
       Window.DrawWindow;
@@ -741,7 +762,7 @@ begin
   Button5.Enabled := False;
   Button6.Enabled := False;
   Button7.Enabled := False;
-  CheckBox2.Visible := False;
+
 
   FDatabase := TSQLite3Connection.Create(Self);
   FTransaction := TSQLTransaction.Create(Self);
@@ -1390,27 +1411,39 @@ begin
       #13#10 +
       '- Ширина и высота окна должны быть ОДИНАКОВЫМИ');
   end;
+  if (((SelectedIndex = 2) or (SelectedIndex = 3)) and (CurrWin.GetYOtstup <> 0)) then
+  begin
+    ComboBox4.ItemIndex := 0;
+    ShowMessage('Ошибка: Невозможно поменять форму окна на АРКУ:'
+      + #13#10 +
+      'Выбранное вами окно имеет отступ сверху больше 0');
+  end;
   CurrWin.SetForm(ComboBox4.ItemIndex);
-  if (CurrWin.GetForm = 1) then
+  if ((CurrWin.GetForm = 1) or (CurrWin.GetForm = 2) or (CurrWin.GetForm = 3)) then
   begin
     CurrWin.SetType(0);
     CurrWin.SetMoskit(False);
-    Label7.Visible := False;
-    Combobox1.Visible := False;
+    Label7.Visible := True;
+    Combobox1.Visible := True;
     Label8.Visible := False;
     CheckBox1.Visible := False;
     MenuItem2.Enabled := False;
+    ComboBox1.Items[1] := '(недоступно)';
+    ComboBox1.Items[2] := '(недоступно)';
+    ComboBox1.Items[4] := '(недоступно)';
+    ComboBox1.Items[5] := '(недоступно)';
     MenuItem5.Enabled := False;
-    CheckBox2.Visible := True;
   end
   else
   begin
+    ComboBox1.Items[1] := 'Лев. п/о';
+    ComboBox1.Items[2] := 'Лев. повор.';
+    ComboBox1.Items[4] := 'Прав. п/о';
+    ComboBox1.Items[5] := 'Прав. повор.';
     Label7.Visible := True;
     Combobox1.Visible := True;
     Combobox1.ItemIndex := 0;
-    CheckBox2.Checked := False;
     CurrWin.SetCircleWinFramuga(False);
-    CheckBox2.Visible := False;
     CurrWin.SetCircleWinFramuga(False);
     if (CurrWin.GetImpostsContainer.Count = 1) then
       CurrWin.GetImpostsContainer.RemoveImpostByIndex(0);
@@ -1682,7 +1715,7 @@ begin
   if (Window.GetForm = 1) then
   begin
     if ((Window.GetImpostsContainer.Count = 0) and
-      (Window.GetCircleWinFramuga = False)) then
+      (Window.GetType <> 3)) then
     begin
       DoorImpost := TPlasticDoorImpost.Create(Window.GetHeight div 2, Image1);
       Window.GetImpostsContainer.AddImpost(DoorImpost);
@@ -2002,31 +2035,8 @@ begin
   end;
 end;
 
-procedure TForm1.AddDeleteCircleStvorka(Sender: TObject);
-var
-  WindowIndex: integer;
-  Window: TRectWindow;
-  CurrCont: TWindowContainer;
-begin
-  CurrCont := FullContainer.GetContainer(CurrentContainer);
-  // Находим индекс окна, которое нужно разделить
-  WindowIndex := CurrCont.GetSelectedIndex;
-  // Получаем экземпляр окна
-  Window := TRectWindow(CurrCont.GetWindow(WindowIndex));
 
-  // Проверяем состояние CheckBox1 и устанавливаем значение для SetCircleWinFramuga
-  if ((Window.GetForm = 1) and (Window.GetImpostsContainer.Count = 0)) then
-  begin
-    Window.SetCircleWinFramuga(CheckBox2.Checked);
-    // Устанавливаем значение в зависимости от состояния CheckBox1
-    DrawWindows;
-  end
-  else if (CheckBox2.Checked = True) then begin
-    ShowMessage(
-      'На окно уже добавлен импост. Уберите его перед добавлением створки');
-    CheckBox2.Checked := False;
-  end;
-end;
+
 
 {******** ОБНОВЛЕНИЕ ИНДЕКСОВ **********}
 function TForm1.UpdateIndexes(OperationNum, NewRow, NewCol, NewOtstup: integer): integer;

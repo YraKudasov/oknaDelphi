@@ -61,6 +61,7 @@ type
     procedure PaintSize(ScaledConstructW, ScaledConstructH, ScaledXOt,
       ScaledYOt: integer; NoOneW, NoOneH: boolean);
     procedure DrawImposts;
+    procedure DrawTriangle(Points: array of TPoint; FillColor: TColor);
 
 
     function GetRow: integer;
@@ -77,7 +78,7 @@ type
     function GetIsDoor: boolean;
     function GetImpostsContainer: TImpostsContainer;
     function GetForm: integer;
-   function GetCircleWinFramuga: boolean;
+    function GetCircleWinFramuga: boolean;
 
 
   end;
@@ -211,6 +212,10 @@ begin
   if (FType = 0) then
   begin
     DrawGluxar;
+  end
+  else if (FType = 3) and (FForm = 1) then
+  begin
+    DrawGluxar;
     DrawCircleWinFramuga;
   end
   else
@@ -281,7 +286,7 @@ var
   CenterX, CenterY: integer;
   BorderRadius, Radius: integer;
 begin
-  if ((FForm = 1) and (IsCircleWinFramuga = True)) then
+  if ((FForm = 1)  and (FType = 3)) then
   begin
     FImage.Canvas.Pen.Color := clBlack;
     FImage.Canvas.Pen.Width := 2;
@@ -354,7 +359,9 @@ end;
 procedure TRectWindow.DrawGluxar;
 var
   CenterX, CenterY, CenterXGlass, CenterYGlass: integer;
-  Radius, RadiusGlass: integer;
+  BorderRadius, Radius, RadiusGlass: integer;
+  TrianglePoints: array of TPoint;
+  OtstupInside, AddingOtstup: integer;
 begin
   FImage.Canvas.Brush.Color := clWhite; // Задайте цвет фона окна
 
@@ -364,7 +371,7 @@ begin
 
   FImage.Canvas.Pen.Color := clBlack;
   FImage.Canvas.Pen.Width := 2;
-
+  //Прямоугольник
   if (FForm = 0) then
   begin
     FImage.Canvas.Rectangle(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),
@@ -372,13 +379,13 @@ begin
       ScaledRectWidth + ScaledXOtstup,
       ScaledRectHeight + ScaledYOtstup);
 
-    // Отрисовка меньшего синего окна внутри
     FImage.Canvas.Brush.Color := clSkyBlue;
     FImage.Canvas.Rectangle(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 24),
       ScaledYOtstup + Round(ZoomIndex / MaxZoom * 24),
       ScaledRectWidth - Round(ZoomIndex / MaxZoom * 20) + ScaledXOtstup,
       ScaledRectHeight - Round(ZoomIndex / MaxZoom * 20) + ScaledYOtstup);
   end
+  //Круг
   else if (FForm = 1) then
   begin
     //Внешний круг
@@ -395,7 +402,120 @@ begin
       Round(ZoomIndex / MaxZoom * 24);
     FImage.Canvas.Ellipse(CenterXGlass - RadiusGlass, CenterYGlass -
       RadiusGlass, CenterXGlass + RadiusGlass, CenterYGlass + RadiusGlass);
+  end
+  //Арка
+  else if (FForm = 2) then
+  begin
+    FImage.Canvas.Pen.Color := clBlack;
+    FImage.Canvas.Pen.Width := 2;
+    FImage.Canvas.Brush.Color := clWhite;
+
+    CenterX := (ScaledRectWidth div 2) + Round(ZoomIndex / MaxZoom * 3);
+    CenterY := (ScaledRectHeight div 2) + Round(ZoomIndex / MaxZoom * 3);
+    Radius := (ScaledRectWidth div 2) - Round(ZoomIndex / MaxZoom * 15);
+    BorderRadius := (ScaledRectWidth div 2) - Round(ZoomIndex / MaxZoom * 2);
+    //Закраска половины окна
+    FImage.Canvas.FillRect(3, 3, ScaledRectWidth, CenterY);
+
+    FImage.Canvas.Pen.Color := clSkyBlue;
+    FImage.Canvas.Brush.Color := clSkyBlue;
+
+    FImage.Canvas.Ellipse(Round(ZoomIndex / MaxZoom * 36),
+      Round(ZoomIndex / MaxZoom * 36),
+      ScaledRectWidth - Round(ZoomIndex / MaxZoom * 31),
+      ScaledRectHeight - Round(ZoomIndex / MaxZoom * 31));
+
+    FImage.Canvas.Pen.Color := clBlack;
+    FImage.Canvas.Brush.Color := clWhite;
+
+    //Граница окна
+    FImage.Canvas.Arc(CenterX - BorderRadius, CenterY - BorderRadius,
+      CenterX + BorderRadius, CenterY + BorderRadius,
+      CenterX + BorderRadius, CenterY, CenterX - BorderRadius, CenterY);
+
+
+    //Внешняя линия створки
+    FImage.Canvas.MoveTo(ScaledRectWidth - Round(ZoomIndex / MaxZoom * 30), CenterY);
+    FImage.Canvas.AngleArc(CenterX, CenterY, Radius, 0, 180);
+
+
+    //Внутренняя линия створки
+    FImage.Canvas.AngleArc(CenterX, CenterY, BorderRadius -
+      Round(ZoomIndex / MaxZoom * 30), 0, 180);
+  end
+  //Треугольник
+  else if (FForm = 3) then
+  begin
+    OtstupInside := 0;
+    AddingOtstup := 0;
+    if ((ScaledRectWidth / ScaledRectHeight < 0.5) and (ScaledRectWidth / ScaledRectHeight >= 0.17)) then
+    AddingOtstup := 20
+    else if ((ScaledRectWidth / ScaledRectHeight >= 1.5) and (ScaledRectWidth / ScaledRectHeight < 1.895)) then
+    OtstupInside := 7
+    else if (ScaledRectWidth / ScaledRectHeight >= 1.895) and (ScaledRectWidth / ScaledRectHeight < 2.2) then
+    OtstupInside := 10
+    else if (ScaledRectWidth / ScaledRectHeight >= 2.2) and (ScaledRectWidth / ScaledRectHeight < 2.5) then
+    OtstupInside := 15
+    else if (ScaledRectWidth / ScaledRectHeight >= 2.5) and (ScaledRectWidth / ScaledRectHeight < 3) then
+    OtstupInside := 19
+    else if (ScaledRectWidth / ScaledRectHeight >= 3) and (ScaledRectWidth / ScaledRectHeight < 3.3) then
+    OtstupInside := 22
+    else if (ScaledRectWidth / ScaledRectHeight >= 3.3) and (ScaledRectWidth / ScaledRectHeight < 3.5) then
+    OtstupInside := 25
+    else if (ScaledRectWidth / ScaledRectHeight >= 3.5) and (ScaledRectWidth / ScaledRectHeight < 3.9) then
+    OtstupInside := 30
+    else if (ScaledRectWidth / ScaledRectHeight >= 3.9) and (ScaledRectWidth / ScaledRectHeight < 4.5) then
+    OtstupInside := 34
+    else if (ScaledRectWidth / ScaledRectHeight >= 4.5) and (ScaledRectWidth / ScaledRectHeight <= 5.0) then
+    OtstupInside := 40
+    else if (ScaledRectWidth / ScaledRectHeight >= 5.0) and (ScaledRectWidth / ScaledRectHeight < 6.0) then
+    OtstupInside := 43
+    else if (ScaledRectWidth / ScaledRectHeight >= 6.0) and (ScaledRectWidth / ScaledRectHeight < 7.0) then
+    begin
+    OtstupInside := 54;
+    AddingOtstup := 5;
+    end
+    else if (ScaledRectWidth / ScaledRectHeight >= 7.0) and (ScaledRectWidth / ScaledRectHeight <= 7.8) then
+    begin
+    OtstupInside := 61;
+    AddingOtstup := 7;
+    end;
+    SetLength(TrianglePoints, 3); // Устанавливаем длину массива
+    TrianglePoints[0] := Point(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),
+      ScaledRectHeight + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2));  // Вершина 1
+    TrianglePoints[1] := Point(ScaledRectWidth + ScaledXOtstup,
+      ScaledRectHeight + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2));
+    // Вершина 2
+    TrianglePoints[2] := Point((ScaledRectWidth div 2) + ScaledXOtstup,
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 4));  // Вершина 3
+
+    DrawTriangle(TrianglePoints, clWhite);
+
+
+    TrianglePoints[0] := Point(ScaledXOtstup + Round(ZoomIndex / MaxZoom * (32+OtstupInside)),
+      ScaledRectHeight - Round(ZoomIndex / MaxZoom * 18) + ScaledYOtstup);
+    // Вершина 1
+    TrianglePoints[1] := Point(ScaledRectWidth - Round(ZoomIndex / MaxZoom * (28+OtstupInside)) +
+      ScaledXOtstup, ScaledRectHeight - Round(ZoomIndex / MaxZoom * 18) + ScaledYOtstup);
+    // Вершина 2
+    TrianglePoints[2] := Point((ScaledRectWidth div 2) + ScaledXOtstup,
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * (34-(OtstupInside div 2)+AddingOtstup)));  // Вершина 3
+
+    DrawTriangle(TrianglePoints, clSkyBlue);
+
+
   end;
+end;
+
+procedure TRectWindow.DrawTriangle(Points: array of TPoint; FillColor: TColor);
+begin
+  // Устанавливаем цвет пера и кисти
+  FImage.Canvas.Pen.Color := clBlack;
+  FImage.Canvas.Pen.Width := 2;
+  FImage.Canvas.Brush.Color := FillColor;
+
+  // Рисуем треугольник
+  FImage.Canvas.Polygon(Points);
 end;
 
 procedure TRectWindow.DrawNeGluxar;
@@ -744,7 +864,7 @@ end;
 
 function TRectWindow.GetCircleWinFramuga: boolean;
 begin
-   Result := IsCircleWinFramuga;
+  Result := IsCircleWinFramuga;
 end;
 
 function TRectWindow.GetImpostsContainer: TImpostsContainer;

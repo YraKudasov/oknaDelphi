@@ -18,7 +18,7 @@ type
     ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup: integer;
     ZoomIndex: double;
     IsDoor: boolean;
-    IsCircleWinFramuga: boolean;
+    UpperPoint: integer;
     FImpostsContainer: TImpostsContainer;
   public
     FSelected: boolean;
@@ -57,7 +57,7 @@ type
     procedure SetZoomIndex(Value: double);
     procedure SetImage(Value: TImage);
     procedure SetIsDoor(Value: boolean);
-    procedure SetCircleWinFramuga(Value: boolean);
+    procedure SetUpperPoint(Value: integer);
     procedure PaintSize(ScaledConstructW, ScaledConstructH, ScaledXOt,
       ScaledYOt: integer; NoOneW, NoOneH: boolean);
     procedure DrawImposts;
@@ -78,7 +78,7 @@ type
     function GetIsDoor: boolean;
     function GetImpostsContainer: TImpostsContainer;
     function GetForm: integer;
-    function GetCircleWinFramuga: boolean;
+    function GetUpperPoint: integer;
 
 
   end;
@@ -102,6 +102,7 @@ begin
   FMoskit := AMoskit;
   FImpostsContainer := TImpostsContainer.Create;
   MaxZoom := 0.24;
+  UpperPoint := 0;
 end;
 
 procedure TRectWindow.DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX,
@@ -286,7 +287,7 @@ var
   CenterX, CenterY: integer;
   BorderRadius, Radius: integer;
 begin
-  if ((FForm = 1)  and (FType = 4)) then
+  if ((FForm = 1)  and (FType = 3)) then
   begin
     FImage.Canvas.Pen.Color := clBlack;
     FImage.Canvas.Pen.Width := 2;
@@ -358,10 +359,12 @@ end;
 
 procedure TRectWindow.DrawGluxar;
 var
+  ScaledUpperPoint: integer;
   CenterX, CenterY, CenterXGlass, CenterYGlass: integer;
   BorderRadius, Radius, RadiusGlass: integer;
-  TrianglePoints: array of TPoint;
-  OtstupInside, AddingOtstup: integer;
+  Xc, Yc: integer;
+  k: double;
+  TrianglePoints, TrianglePointsMini: array of TPoint;
 begin
   FImage.Canvas.Brush.Color := clWhite; // Задайте цвет фона окна
 
@@ -446,62 +449,33 @@ begin
   //Треугольник
   else if (FForm = 3) then
   begin
-    OtstupInside := 0;
-    AddingOtstup := 0;
-    if ((ScaledRectWidth / ScaledRectHeight < 0.5) and (ScaledRectWidth / ScaledRectHeight >= 0.17)) then
-    AddingOtstup := 20
-    else if ((ScaledRectWidth / ScaledRectHeight >= 1.5) and (ScaledRectWidth / ScaledRectHeight < 1.895)) then
-    OtstupInside := 7
-    else if (ScaledRectWidth / ScaledRectHeight >= 1.895) and (ScaledRectWidth / ScaledRectHeight < 2.2) then
-    OtstupInside := 10
-    else if (ScaledRectWidth / ScaledRectHeight >= 2.2) and (ScaledRectWidth / ScaledRectHeight < 2.5) then
-    OtstupInside := 15
-    else if (ScaledRectWidth / ScaledRectHeight >= 2.5) and (ScaledRectWidth / ScaledRectHeight < 3) then
-    OtstupInside := 19
-    else if (ScaledRectWidth / ScaledRectHeight >= 3) and (ScaledRectWidth / ScaledRectHeight < 3.3) then
-    OtstupInside := 22
-    else if (ScaledRectWidth / ScaledRectHeight >= 3.3) and (ScaledRectWidth / ScaledRectHeight < 3.5) then
-    OtstupInside := 25
-    else if (ScaledRectWidth / ScaledRectHeight >= 3.5) and (ScaledRectWidth / ScaledRectHeight < 3.9) then
-    OtstupInside := 30
-    else if (ScaledRectWidth / ScaledRectHeight >= 3.9) and (ScaledRectWidth / ScaledRectHeight < 4.5) then
-    OtstupInside := 34
-    else if (ScaledRectWidth / ScaledRectHeight >= 4.5) and (ScaledRectWidth / ScaledRectHeight <= 5.0) then
-    OtstupInside := 40
-    else if (ScaledRectWidth / ScaledRectHeight >= 5.0) and (ScaledRectWidth / ScaledRectHeight < 6.0) then
-    OtstupInside := 43
-    else if (ScaledRectWidth / ScaledRectHeight >= 6.0) and (ScaledRectWidth / ScaledRectHeight < 7.0) then
-    begin
-    OtstupInside := 54;
-    AddingOtstup := 5;
-    end
-    else if (ScaledRectWidth / ScaledRectHeight >= 7.0) and (ScaledRectWidth / ScaledRectHeight <= 7.8) then
-    begin
-    OtstupInside := 61;
-    AddingOtstup := 7;
-    end;
+    ScaledUpperPoint := Round(UpperPoint * GetZoomIndex);
+
     SetLength(TrianglePoints, 3); // Устанавливаем длину массива
     TrianglePoints[0] := Point(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),
       ScaledRectHeight + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2));  // Вершина 1
     TrianglePoints[1] := Point(ScaledRectWidth + ScaledXOtstup,
       ScaledRectHeight + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2));
     // Вершина 2
-    TrianglePoints[2] := Point((ScaledRectWidth div 2) + ScaledXOtstup,
+    TrianglePoints[2] := Point( ScaledUpperPoint  + ScaledXOtstup,
       ScaledYOtstup + Round(ZoomIndex / MaxZoom * 4));  // Вершина 3
 
     DrawTriangle(TrianglePoints, clWhite);
 
-
-    TrianglePoints[0] := Point(ScaledXOtstup + Round(ZoomIndex / MaxZoom * (32+OtstupInside)),
-      ScaledRectHeight - Round(ZoomIndex / MaxZoom * 18) + ScaledYOtstup);
+    Xc := Round((TrianglePoints[0].X + TrianglePoints[1].X + TrianglePoints[2].X)/3);
+    Yc := Round((TrianglePoints[0].Y + TrianglePoints[1].Y + TrianglePoints[2].Y)/3);
+    k := 0.7;
+     SetLength(TrianglePointsMini, 3); // Устанавливаем длину массива
+    TrianglePointsMini[0] := Point(Xc + k*(TrianglePoints[0].X - Xc),
+     Yc + k*(TrianglePoints[0].Y - Yc));
     // Вершина 1
-    TrianglePoints[1] := Point(ScaledRectWidth - Round(ZoomIndex / MaxZoom * (28+OtstupInside)) +
-      ScaledXOtstup, ScaledRectHeight - Round(ZoomIndex / MaxZoom * 18) + ScaledYOtstup);
+    TrianglePointsMini[1] := Point(Xc + k*(TrianglePoints[1].X - Xc),
+     Yc + k*(TrianglePoints[1].Y - Yc));
     // Вершина 2
-    TrianglePoints[2] := Point((ScaledRectWidth div 2) + ScaledXOtstup,
-      ScaledYOtstup + Round(ZoomIndex / MaxZoom * (34-(OtstupInside div 2)+AddingOtstup)));  // Вершина 3
+    TrianglePointsMini[2] := Point(Xc + k*(TrianglePoints[2].X - Xc),
+     Yc + k*(TrianglePoints[2].Y - Yc));  // Вершина 3
 
-    DrawTriangle(TrianglePoints, clSkyBlue);
+    DrawTriangle(TrianglePointsMini, clSkyBlue);
 
 
   end;
@@ -857,14 +831,14 @@ begin
   IsDoor := Value;
 end;
 
-procedure TRectWindow.SetCircleWinFramuga(Value: boolean);
+procedure TRectWindow.SetUpperPoint(Value: integer);
 begin
-  IsCircleWinFramuga := Value;
+  UpperPoint := Value;
 end;
 
-function TRectWindow.GetCircleWinFramuga: boolean;
+function TRectWindow.GetUpperPoint: integer;
 begin
-  Result := IsCircleWinFramuga;
+  Result := UpperPoint;
 end;
 
 function TRectWindow.GetImpostsContainer: TImpostsContainer;

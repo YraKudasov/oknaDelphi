@@ -21,6 +21,8 @@ type
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
     BitBtn4: TBitBtn;
+    BitBtn5: TBitBtn;
+    BitBtn6: TBitBtn;
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
@@ -37,11 +39,13 @@ type
     Edit2: TEdit;
     Edit3: TEdit;
     Edit4: TEdit;
+    Edit5: TEdit;
     Image1: TImage;
     Image2: TImage;
     Label1: TLabel;
     Label10: TLabel;
     Label11: TLabel;
+    Label12: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -60,6 +64,7 @@ type
     Panel2: TPanel;
     Panel3: TPanel;
     Panel4: TPanel;
+    Panel5: TPanel;
     PopupMenu1: TPopupMenu;
     ScrollBox1: TScrollBox;
     ScrollBox2: TScrollBox;
@@ -69,6 +74,8 @@ type
 
     procedure AlignWidth(Sender: TObject);
     procedure AlignForSun(Sender: TObject);
+    procedure BitBtn5Click(Sender: TObject);
+    procedure BitBtn6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
     procedure ComboBox4Change(Sender: TObject);
     procedure DrawFullConstruction(Sender: TObject);
@@ -79,6 +86,7 @@ type
     procedure CreateNewFullConstr(Sender: TObject; IsPlasticDoor: boolean);
     procedure CheckBox1Change(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
+    procedure UpperTrianglePoint(Sender: TObject);
     procedure SizeConstruction(Sender: TObject);
     procedure SizeWindow(Sender: TObject);
     procedure BitBtn4Click(Sender: TObject);
@@ -522,7 +530,12 @@ begin
     MenuItem2.Enabled := False;
     MenuItem5.Enabled := False;
     Label8.Visible := False;
-    CheckBox1.Visible:=False;
+    CheckBox1.Visible := False;
+  end;
+  if (Window.GetForm = 3) then
+  begin
+    Panel5.Visible := True;
+    BitBtn5.Enabled := False;
   end;
 end;
 
@@ -540,7 +553,7 @@ begin
   ComboBox1.Enabled := False;
   CheckBox1.Visible := False;
   Label8.Visible := False;
-
+  Panel5.Visible := False;
 end;
 
 
@@ -634,7 +647,8 @@ begin
           CheckBox1.Visible := False;
           Label8.Visible := False;
         end
-        else if (ComboBox1.ItemIndex = 3) and (Window.GetImpostsContainer.Count <> 0) then
+        else if (ComboBox1.ItemIndex = 3) and
+          (Window.GetImpostsContainer.Count <> 0) then
         begin
           Window.SetType(0);
           ComboBox1.ItemIndex := 0;
@@ -642,14 +656,43 @@ begin
             'Предупреждение: На окно уже добавлен импост. Уберите его перед добавлением створки');
         end;
 
-        Label8.Visible := false;
-        CheckBox1.Visible := false;
+        Label8.Visible := False;
+        CheckBox1.Visible := False;
 
       end;
       Window.SetZoomIndex(DrawingIndex);
       Window.DrawWindow;
     end;
   end;
+end;
+
+procedure TForm1.UpperTrianglePoint(Sender: TObject);
+var
+  IntEdit: integer;
+  Window: TRectWindow;
+  CurrCont: TWindowContainer;
+begin
+  CurrCont := FullContainer.GetContainer(CurrentContainer);
+  Window := CurrCont.GetWindow(CurrCont.GetSelectedIndex);
+
+  // Попытка преобразовать текст в целое число, если не удается, устанавливаем 0
+  if not TryStrToInt(Edit5.Text, IntEdit) then
+    IntEdit := 0;
+
+  // Проверка на ввод корректных значений
+  if (IntEdit <> Window.GetUpperPoint) then
+  begin
+    // Проверка на минимальное и максимальное значение для длины и ширины
+    if (IntEdit >= 0) and (IntEdit <= Window.GetWidth) then
+      BitBtn5.Enabled := True
+    else
+      BitBtn5.Enabled := False;
+  end
+  else
+    BitBtn5.Enabled := False;
+
+  if (Edit5.Caption = '') then
+    BitBtn5.Enabled := False;
 end;
 
 
@@ -762,6 +805,7 @@ begin
   Button5.Enabled := False;
   Button6.Enabled := False;
   Button7.Enabled := False;
+  Panel5.Visible := False;
 
 
   FDatabase := TSQLite3Connection.Create(Self);
@@ -849,6 +893,9 @@ begin
   Edit2.OnKeyPress := @EditKeyPress;
   // Обработчик события изменения значения
   Edit2.OnChange := @EditChange2;
+
+  Edit5.OnKeyPress := @EditKeyPress;
+
   Combobox3.Enabled := True;
 
   WindowContainer := TWindowContainer.Create;
@@ -1382,6 +1429,29 @@ begin
   DrawWindows;
 end;
 
+procedure TForm1.BitBtn5Click(Sender: TObject);
+var
+  IntEdit: integer;
+  Window: TRectWindow;
+  CurrCont: TWindowContainer;
+begin
+  CurrCont := FullContainer.GetContainer(CurrentContainer);
+  Window := CurrCont.GetWindow(CurrCont.GetSelectedIndex);
+  IntEdit := StrToInt(Edit5.Text);
+  Window.SetUpperPoint(IntEdit);
+  DrawWindows;
+end;
+
+procedure TForm1.BitBtn6Click(Sender: TObject);
+var
+  Window: TRectWindow;
+  CurrCont: TWindowContainer;
+begin
+  CurrCont := FullContainer.GetContainer(CurrentContainer);
+  Window := CurrCont.GetWindow(CurrCont.GetSelectedIndex);
+  Edit5.Caption := IntToStr(Window.GetUpperPoint);
+end;
+
 procedure TForm1.Button7Click(Sender: TObject);
 begin
   SaveWindowsToDatabase;
@@ -1421,6 +1491,7 @@ begin
   CurrWin.SetForm(ComboBox4.ItemIndex);
   if ((CurrWin.GetForm = 1) or (CurrWin.GetForm = 2) or (CurrWin.GetForm = 3)) then
   begin
+    ComboBox1.ItemIndex := 0;
     CurrWin.SetType(0);
     CurrWin.SetMoskit(False);
     Label7.Visible := True;
@@ -1433,6 +1504,13 @@ begin
     ComboBox1.Items[4] := '(недоступно)';
     ComboBox1.Items[5] := '(недоступно)';
     MenuItem5.Enabled := False;
+    if (CurrWin.GetForm = 3) then
+    begin
+      if (CurrWin.GetUpperPoint = 0) then
+        CurrWin.SetUpperPoint(CurrWin.GetWidth div 2);
+    end;
+    Edit5.Caption := IntToStr(CurrWin.GetUpperPoint);
+    Panel5.Visible := True;
   end
   else
   begin
@@ -1443,12 +1521,14 @@ begin
     Label7.Visible := True;
     Combobox1.Visible := True;
     Combobox1.ItemIndex := 0;
-    CurrWin.SetCircleWinFramuga(False);
-    CurrWin.SetCircleWinFramuga(False);
     if (CurrWin.GetImpostsContainer.Count = 1) then
       CurrWin.GetImpostsContainer.RemoveImpostByIndex(0);
   end;
-
+  if (CurrWin.GetForm <> 3) then
+  begin
+    CurrWin.SetUpperPoint(0);
+    Panel5.Visible := False;
+  end;
   DrawWindows;
 end;
 
@@ -1714,8 +1794,7 @@ begin
   Window := TRectWindow(CurrCont.GetWindow(WindowIndex));
   if (Window.GetForm = 1) then
   begin
-    if ((Window.GetImpostsContainer.Count = 0) and
-      (Window.GetType <> 3)) then
+    if ((Window.GetImpostsContainer.Count = 0) and (Window.GetType <> 3)) then
     begin
       DoorImpost := TPlasticDoorImpost.Create(Window.GetHeight div 2, Image1);
       Window.GetImpostsContainer.AddImpost(DoorImpost);

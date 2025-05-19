@@ -20,10 +20,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="506"/>
-        <CursorPos X="28" Y="536"/>
-        <FoldState Value=" T3kc0{V1115 plHuS04123 pkWqA0m1 pjFkP0{e0E p0w30vn"/>
+        <TopLine Value="512"/>
+        <CursorPos X="29" Y="538"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -32,9 +30,10 @@
         <Filename Value="rectwindow.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RectWindow"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="448"/>
-        <CursorPos X="36" Y="476"/>
+        <TopLine Value="575"/>
+        <CursorPos X="29" Y="610"/>
         <UsageCount Value="205"/>
         <Loaded Value="True"/>
       </Unit>
@@ -113,7 +112,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="24" Y="13"/>
-        <UsageCount Value="66"/>
+        <UsageCount Value="72"/>
       </Unit>
       <Unit>
         <Filename Value="testcase1.pas"/>
@@ -121,7 +120,7 @@
         <UnitName Value="TestCase1"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="31" Y="8"/>
-        <UsageCount Value="65"/>
+        <UsageCount Value="71"/>
       </Unit>
       <Unit>
         <Filename Value="testcase2.pas"/>
@@ -130,7 +129,7 @@
         <EditorIndex Value="7"/>
         <TopLine Value="10"/>
         <CursorPos Y="62"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="70"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -159,30 +158,6 @@
     <JumpHistory HistoryIndex="29">
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="668" Column="4" TopLine="630"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="1587" Column="6" TopLine="1648"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="675" Column="14" TopLine="651"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="676" Column="14" TopLine="652"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="675" Column="14" TopLine="638"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="676" Column="14" TopLine="639"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
         <Caret Line="675" Column="14" TopLine="638"/>
       </Position>
       <Position>
@@ -207,15 +182,7 @@
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="1420" Column="3" TopLine="1580"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
         <Caret Line="671" Column="3" TopLine="660"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="1423" Column="3" TopLine="1646"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
@@ -276,6 +243,38 @@
       <Position>
         <Filename Value="unit1.pas"/>
         <Caret Line="1524" Column="28" TopLine="933"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="529" Column="6" TopLine="514"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="530" Column="34" TopLine="515"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="591" Column="5" TopLine="555"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="498" Column="26" TopLine="489"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="500" Column="29" TopLine="481"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="589" Column="37" TopLine="579"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="586" Column="88" TopLine="558"/>
+      </Position>
+      <Position>
+        <Filename Value="rectwindow.pas"/>
+        <Caret Line="671" Column="34" TopLine="641"/>
       </Position>
     </JumpHistory>
     <RunParams>

@@ -466,14 +466,14 @@ begin
     Yc := Round((TrianglePoints[0].Y + TrianglePoints[1].Y + TrianglePoints[2].Y)/3);
     k := 0.7;
      SetLength(TrianglePointsMini, 3); // Устанавливаем длину массива
-    TrianglePointsMini[0] := Point(Xc + k*(TrianglePoints[0].X - Xc),
-     Yc + k*(TrianglePoints[0].Y - Yc));
+    TrianglePointsMini[0] := Point(Xc + Round(k*(TrianglePoints[0].X - Xc)),
+     Yc + Round(k*(TrianglePoints[0].Y - Yc)));
     // Вершина 1
-    TrianglePointsMini[1] := Point(Xc + k*(TrianglePoints[1].X - Xc),
-     Yc + k*(TrianglePoints[1].Y - Yc));
+    TrianglePointsMini[1] := Point(Xc + Round(k*(TrianglePoints[1].X - Xc)),
+     Yc + Round(k*(TrianglePoints[1].Y - Yc)));
     // Вершина 2
-    TrianglePointsMini[2] := Point(Xc + k*(TrianglePoints[2].X - Xc),
-     Yc + k*(TrianglePoints[2].Y - Yc));  // Вершина 3
+    TrianglePointsMini[2] := Point(Xc + Round(k*(TrianglePoints[2].X - Xc)),
+     Yc + Round(k*(TrianglePoints[2].Y - Yc)));  // Вершина 3
 
     DrawTriangle(TrianglePointsMini, clSkyBlue);
 
@@ -493,6 +493,11 @@ begin
 end;
 
 procedure TRectWindow.DrawNeGluxar;
+var
+  ScaledUpperPoint: integer;
+  Xc, Yc, WidthHandle: integer;
+  k: double;
+  TrianglePoints, TrianglePointsMiddle, TrianglePointsMini: array of TPoint;
 begin
 
   FImage.Canvas.Brush.Color := clWhite; // Задайте цвет фона окна
@@ -500,7 +505,8 @@ begin
   FImage.Canvas.FillRect(Rect(ScaledXOtstup + 4, ScaledYOtstup + 4,
     ScaledRectWidth + ScaledXOtstup + 1, ScaledRectHeight + ScaledYOtstup + 1));
   // Очистите всю область окна
-
+if(FForm = 0) then
+begin
   FImage.Canvas.Pen.Color := clBlack;
   FImage.Canvas.Pen.Width := 2;
   FImage.Canvas.Rectangle(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),
@@ -520,6 +526,90 @@ begin
     ScaledYOtstup + Round(ZoomIndex / MaxZoom * 37),
     ScaledRectWidth + ScaledXOtstup - Round(ZoomIndex / MaxZoom * 33),
     ScaledRectHeight + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 33));
+ end;
+  if ((FForm = 3) and (FType = 3)) then
+    begin
+       ScaledUpperPoint := Round(UpperPoint * GetZoomIndex);
+
+    SetLength(TrianglePoints, 3); // Устанавливаем длину массива
+    TrianglePoints[0] := Point(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),
+      ScaledRectHeight + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2));  // Вершина 1
+    TrianglePoints[1] := Point(ScaledRectWidth + ScaledXOtstup,
+      ScaledRectHeight + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2));
+    // Вершина 2
+    TrianglePoints[2] := Point( ScaledUpperPoint  + ScaledXOtstup,
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 4));  // Вершина 3
+
+    DrawTriangle(TrianglePoints, clWhite);
+
+    Xc := Round((TrianglePoints[0].X + TrianglePoints[1].X + TrianglePoints[2].X)/3);
+    Yc := Round((TrianglePoints[0].Y + TrianglePoints[1].Y + TrianglePoints[2].Y)/3);
+    k := 0.85;
+
+    SetLength(TrianglePointsMiddle, 3); // Устанавливаем длину массива
+    TrianglePointsMiddle[0] := Point(Xc + Round(k*(TrianglePoints[0].X - Xc)),
+     Yc + Round(k*(TrianglePoints[0].Y - Yc)));
+    // Вершина 1
+    TrianglePointsMiddle[1] := Point(Xc + Round(k*(TrianglePoints[1].X - Xc)),
+     Yc + Round(k*(TrianglePoints[1].Y - Yc)));
+    // Вершина 2
+    TrianglePointsMiddle[2] := Point(Xc + Round(k*(TrianglePoints[2].X - Xc)),
+     Yc + Round(k*(TrianglePoints[2].Y - Yc)));  // Вершина 3
+
+    DrawTriangle(TrianglePointsMiddle, clWhite);
+
+    SetLength(TrianglePointsMini, 3); // Устанавливаем длину массива
+    k := 0.65;
+    TrianglePointsMini[0] := Point(Xc + Round(k*(TrianglePoints[0].X - Xc)),
+     Yc + Round(k*(TrianglePoints[0].Y - Yc)));
+    // Вершина 1
+    TrianglePointsMini[1] := Point(Xc + Round(k*(TrianglePoints[1].X - Xc)),
+     Yc + Round(k*(TrianglePoints[1].Y - Yc)));
+    // Вершина 2
+    TrianglePointsMini[2] := Point(Xc + Round(k*(TrianglePoints[2].X - Xc)),
+     Yc + Round(k*(TrianglePoints[2].Y - Yc)));  // Вершина 3
+
+    DrawTriangle(TrianglePointsMini, clSkyBlue);
+
+    // Ручка справа
+    FImage.Canvas.Pen.Width := 1;
+    FImage.Canvas.Brush.Color := clWhite;
+    FImage.Canvas.Rectangle((TrianglePointsMiddle[1].X + TrianglePointsMiddle[2].X) div 2,
+      (TrianglePointsMiddle[1].Y + TrianglePointsMiddle[2].Y) div 2,
+      (TrianglePointsMini[1].X + TrianglePointsMini[2].X) div 2,
+       (TrianglePointsMini[1].Y + TrianglePointsMini[2].Y) div 2);
+
+    WidthHandle := (TrianglePointsMiddle[1].X + TrianglePointsMiddle[2].X) div 2 - (TrianglePointsMini[1].X + TrianglePointsMini[2].X) div 2;
+
+    FImage.Canvas.Rectangle((TrianglePointsMini[1].X + TrianglePointsMini[2].X) div 2 + WidthHandle div 4,
+      (TrianglePointsMiddle[1].Y + TrianglePointsMiddle[2].Y) div 2 + Round(ZoomIndex / MaxZoom * 2),
+      (TrianglePointsMiddle[1].X + TrianglePointsMiddle[2].X) div 2 - WidthHandle div 4,
+      (TrianglePointsMini[1].Y + TrianglePointsMini[2].Y) div 2 + Round(ZoomIndex / MaxZoom * 28));
+
+        FImage.Canvas.Pen.Width := 1;
+    FImage.Canvas.MoveTo(ScaledXOtstup + (ScaledRectWidth div 2) -
+      (ScaledRectWidth div 5), TrianglePointsMiddle[2].Y);
+    FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) -
+      (ScaledRectWidth div 5), TrianglePointsMiddle[2].Y + 4);
+    FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) -
+      (ScaledRectWidth div 5) + Round(ZoomIndex / MaxZoom * 15),
+      TrianglePointsMiddle[2].Y + 4);
+    FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) -
+      (ScaledRectWidth div 5) + Round(ZoomIndex / MaxZoom * 15),
+      TrianglePointsMiddle[2].Y);
+
+    FImage.Canvas.MoveTo(ScaledXOtstup + (ScaledRectWidth div 2) +
+      (ScaledRectWidth div 5), TrianglePointsMiddle[2].Y);
+    FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) +
+      (ScaledRectWidth div 5), TrianglePointsMiddle[2].Y + 4);
+    FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) +
+      (ScaledRectWidth div 5) - Round(ZoomIndex / MaxZoom * 15),
+      TrianglePointsMiddle[2].Y + 4);
+    FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) +
+      (ScaledRectWidth div 5) - Round(ZoomIndex / MaxZoom * 15),
+      TrianglePointsMiddle[2].Y);
+
+      end;
 
   // Крепежи слева
   if ((FType = 1) or (FType = 2)) then
@@ -572,7 +662,7 @@ begin
 
   // Крепежи снизу
 
-  if (FType = 3) then
+  if ((FType = 3) and (FForm = 0)) then
   begin
     FImage.Canvas.Pen.Width := 1;
     FImage.Canvas.MoveTo(ScaledXOtstup + (ScaledRectWidth div 2) -
@@ -600,7 +690,8 @@ begin
     FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) +
       (ScaledRectWidth div 5) - Round(ZoomIndex / MaxZoom * 15),
       ScaledRectHeight + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 14));
-
+    if(FForm = 0) then
+    begin
     // Ручка сверху
     FImage.Canvas.Brush.Color := clWhite;
     FImage.Canvas.Rectangle(ScaledXOtstup + (ScaledRectWidth div 2) -
@@ -615,7 +706,10 @@ begin
       ScaledYOtstup + Round(ZoomIndex / MaxZoom * 24),
       ScaledXOtstup + (ScaledRectWidth div 2) + Round(ZoomIndex / MaxZoom * 28),
       ScaledYOtstup + Round(ZoomIndex / MaxZoom * 30));
-  end;
+    end;
+    end;
+
+
 
 
   if ((FType = 4) or (FType = 5)) then
@@ -667,7 +761,7 @@ begin
   end;
 
   // Линия откида
-  if ((FType = 1) or (FType = 3) or (FType = 4)) then
+  if ((FType = 1) or ((FType = 3) and (FForm = 0)) or (FType = 4)) then
   begin
     FImage.Canvas.MoveTo(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 37),
       ScaledRectHeight + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 35));

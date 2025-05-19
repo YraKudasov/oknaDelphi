@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TestResults>
-  <!-- Generated using FPCUnit on 2025-04-21 23:25:26-->
+  <!-- Generated using FPCUnit on 2025-05-18 23:43:46-->
   <TestListing>
-    <TestSuite Name="" ElapsedTime="00:00:00.000" NumberOfErrors="0" NumberOfFailures="0" NumberOfRunTests="2" NumberOfIgnoredTests="0">
-      <TestSuite Name="TTestCase2" ElapsedTime="00:00:00.000" NumberOfErrors="0" NumberOfFailures="0" NumberOfRunTests="2" NumberOfIgnoredTests="0">
+    <TestSuite Name="" ElapsedTime="00:00:00.000" NumberOfErrors="0" NumberOfFailures="0" NumberOfRunTests="16" NumberOfIgnoredTests="0">
+      <TestSuite Name="TTestCase2" ElapsedTime="00:00:00.000" NumberOfErrors="0" NumberOfFailures="0" NumberOfRunTests="16" NumberOfIgnoredTests="0">
         <Test Name="TestAddOneContainer" Result="OK" ElapsedTime="00:00:00.000"/>
         <Test Name="TestAddMoreOneContainers" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestAddALotContainers" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestDeleteNotLastContainer" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestDeleteLastContainer" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestIndexOfOneContainer" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestIndexOfNotOneContainer" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestIndexOfLastContainer" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestAddOneWindow" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestAddMoreThanOneWindow" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestDeleteOneWindow" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestDeleteMoreOneWindow" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestDeleteLastWindow" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestIndexOfOneWindow" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestIndexOfThirdWindow" Result="OK" ElapsedTime="00:00:00.000"/>
+        <Test Name="TestGetIndexRowColumn" Result="OK" ElapsedTime="00:00:00.000"/>
       </TestSuite>
     </TestSuite>
   </TestListing>
   <Title>FPCUnit Console test runner</Title>
-  <NumberOfRunTests>2</NumberOfRunTests>
+  <NumberOfRunTests>16</NumberOfRunTests>
   <NumberOfErrors>0</NumberOfErrors>
   <NumberOfFailures>0</NumberOfFailures>
   <NumberOfIgnoredTests>0</NumberOfIgnoredTests>
   <TotalElapsedTime>00:00:00.000</TotalElapsedTime>
-  <DateTimeRan>2025-04-21 23:25:26</DateTimeRan>
+  <DateTimeRan>2025-05-18 23:43:46</DateTimeRan>
 </TestResults>
 

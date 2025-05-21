@@ -7,6 +7,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 705
   ClientWidth = 1558
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   PopupMenu = PopupMenu1
   Position = poScreenCenter

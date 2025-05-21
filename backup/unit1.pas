@@ -116,6 +116,8 @@ type
     function ChooseProfileOtstup(Row, Col: integer): integer;
     procedure ResetAllWindowSelections;
     procedure SaveWindowsToDatabase;
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    function IsDataModified: Boolean;
 
 
 
@@ -533,7 +535,10 @@ begin
     CheckBox1.Visible := False;
   end;
   if (Window.GetForm = 3) then
+  begin
     Panel5.Visible := True;
+    BitBtn5.Enabled := False;
+  end;
 end;
 
 {******** ОТМЕНА ВЫДЕЛЕНИЯ **********}
@@ -844,7 +849,102 @@ begin
 
 end;
 
+ function TForm1.IsDataModified: Boolean;
+var
+  Query: TSQLQuery;
+  i, j, dbHeight, dbWidth: Integer;
+  Container: TWindowContainer;
+  Window: TRectWindow;
+begin
+  Result := False;
+  if CurrentContainerID = 0 then Exit; // Нет сохранённых данных для сравнения
 
+  Query := TSQLQuery.Create(nil);
+  try
+    Query.SQLConnection := FDatabase;
+
+    // Загружаем конструкции, связанные с текущим контейнером
+    Query.SQL.Text := 'SELECT ID FROM Constructions WHERE ContainerID = :ContainerID ORDER BY ID';
+    Query.ParamByName('ContainerID').AsInteger := CurrentContainerID;
+    Query.Open;
+
+    if Query.RecordCount <> FullContainer.Count then
+    begin
+      Result := True;
+      Exit;
+    end;
+
+    i := 0;
+    while not Query.Eof do
+    begin
+      Container := TWindowContainer(FullContainer.GetContainer(i));
+
+      // Загружаем окна для каждой конструкции
+      with TSQLQuery.Create(nil) do
+      try
+        SQLConnection := FDatabase;
+        SQL.Text := 'SELECT Height, Width FROM Windows WHERE ConstructionID = :CID ORDER BY ID';
+        ParamByName('CID').AsInteger := Query.Fields[0].AsInteger;
+        Open;
+
+        if RecordCount <> Container.Count then
+        begin
+          Result := True;
+          Free;
+          Exit;
+        end;
+
+        j := 0;
+        while not Eof do
+        begin
+          Window := Container.GetWindow(j);
+          dbHeight := FieldByName('Height').AsInteger;
+          dbWidth := FieldByName('Width').AsInteger;
+
+          if (dbHeight <> Window.GetHeight) or (dbWidth <> Window.GetWidth) then
+          begin
+            Result := True;
+            Free;
+            Exit;
+          end;
+
+          Inc(j);
+          Next;
+        end;
+        Free;
+      except
+        on E: Exception do
+        begin
+          Free;
+          raise;
+        end;
+      end;
+
+      Inc(i);
+      Query.Next;
+    end;
+    Query.Close;
+  finally
+    Query.Free;
+  end;
+end;
+
+
+procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  // Если данные не были сохранены (ID = 0) или изменены — выдаём предупреждение
+  if (CurrentContainerID = 0) or IsDataModified then
+  begin
+    if MessageDlg('Обнаружены несохранённые изменения или данные ещё не были сохранены. Закрыть программу без сохранения?',
+      mtWarning, [mbYes, mbNo], 0) = mrNo then
+    begin
+      CanClose := False;
+      Exit;
+    end;
+  end;
+
+  CanClose := True;
+end;
 
 {******** ОТРИСОВКА СТАРТОВОЙ КОНСТРУКЦИИ **********}
 procedure TForm1.CreateNewFullConstr(Sender: TObject; IsPlasticDoor: boolean);

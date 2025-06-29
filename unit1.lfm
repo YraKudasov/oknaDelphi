@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 503
+  Left = 455
   Height = 705
-  Top = 229
+  Top = 131
   Width = 1558
   Align = alClient
   Caption = 'Form1'
@@ -17,7 +17,7 @@ object Form1: TForm1
     Height = 705
     Top = 0
     Width = 1558
-    HorzScrollBar.Page = 1089
+    HorzScrollBar.Page = 1095
     VertScrollBar.Page = 701
     Align = alClient
     ClientHeight = 701
@@ -27,10 +27,10 @@ object Form1: TForm1
       Left = 0
       Height = 726
       Top = 0
-      Width = 1089
+      Width = 1095
       AutoSize = True
       ClientHeight = 726
-      ClientWidth = 1089
+      ClientWidth = 1095
       TabOrder = 0
       object Button5: TButton
         Left = 907
@@ -540,16 +540,16 @@ object Form1: TForm1
         Left = 885
         Height = 107
         Top = 485
-        Width = 200
+        Width = 209
         ClientHeight = 107
-        ClientWidth = 200
+        ClientWidth = 209
         TabOrder = 13
         object Label12: TLabel
           Left = 0
           Height = 15
           Top = 8
-          Width = 127
-          Caption = 'Верхняя вершина (мм)'
+          Width = 101
+          Caption = 'Верхн. верш. (мм)'
         end
         object Edit5: TEdit
           Left = 4
@@ -563,7 +563,7 @@ object Form1: TForm1
           Left = 3
           Height = 24
           Top = 56
-          Width = 96
+          Width = 197
           Caption = 'Сохранить'
           Glyph.Data = {
             76060000424D7606000000000000360000002800000014000000140000000100
@@ -626,7 +626,7 @@ object Form1: TForm1
           Left = 3
           Height = 24
           Top = 80
-          Width = 96
+          Width = 197
           Caption = 'Отмена'
           Glyph.Data = {
             BA030000424DBA0300000000000036000000280000000F0000000F0000000100
@@ -662,6 +662,21 @@ object Form1: TForm1
           }
           OnClick = BitBtn6Click
           TabOrder = 2
+        end
+        object Edit6: TEdit
+          Left = 104
+          Height = 23
+          Top = 32
+          Width = 93
+          TabOrder = 3
+          OnChange = DownTrianglePoint
+        end
+        object Label13: TLabel
+          Left = 104
+          Height = 15
+          Top = 8
+          Width = 100
+          Caption = 'Нижн. верш. (мм)'
         end
       end
     end

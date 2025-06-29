@@ -19,6 +19,7 @@ type
     ZoomIndex: double;
     IsDoor: boolean;
     UpperPoint: integer;
+    DownPoint: integer;
     FImpostsContainer: TImpostsContainer;
   public
     FSelected: boolean;
@@ -58,6 +59,7 @@ type
     procedure SetImage(Value: TImage);
     procedure SetIsDoor(Value: boolean);
     procedure SetUpperPoint(Value: integer);
+    procedure SetDownPoint(Value: integer);
     procedure PaintSize(ScaledConstructW, ScaledConstructH, ScaledXOt,
       ScaledYOt: integer; NoOneW, NoOneH: boolean);
     procedure DrawImposts;
@@ -79,6 +81,7 @@ type
     function GetImpostsContainer: TImpostsContainer;
     function GetForm: integer;
     function GetUpperPoint: integer;
+    function GetDownPoint: integer;
 
 
   end;
@@ -103,6 +106,7 @@ begin
   FImpostsContainer := TImpostsContainer.Create;
   MaxZoom := 0.24;
   UpperPoint := 0;
+  DownPoint := 0;
 end;
 
 procedure TRectWindow.DrawSelectionBorder(ScaledRW, ScaledRH, ScaledOtX,
@@ -359,7 +363,7 @@ end;
 
 procedure TRectWindow.DrawGluxar;
 var
-  ScaledUpperPoint: integer;
+  ScaledUpperPoint, ScaledDownPoint: integer;
   CenterX, CenterY, CenterXGlass, CenterYGlass: integer;
   BorderRadius, Radius, RadiusGlass: integer;
   Xc, Yc: integer;
@@ -409,6 +413,8 @@ begin
   //Арка
   else if (FForm = 2) then
   begin
+    if((RectW div RectH = 0) and (RectW mod RectH = 2)) then
+    begin
     FImage.Canvas.Pen.Color := clBlack;
     FImage.Canvas.Pen.Width := 2;
     FImage.Canvas.Brush.Color := clWhite;
@@ -445,15 +451,18 @@ begin
     //Внутренняя линия створки
     FImage.Canvas.AngleArc(CenterX, CenterY, BorderRadius -
       Round(ZoomIndex / MaxZoom * 30), 0, 180);
+
+    end;
   end
   //Треугольник
   else if (FForm = 3) then
   begin
     ScaledUpperPoint := Round(UpperPoint * GetZoomIndex);
+    ScaledDownPoint := Round(DownPoint * GetZoomIndex);
 
     SetLength(TrianglePoints, 3); // Устанавливаем длину массива
     TrianglePoints[0] := Point(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),
-      ScaledRectHeight + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2));  // Вершина 1
+       ScaledDownPoint + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2));  // Вершина 1
     TrianglePoints[1] := Point(ScaledRectWidth + ScaledXOtstup,
       ScaledRectHeight + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2));
     // Вершина 2
@@ -494,7 +503,7 @@ end;
 
 procedure TRectWindow.DrawNeGluxar;
 var
-  ScaledUpperPoint: integer;
+  ScaledUpperPoint, ScaledDownPoint: integer;
   Xc, Yc, WidthHandle: integer;
   k: double;
   TrianglePoints, TrianglePointsMiddle, TrianglePointsMini: array of TPoint;
@@ -529,11 +538,12 @@ begin
  end;
   if ((FForm = 3) and (FType = 3)) then
     begin
-       ScaledUpperPoint := Round(UpperPoint * GetZoomIndex);
+    ScaledUpperPoint := Round(UpperPoint * GetZoomIndex);
+    ScaledDownPoint := Round (DownPoint * GetZoomIndex);
 
     SetLength(TrianglePoints, 3); // Устанавливаем длину массива
     TrianglePoints[0] := Point(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),
-      ScaledRectHeight + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2));  // Вершина 1
+      ScaledDownPoint + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2));  // Вершина 1
     TrianglePoints[1] := Point(ScaledRectWidth + ScaledXOtstup,
       ScaledRectHeight + ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2));
     // Вершина 2
@@ -586,28 +596,7 @@ begin
       (TrianglePointsMiddle[1].X + TrianglePointsMiddle[2].X) div 2 - WidthHandle div 4,
       (TrianglePointsMini[1].Y + TrianglePointsMini[2].Y) div 2 + Round(ZoomIndex / MaxZoom * 28));
 
-        FImage.Canvas.Pen.Width := 1;
-    FImage.Canvas.MoveTo(ScaledXOtstup + (ScaledRectWidth div 2) -
-      (ScaledRectWidth div 5), TrianglePointsMiddle[1].Y);
-    FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) -
-      (ScaledRectWidth div 5), TrianglePointsMiddle[1].Y + 4);
-    FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) -
-      (ScaledRectWidth div 5) + Round(ZoomIndex / MaxZoom * 15),
-      TrianglePointsMiddle[1].Y + 4);
-    FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) -
-      (ScaledRectWidth div 5) + Round(ZoomIndex / MaxZoom * 15),
-      TrianglePointsMiddle[1].Y);
 
-    FImage.Canvas.MoveTo(ScaledXOtstup + (ScaledRectWidth div 2) +
-      (ScaledRectWidth div 5), TrianglePointsMiddle[1].Y);
-    FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) +
-      (ScaledRectWidth div 5), TrianglePointsMiddle[1].Y + 4);
-    FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) +
-      (ScaledRectWidth div 5) - Round(ZoomIndex / MaxZoom * 15),
-      TrianglePointsMiddle[1].Y + 4);
-    FImage.Canvas.LineTo(ScaledXOtstup + (ScaledRectWidth div 2) +
-      (ScaledRectWidth div 5) - Round(ZoomIndex / MaxZoom * 15),
-      TrianglePointsMiddle[1].Y);
 
       end;
 
@@ -933,6 +922,16 @@ end;
 function TRectWindow.GetUpperPoint: integer;
 begin
   Result := UpperPoint;
+end;
+
+procedure TRectWindow.SetDownPoint(Value: integer);
+begin
+  DownPoint := Value;
+end;
+
+function TRectWindow.GetDownPoint: integer;
+begin
+  Result := DownPoint;
 end;
 
 function TRectWindow.GetImpostsContainer: TImpostsContainer;

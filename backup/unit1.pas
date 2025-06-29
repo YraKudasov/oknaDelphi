@@ -40,12 +40,14 @@ type
     Edit3: TEdit;
     Edit4: TEdit;
     Edit5: TEdit;
+    Edit6: TEdit;
     Image1: TImage;
     Image2: TImage;
     Label1: TLabel;
     Label10: TLabel;
     Label11: TLabel;
     Label12: TLabel;
+    Label13: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -118,6 +120,7 @@ type
     procedure SaveWindowsToDatabase;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     function IsDataModified: Boolean;
+    procedure DownTrianglePoint(Sender: TObject);
 
 
 
@@ -697,6 +700,34 @@ begin
     BitBtn5.Enabled := False;
 end;
 
+procedure TForm1.DownTrianglePoint(Sender: TObject);
+var
+  IntEdit: integer;
+  Window: TRectWindow;
+  CurrCont: TWindowContainer;
+begin
+  CurrCont := FullContainer.GetContainer(CurrentContainer);
+  Window := CurrCont.GetWindow(CurrCont.GetSelectedIndex);
+
+  // Попытка преобразовать текст в целое число, если не удается, устанавливаем 0
+  if not TryStrToInt(Edit6.Text, IntEdit) then
+    IntEdit := 0;
+
+  // Проверка на ввод корректных значений
+  if (IntEdit <> Window.GetDownPoint) then
+  begin
+    // Проверка на минимальное и максимальное значение для длины и ширины
+    if (IntEdit >= 0) and (IntEdit <= Window.GetHeight) then
+      BitBtn5.Enabled := True
+    else
+      BitBtn5.Enabled := False;
+  end
+  else
+    BitBtn5.Enabled := False;
+
+  if (Edit6.Caption = '') then
+    BitBtn5.Enabled := False;
+end;
 
 
 {******** ПОДСЧЕТ ИНДЕКСА ОТРИСОВКИ **********}
@@ -935,7 +966,7 @@ begin
   // Если данные не были сохранены (ID = 0) или изменены — выдаём предупреждение
   if (CurrentContainerID = 0) or IsDataModified then
   begin
-    if MessageDlg('Обнаружены несохранённые изменения или данные ещё не были сохранены. Закрыть программу без сохранения?',
+    if MessageDlg('Обнаружены несохранённые изменения. Закрыть программу без сохранения?',
       mtWarning, [mbYes, mbNo], 0) = mrNo then
     begin
       CanClose := False;
@@ -992,6 +1023,7 @@ begin
   Edit2.OnChange := @EditChange2;
 
   Edit5.OnKeyPress := @EditKeyPress;
+  Edit6.OnKeyPress := @EditKeyPress;
 
   Combobox3.Enabled := True;
 
@@ -1528,14 +1560,16 @@ end;
 
 procedure TForm1.BitBtn5Click(Sender: TObject);
 var
-  IntEdit: integer;
+  UpperPointEdit, DownPointEdit: integer;
   Window: TRectWindow;
   CurrCont: TWindowContainer;
 begin
   CurrCont := FullContainer.GetContainer(CurrentContainer);
   Window := CurrCont.GetWindow(CurrCont.GetSelectedIndex);
-  IntEdit := StrToInt(Edit5.Text);
-  Window.SetUpperPoint(IntEdit);
+  UpperPointEdit := StrToInt(Edit5.Text);
+  DownPointEdit := StrToInt(Edit6.Text);
+  Window.SetUpperPoint(UpperPointEdit);
+  Window.SetDownPoint(DownPointEdit);
   DrawWindows;
 end;
 
@@ -1547,6 +1581,7 @@ begin
   CurrCont := FullContainer.GetContainer(CurrentContainer);
   Window := CurrCont.GetWindow(CurrCont.GetSelectedIndex);
   Edit5.Caption := IntToStr(Window.GetUpperPoint);
+  Edit6.Caption := IntToStr(Window.GetDownPoint);
 end;
 
 procedure TForm1.Button7Click(Sender: TObject);
@@ -1605,8 +1640,11 @@ begin
     begin
       if (CurrWin.GetUpperPoint = 0) then
         CurrWin.SetUpperPoint(CurrWin.GetWidth div 2);
+      if(CurrWin.GetDownPoint = 0) then
+        CurrWin.SetDownPoint(CurrWin.GetHeight);
     end;
     Edit5.Caption := IntToStr(CurrWin.GetUpperPoint);
+    Edit6.Caption := IntToStr(CurrWin.GetDownPoint);
     Panel5.Visible := True;
   end
   else

@@ -487,10 +487,25 @@ begin
 
         //Две линии арки
     FImage.Canvas.Pen.Color := clBlack;
-    FImage.Canvas.MoveTo(ScaledXOtstup + ScaledRectWidth - Round(ZoomIndex / MaxZoom * 30), ScaledYOtstup + CenterY);
-    FImage.Canvas.AngleArc(ScaledXOtstup+CenterX, ScaledYOtstup+(ScaledRectWidth div 2), Radius- Round(ZoomIndex / MaxZoom * 2), -5, 190);
-    FImage.Canvas.AngleArc(ScaledXOtstup+CenterX, ScaledYOtstup+(ScaledRectWidth div 2), Radius+ Round(ZoomIndex / MaxZoom * 13), -5, 190);
+    // Первая арка
+    FImage.Canvas.Arc(ScaledXOtstup + CenterX - (Radius - Round(ZoomIndex / MaxZoom * 2)),
+                      ScaledYOtstup + (ScaledRectWidth div 2) - (Radius - Round(ZoomIndex / MaxZoom * 2)),
+                      ScaledXOtstup + CenterX + (Radius - Round(ZoomIndex / MaxZoom * 2)),
+                      ScaledYOtstup + (ScaledRectWidth div 2) + (Radius - Round(ZoomIndex / MaxZoom * 2)),
+                      ScaledXOtstup + CenterX + (Radius - Round(ZoomIndex / MaxZoom * 2)),
+                      ScaledYOtstup + (ScaledRectWidth div 2),
+                      ScaledXOtstup + CenterX - (Radius - Round(ZoomIndex / MaxZoom * 2)),
+                      ScaledYOtstup + (ScaledRectWidth div 2));
 
+    // Вторая арка
+    FImage.Canvas.Arc(ScaledXOtstup + CenterX - (Radius + Round(ZoomIndex / MaxZoom * 13)),
+                      ScaledYOtstup + (ScaledRectWidth div 2) - (Radius + Round(ZoomIndex / MaxZoom * 13)),
+                      ScaledXOtstup + CenterX + (Radius + Round(ZoomIndex / MaxZoom * 13)),
+                      ScaledYOtstup + (ScaledRectWidth div 2) + (Radius + Round(ZoomIndex / MaxZoom * 13)),
+                      ScaledXOtstup + CenterX + (Radius + Round(ZoomIndex / MaxZoom * 13)),
+                      ScaledYOtstup + (ScaledRectWidth div 2),
+                      ScaledXOtstup + CenterX - (Radius + Round(ZoomIndex / MaxZoom * 13)),
+                      ScaledYOtstup + (ScaledRectWidth div 2));
 
 
       //Нижняя часть окна (прямоугольная)
@@ -498,33 +513,94 @@ begin
          FImage.Canvas.Pen.Width := 2;
 
          FImage.Canvas.Brush.Color := clWhite;
-         FImage.Canvas.Rectangle(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),
-         ScaledYOtstup + Round(ZoomIndex / MaxZoom * 4)+(ScaledRectWidth div 2),
-         ScaledRectWidth + ScaledXOtstup+Round(ZoomIndex / MaxZoom * 2),
-         ScaledRectHeight + ScaledYOtstup);
-
-         //Закраска границ между окном и аркой
-        FImage.Canvas.Pen.Color := clWhite;
-        FImage.Canvas.Brush.Color := clWhite;
-        FImage.Canvas.Rectangle(ScaledXOtstup+ Round(ZoomIndex / MaxZoom * 7), ScaledYOtstup+(ScaledRectWidth div 2)+ Round(ZoomIndex / MaxZoom * 4), ScaledXOtstup + 2*Radius+Round(ZoomIndex / MaxZoom * 28), ScaledYOtstup+(ScaledRectWidth div 2)+ Round(ZoomIndex / MaxZoom * 8));
-        FImage.Canvas.Rectangle(ScaledXOtstup+ 2*Radius+ Round(ZoomIndex / MaxZoom * 7), ScaledYOtstup+(ScaledRectWidth div 2)+ Round(ZoomIndex / MaxZoom * 4), ScaledXOtstup + 2*Radius+Round(ZoomIndex / MaxZoom * 28), ScaledYOtstup+(ScaledRectWidth div 2)+ Round(ZoomIndex / MaxZoom * 8));
+         FImage.Canvas.MoveTo(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),ScaledYOtstup + Round(ZoomIndex / MaxZoom * 4)+(ScaledRectWidth div 2));
+         FImage.Canvas.LineTo(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4), ScaledRectHeight + ScaledYOtstup);
+         FImage.Canvas.LineTo(ScaledRectWidth + ScaledXOtstup+Round(ZoomIndex / MaxZoom * 2), ScaledRectHeight + ScaledYOtstup);
+         FImage.Canvas.LineTo(ScaledRectWidth + ScaledXOtstup+Round(ZoomIndex / MaxZoom * 2), ScaledYOtstup + Round(ZoomIndex / MaxZoom * 4)+(ScaledRectWidth div 2));
 
 
-     //Нижняя часть окна (прямоугольная) продолжение
-      FImage.Canvas.Pen.Color := clBlack;
+      //Контур
+      if(ScaledYOtstup + (ScaledRectWidth div 2)<ScaledRectHeight - Round(ZoomIndex / MaxZoom * 20) + ScaledYOtstup)then
+      begin
+      //Нижняя часть окна (прямоугольная) продолжение
+      //Стекло
+      FImage.Canvas.Pen.Color := clSkyBlue;
       FImage.Canvas.Brush.Color := clSkyBlue;
       FImage.Canvas.Rectangle(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22),
       ScaledYOtstup + Round(ZoomIndex / MaxZoom * 2)+(ScaledRectWidth div 2),
       ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,
       ScaledRectHeight - Round(ZoomIndex / MaxZoom * 20) + ScaledYOtstup);
-
-      FImage.Canvas.Pen.Color := clSkyBlue;
-        FImage.Canvas.Brush.Color := clSkyBlue;
-        FImage.Canvas.Rectangle(ScaledXOtstup+ Round(ZoomIndex / MaxZoom * 24), ScaledYOtstup+(ScaledRectWidth div 2)+ Round(ZoomIndex / MaxZoom * 2), ScaledXOtstup + 2*Radius+Round(ZoomIndex / MaxZoom * 14), ScaledYOtstup+(ScaledRectWidth div 2)+ Round(ZoomIndex / MaxZoom * 4));
-      FImage.Canvas.Pen.Color := clWhite;
+      //Контур
+      FImage.Canvas.Pen.Color := clBlack;
+      FImage.Canvas.MoveTo(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22),
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 2)+(ScaledRectWidth div 2));
+      FImage.Canvas.LineTo(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22),
+      ScaledRectHeight - Round(ZoomIndex / MaxZoom * 20) + ScaledYOtstup);
+      FImage.Canvas.LineTo(ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,
+      ScaledRectHeight - Round(ZoomIndex / MaxZoom * 20) + ScaledYOtstup);
+      FImage.Canvas.LineTo(ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 2)+(ScaledRectWidth div 2));
+      end
+      else
+      begin
         FImage.Canvas.Brush.Color := clWhite;
-        FImage.Canvas.Rectangle(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 24), ScaledYOtstup+ScaledRectHeight + Round(ZoomIndex / MaxZoom * 1), ScaledXOtstup + 2*Radius+Round(ZoomIndex / MaxZoom * 10), ScaledYOtstup+ScaledRectHeight+ Round(ZoomIndex / MaxZoom * 4));
-    end;
+        //Нижний импост
+           FImage.Canvas.Rectangle(ScaledXOtstup+Round(ZoomIndex / MaxZoom * 3), ScaledRectHeight+ScaledYOtstup+Round(ZoomIndex / MaxZoom * 4), ScaledXOtstup + 2*Radius+Round(ZoomIndex / MaxZoom * 33), ScaledRectHeight+ScaledYOtstup - Round(ZoomIndex / MaxZoom * 13))
+        end;
+
+    end
+    else if (FRectH < (FRectW div 2)) then
+    begin
+
+      //Нижняя часть окна (прямоугольная)
+      FImage.Canvas.Pen.Color := clBlack;
+      FImage.Canvas.Brush.Color := clWhite;
+      FImage.Canvas.MoveTo(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4), ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2)+ScaledRectHeight-Round(GetZoomIndex * 120));
+      FImage.Canvas.LineTo(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),ScaledRectHeight + ScaledYOtstup);
+      FImage.Canvas.LineTo(ScaledRectWidth + ScaledXOtstup+Round(ZoomIndex / MaxZoom * 2),ScaledRectHeight + ScaledYOtstup);
+      FImage.Canvas.LineTo(ScaledRectWidth + ScaledXOtstup+Round(ZoomIndex / MaxZoom * 2),ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2)+ScaledRectHeight-Round(GetZoomIndex * 120));
+      FImage.Canvas.LineTo(ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,ScaledYOtstup + Round(ZoomIndex / MaxZoom * 2)+ScaledRectHeight-Round(GetZoomIndex * 120));
+      FImage.Canvas.MoveTo(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4), ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2)+ScaledRectHeight-Round(GetZoomIndex * 120));
+      FImage.Canvas.LineTo(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22), ScaledYOtstup + Round(ZoomIndex / MaxZoom * 2)+ScaledRectHeight-Round(GetZoomIndex * 120));
+
+      //Голубая часть нижнего стекла
+       FImage.Canvas.Pen.Color := clSkyBlue;
+       FImage.Canvas.Brush.Color := clSkyBlue;
+      FImage.Canvas.Rectangle(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22),
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 2)+ScaledRectHeight-Round(GetZoomIndex * 120),
+      ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,
+      ScaledRectHeight - Round(ZoomIndex / MaxZoom * 14) + ScaledYOtstup);
+
+      //Внутренний прямоугольник
+      FImage.Canvas.Pen.Color := clBlack;
+      FImage.Canvas.MoveTo(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22), ScaledYOtstup + Round(ZoomIndex / MaxZoom * 2)+ScaledRectHeight-Round(GetZoomIndex * 120));
+      FImage.Canvas.LineTo(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22),  ScaledRectHeight - Round(ZoomIndex / MaxZoom * 14) + ScaledYOtstup);
+      FImage.Canvas.LineTo( ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,ScaledRectHeight - Round(ZoomIndex / MaxZoom * 14) + ScaledYOtstup);
+      FImage.Canvas.LineTo(ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,ScaledYOtstup + Round(ZoomIndex / MaxZoom * 2)+ScaledRectHeight-Round(GetZoomIndex * 120));
+
+
+              //Две линии арки
+    FImage.Canvas.Pen.Color := clBlack;
+    // Первая арка
+    FImage.Canvas.Arc(ScaledXOtstup + CenterX - (Radius - Round(ZoomIndex / MaxZoom * 2)),
+                      ScaledYOtstup + (ScaledRectWidth div 2) - (Radius - Round(ZoomIndex / MaxZoom * 2)) - Round(GetZoomIndex * 120),
+                      ScaledXOtstup + CenterX + (Radius - Round(ZoomIndex / MaxZoom * 2)),
+                      ScaledYOtstup + (ScaledRectWidth div 2) + (Radius - Round(ZoomIndex / MaxZoom * 2)) - Round(GetZoomIndex * 120),
+                      ScaledXOtstup + CenterX + (Radius - Round(ZoomIndex / MaxZoom * 2)),
+                      ScaledYOtstup + (ScaledRectWidth div 2) - Round(GetZoomIndex * 120),
+                      ScaledXOtstup + CenterX - (Radius - Round(ZoomIndex / MaxZoom * 2)),
+                      ScaledYOtstup + (ScaledRectWidth div 2) - Round(GetZoomIndex * 120));
+
+    // Вторая арка
+    FImage.Canvas.Arc(ScaledXOtstup + CenterX - (Radius + Round(ZoomIndex / MaxZoom * 13)),
+                      ScaledYOtstup + (ScaledRectWidth div 2) - (Radius + Round(ZoomIndex / MaxZoom * 13)) - Round(GetZoomIndex * 120),
+                      ScaledXOtstup + CenterX + (Radius + Round(ZoomIndex / MaxZoom * 13)),
+                      ScaledYOtstup + (ScaledRectWidth div 2) + (Radius + Round(ZoomIndex / MaxZoom * 13)) - Round(GetZoomIndex * 120),
+                      ScaledXOtstup + CenterX + (Radius + Round(ZoomIndex / MaxZoom * 13)),
+                      ScaledYOtstup + (ScaledRectWidth div 2) - Round(GetZoomIndex * 120),
+                      ScaledXOtstup + CenterX - (Radius + Round(ZoomIndex / MaxZoom * 13)),
+                      ScaledYOtstup + (ScaledRectWidth div 2) - Round(GetZoomIndex * 120));
+      end;
   end
   //Треугольник
   else if (FForm = 3) then
@@ -557,7 +633,6 @@ begin
      Yc + Round(k*(TrianglePoints[2].Y - Yc)));  // Вершина 3
 
     DrawTriangle(TrianglePointsMini, clSkyBlue);
-
 
   end;
 end;

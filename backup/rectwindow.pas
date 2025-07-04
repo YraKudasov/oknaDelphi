@@ -368,6 +368,7 @@ var
   BorderRadius, Radius, RadiusGlass: integer;
   Xc, Yc: integer;
   k: double;
+  Points: array of TPoint;
   TrianglePoints, TrianglePointsMini: array of TPoint;
 begin
   FImage.Canvas.Brush.Color := clWhite; // Задайте цвет фона окна
@@ -552,6 +553,22 @@ begin
     else if (FRectH < (FRectW div 2)) then
     begin
 
+    //Куглая часть стекла
+         FImage.Canvas.Brush.Color := clSkyBlue;
+   FImage.Canvas.Pen.Color := clSkyBlue;
+   FImage.Canvas.Ellipse( ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22),
+   ScaledYOtstup + (ScaledRectWidth div 2) - (Radius - Round(ZoomIndex / MaxZoom * 2)),
+   ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,
+   ScaledYOtstup + 2*ScaledRectHeight - Round(ZoomIndex / MaxZoom * 55));
+
+   //Закраска ненужной части круглого стекла
+   FImage.Canvas.Brush.Color := clWhite;
+   FImage.Canvas.Pen.Color := clWhite;
+   FImage.Canvas.Rectangle(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22),                           // X4 (конец слева)
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 2) + ScaledRectHeight - Round(GetZoomIndex * 120),
+       ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,
+   ScaledYOtstup + 2*ScaledRectHeight - Round(ZoomIndex / MaxZoom * 55));
+
       //Нижняя часть окна (прямоугольная)
       FImage.Canvas.Pen.Color := clBlack;
       FImage.Canvas.Brush.Color := clWhite;
@@ -579,27 +596,47 @@ begin
       FImage.Canvas.LineTo(ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,ScaledYOtstup + Round(ZoomIndex / MaxZoom * 2)+ScaledRectHeight-Round(GetZoomIndex * 120));
 
 
+
               //Две линии арки
     FImage.Canvas.Pen.Color := clBlack;
     // Первая арка
-    FImage.Canvas.Arc(ScaledXOtstup + CenterX - (Radius - Round(ZoomIndex / MaxZoom * 2))- Round(GetZoomIndex * 120),
-                      ScaledYOtstup + (ScaledRectWidth div 2) - (Radius - Round(ZoomIndex / MaxZoom * 2)) - Round(GetZoomIndex * 120),
-                      ScaledXOtstup + CenterX + (Radius - Round(ZoomIndex / MaxZoom * 2))- Round(GetZoomIndex * 120),
-                      ScaledYOtstup + (ScaledRectWidth div 2) + (Radius - Round(ZoomIndex / MaxZoom * 2)) - Round(GetZoomIndex * 120),
-                      ScaledXOtstup + CenterX + (Radius - Round(ZoomIndex / MaxZoom * 2))- Round(GetZoomIndex * 120),
-                      ScaledYOtstup + (ScaledRectWidth div 2) - Round(GetZoomIndex * 120),
-                      ScaledXOtstup + CenterX - (Radius - Round(ZoomIndex / MaxZoom * 2))- Round(GetZoomIndex * 120),
-                      ScaledYOtstup + (ScaledRectWidth div 2) - Round(GetZoomIndex * 120));
+    FImage.Canvas.Arc(
+      // Верхний левый угол ограничивающего прямоугольника
+      ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22),     // X1
+      ScaledYOtstup + (ScaledRectWidth div 2) - (Radius - Round(ZoomIndex / MaxZoom * 2)), // Y1
+
+      // Нижний правый угол ограничивающего прямоугольника
+      ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,      // X2
+      ScaledYOtstup + 2*ScaledRectHeight - Round(ZoomIndex / MaxZoom * 55), // Y2
+
+      // Новая начальная точка дуги (верхняя сторона)
+      ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,        // X3 (начало теперь сверху справа)
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 2) + ScaledRectHeight - Round(GetZoomIndex * 120), // Y3 (наверху)
+
+      // Новая конечная точка дуги (нижняя сторона)
+      ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22),                           // X4 (конец слева)
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 2) + ScaledRectHeight - Round(GetZoomIndex * 120) // Y4 (остается неизменной)
+    );
 
     // Вторая арка
-    FImage.Canvas.Arc(ScaledXOtstup + CenterX - (Radius + Round(ZoomIndex / MaxZoom * 13)),
-                      ScaledYOtstup + (ScaledRectWidth div 2) - (Radius + Round(ZoomIndex / MaxZoom * 13)) - Round(GetZoomIndex * 120),
-                      ScaledXOtstup + CenterX + (Radius + Round(ZoomIndex / MaxZoom * 13)),
-                      ScaledYOtstup + (ScaledRectWidth div 2) + (Radius + Round(ZoomIndex / MaxZoom * 13)) - Round(GetZoomIndex * 120),
-                      ScaledXOtstup + CenterX + (Radius + Round(ZoomIndex / MaxZoom * 13)),
-                      ScaledYOtstup + (ScaledRectWidth div 2) - Round(GetZoomIndex * 120),
-                      ScaledXOtstup + CenterX - (Radius + Round(ZoomIndex / MaxZoom * 13)),
-                      ScaledYOtstup + (ScaledRectWidth div 2) - Round(GetZoomIndex * 120));
+    FImage.Canvas.Arc(
+      // Верхний левый угол ограничивающего прямоугольника
+      ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),     // X1
+      ScaledYOtstup + (ScaledRectWidth div 2) - (Radius + Round(ZoomIndex / MaxZoom * 13)), // Y1
+
+      // Нижний правый угол ограничивающего прямоугольника
+       ScaledRectWidth + ScaledXOtstup+Round(ZoomIndex / MaxZoom * 2),      // X2
+      ScaledYOtstup + 2*ScaledRectHeight - Round(ZoomIndex / MaxZoom * 55), // Y2
+
+      // Новая начальная точка дуги (верхняя сторона)
+      ScaledRectWidth + ScaledXOtstup+Round(ZoomIndex / MaxZoom * 2),        // X3 (начало сверху справа)
+      ScaledYOtstup + Round(ZoomIndex / MaxZoom * 2) + ScaledRectHeight - Round(GetZoomIndex * 120), // Y3 (начало сверху)
+
+      // Новая конечная точка дуги (нижняя сторона)
+      ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),                            // X4 (конец слева)
+      ScaledYOtstup - Round(ZoomIndex / MaxZoom * 2) + ScaledRectHeight - Round(GetZoomIndex * 120) // Y4 (конец внизу)
+    );
+
       end;
   end
   //Треугольник

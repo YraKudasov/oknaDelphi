@@ -247,6 +247,8 @@ begin
         for I := 0 to CurrCont.Count - 1 do
         begin
           Window := TRectWindow(CurrCont.GetWindow(I));
+           if(Window.GetForm = 2) then
+           Window.SetType(0);
           DiffY := StrToInt(Edit3.Text) - FRectHeight;
           DiffX := StrToInt(Edit4.Text) - FRectWidth;
           if (Window.GetYOtstup = 0) then
@@ -369,7 +371,8 @@ begin
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetHeight(ChangedWindow.GetHeight + DiffY);
                 ChangedWindow.SetYOtstup(ChangedWindow.GetYOtstup - DiffY);
-
+                if(ChangedWindow.GetForm = 2) then
+                ChangedWindow.SetType(0);
               end;
             end
             else if (WidthUp = Window.GetWidth) then
@@ -382,7 +385,8 @@ begin
                 ind := integer(WUpCont.Items[a]);
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetHeight(ChangedWindow.GetHeight + DiffY);
-
+                if(ChangedWindow.GetForm = 2) then
+                ChangedWindow.SetType(0);
               end;
             end
             else
@@ -432,6 +436,8 @@ begin
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetWidth(ChangedWindow.GetWidth + DiffX);
                 ChangedWindow.SetXOtstup(ChangedWindow.GetXOtstup - DiffX);
+                if(ChangedWindow.GetForm = 2) then
+                ChangedWindow.SetType(0);
               end;
             end
             else if (HeightLeft = Window.GetHeight) then
@@ -444,7 +450,8 @@ begin
                 ind := integer(HLeftCont.Items[a]);
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetWidth(ChangedWindow.GetWidth + DiffX);
-
+                if(ChangedWindow.GetForm = 2) then
+                ChangedWindow.SetType(0);
               end;
             end
             else
@@ -452,6 +459,8 @@ begin
                 'ШИРИНУ окна НЕ удалось изменить. Возможно размеры СОСЕДНИХ окон становятся МЕНЬШЕ минимально допустимых при изменении размеров данного.');
           end;
         end;
+        if(Window.GetForm = 2) then
+        Window.SetType(0);
         Window.Select(Self);
         ResetAllWindowSelections;
         Image1.Canvas.Brush.Color := clWhite;
@@ -659,14 +668,25 @@ begin
           ComboBox1.ItemIndex := 0;
           ShowMessage(
             'Предупреждение: На окно уже добавлен импост. Уберите его перед добавлением створки');
-        end;
+        end
+        else if((Window.GetForm = 2) and (ComboBox1.ItemIndex = 3)) then
+        begin
+                if((Window.GetWidth div Window.GetHeight <> 2) or (Window.GetWidth mod Window.GetHeight <> 0))then
+               begin
+               Window.SetType(0);
+          ComboBox1.ItemIndex := 0;
+          ShowMessage(
+            'Предупреждение: Для добавления створки ВЫСОТА арки должны быть равна ПОЛОВИНЕ ШИРИНЫ');
+               end;
 
+         end;
         Label8.Visible := False;
         CheckBox1.Visible := False;
 
       end;
       Window.SetZoomIndex(DrawingIndex);
-      Window.DrawWindow;
+      DrawWindows;
+      PaintSizes;
     end;
   end;
 end;

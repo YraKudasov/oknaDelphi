@@ -216,6 +216,7 @@ object Form1: TForm1
             'Круг'
             'Арка'
             'Треугольник'
+            'Трапеция'
           )
           Style = csDropDownList
           TabOrder = 3

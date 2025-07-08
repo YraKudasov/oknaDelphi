@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2,
+  ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2,Unit3,
   PlasticDoorImpost, ImpostsContainer, FullContainer,
   LCLType, Grids, ActnList, Generics.Collections, SQLite3, SQLite3Conn, SQLDB;
 
@@ -371,7 +371,8 @@ begin
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetHeight(ChangedWindow.GetHeight + DiffY);
                 ChangedWindow.SetYOtstup(ChangedWindow.GetYOtstup - DiffY);
-
+                if(ChangedWindow.GetForm = 2) then
+                ChangedWindow.SetType(0);
               end;
             end
             else if (WidthUp = Window.GetWidth) then
@@ -384,7 +385,8 @@ begin
                 ind := integer(WUpCont.Items[a]);
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetHeight(ChangedWindow.GetHeight + DiffY);
-
+                if(ChangedWindow.GetForm = 2) then
+                ChangedWindow.SetType(0);
               end;
             end
             else
@@ -434,6 +436,8 @@ begin
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetWidth(ChangedWindow.GetWidth + DiffX);
                 ChangedWindow.SetXOtstup(ChangedWindow.GetXOtstup - DiffX);
+                if(ChangedWindow.GetForm = 2) then
+                ChangedWindow.SetType(0);
               end;
             end
             else if (HeightLeft = Window.GetHeight) then
@@ -446,7 +450,8 @@ begin
                 ind := integer(HLeftCont.Items[a]);
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetWidth(ChangedWindow.GetWidth + DiffX);
-
+                if(ChangedWindow.GetForm = 2) then
+                ChangedWindow.SetType(0);
               end;
             end
             else
@@ -546,6 +551,12 @@ begin
     Panel5.Visible := True;
     BitBtn5.Enabled := False;
   end;
+    if(Window.GetForm = 4)then
+  begin
+    if not Assigned(Form3) then
+         Application.CreateForm(TForm3, Form3);  // создаём форму, если ещё не создана
+       Form3.ShowModal;  // показываем форму немодально
+       end;
 end;
 
 {******** ОТМЕНА ВЫДЕЛЕНИЯ **********}
@@ -1635,6 +1646,15 @@ begin
       + #13#10 +
       'Выбранное вами окно имеет отступ сверху больше 0');
   end;
+      if(SelectedIndex = 4)then
+  begin
+    if not Assigned(Form3) then
+         Application.CreateForm(TForm3, Form3);  // создаём форму, если ещё не создана
+         if CurrWin.GetPolygonVerticesCount = 0 then
+         CurrWin.FillPolygonIfEmpty;
+       CurrWin.DrawPolygon;
+       Form3.ShowModal;  // показываем форму немодально
+       end;
   CurrWin.SetForm(ComboBox4.ItemIndex);
   if ((CurrWin.GetForm = 1) or (CurrWin.GetForm = 2) or (CurrWin.GetForm = 3)) then
   begin

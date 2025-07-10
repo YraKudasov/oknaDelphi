@@ -1649,11 +1649,16 @@ begin
       if(SelectedIndex = 4)then
   begin
     if not Assigned(Form3) then
-         Application.CreateForm(TForm3, Form3);  // создаём форму, если ещё не создана
-         if CurrWin.GetPolygonVerticesCount = 0 then
-         CurrWin.FillPolygonIfEmpty;
-       CurrWin.DrawPolygon;
-       Form3.ShowModal;  // показываем форму немодально
+    begin
+      Application.CreateForm(TForm3, Form3);  // создаём форму, если ещё не создана
+      Form3.OnShow := @Form3.FormShow;          // регистрировать обработчик события OnShow
+    end;
+
+    if CurrWin.GetPolygonVerticesCount = 0 then
+      CurrWin.FillPolygonIfEmpty;
+
+    Form3.LoadWindow(CurrWin);
+    Form3.ShowModal;                            // показываем форму модально
        end;
   CurrWin.SetForm(ComboBox4.ItemIndex);
   if ((CurrWin.GetForm = 1) or (CurrWin.GetForm = 2) or (CurrWin.GetForm = 3)) then

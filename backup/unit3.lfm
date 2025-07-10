@@ -1,0 +1,19 @@
+object Form3: TForm3
+  Left = 822
+  Height = 240
+  Top = 87
+  Width = 320
+  Caption = 'Form3'
+  ClientHeight = 240
+  ClientWidth = 320
+  LCLVersion = '3.2.0.0'
+  object ComboBox1: TComboBox
+    Left = 112
+    Height = 23
+    Top = 96
+    Width = 100
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 0
+  end
+end

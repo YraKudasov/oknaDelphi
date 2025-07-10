@@ -9,6 +9,7 @@ uses
 
 type
   TRectWindow = class
+  TPointArray = array of TPoint;
   private
     FRow, FColumn, FRectH, FRectW, FXOtstup, FYOtstup, FType, FTableIdx, FForm: integer;
     FMoskit: boolean;
@@ -67,6 +68,7 @@ type
     procedure DrawTriangle(Points: array of TPoint; FillColor: TColor);
     procedure FillPolygonIfEmpty;
     procedure DrawPolygon;
+    procedure GetPolygonVertices(var Verteces: TPointArray);
 
     function GetRow: integer;
     function GetColumn: integer;
@@ -1076,32 +1078,32 @@ begin
   FImage.Canvas.Pen.Width:= 2;
   // Начинаем рисовать линию от первой точки
   if((PolygonVerteces[0].X = FXOtstup) and (PolygonVerteces[0].Y = FYOtstup))then
-  FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 3), Round(PolygonVerteces[0].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 3))
+  FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4), Round(PolygonVerteces[0].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4))
   else if ((PolygonVerteces[0].X = FXOtstup) and (PolygonVerteces[0].Y <> FYOtstup))then
-  FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 3), Round(PolygonVerteces[0].Y* GetZoomIndex))
+  FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4), Round(PolygonVerteces[0].Y* GetZoomIndex))
   else if ((PolygonVerteces[0].X <> FXOtstup) and (PolygonVerteces[0].Y = FYOtstup))then
-  FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X* GetZoomIndex), Round(PolygonVerteces[0].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 3))
+  FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X* GetZoomIndex), Round(PolygonVerteces[0].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4))
   else
   FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X* GetZoomIndex), Round(PolygonVerteces[0].Y* GetZoomIndex));
 
   // Рисуем линии между точками
   for i := 1 to n - 1 do
     if((PolygonVerteces[i].X = FXOtstup) and (PolygonVerteces[i].Y = FYOtstup))then
-  FImage.Canvas.LineTo(Round(PolygonVerteces[i].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 3), Round(PolygonVerteces[i].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 3))
+  FImage.Canvas.LineTo(Round(PolygonVerteces[i].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4), Round(PolygonVerteces[i].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4))
   else if ((PolygonVerteces[i].X = FXOtstup) and (PolygonVerteces[i].Y <> FYOtstup))then
-  FImage.Canvas.LineTo(Round(PolygonVerteces[i].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 3), Round(PolygonVerteces[i].Y* GetZoomIndex))
+  FImage.Canvas.LineTo(Round(PolygonVerteces[i].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4), Round(PolygonVerteces[i].Y* GetZoomIndex))
   else if ((PolygonVerteces[i].X <> FXOtstup) and (PolygonVerteces[i].Y = FYOtstup))then
-  FImage.Canvas.LineTo(Round(PolygonVerteces[i].X* GetZoomIndex), Round(PolygonVerteces[i].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 3))
+  FImage.Canvas.LineTo(Round(PolygonVerteces[i].X* GetZoomIndex), Round(PolygonVerteces[i].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4))
   else
   FImage.Canvas.LineTo(Round(PolygonVerteces[i].X* GetZoomIndex), Round(PolygonVerteces[i].Y* GetZoomIndex));
 
   // Замыкаем многоугольник линией от последней точки к первой
  if((PolygonVerteces[0].X = FXOtstup) and (PolygonVerteces[0].Y = FYOtstup))then
-  FImage.Canvas.LineTo(Round(PolygonVerteces[0].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 3), Round(PolygonVerteces[0].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 3))
+  FImage.Canvas.LineTo(Round(PolygonVerteces[0].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4), Round(PolygonVerteces[0].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4))
   else if ((PolygonVerteces[0].X = FXOtstup) and (PolygonVerteces[0].Y <> FYOtstup))then
-  FImage.Canvas.LineTo(Round(PolygonVerteces[0].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 3), Round(PolygonVerteces[0].Y* GetZoomIndex))
+  FImage.Canvas.LineTo(Round(PolygonVerteces[0].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4), Round(PolygonVerteces[0].Y* GetZoomIndex))
   else if ((PolygonVerteces[0].X <> FXOtstup) and (PolygonVerteces[0].Y = FYOtstup))then
-  FImage.Canvas.LineTo(Round(PolygonVerteces[0].X* GetZoomIndex), Round(PolygonVerteces[0].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 3))
+  FImage.Canvas.LineTo(Round(PolygonVerteces[0].X* GetZoomIndex), Round(PolygonVerteces[0].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4))
   else
   FImage.Canvas.LineTo(Round(PolygonVerteces[0].X* GetZoomIndex), Round(PolygonVerteces[0].Y* GetZoomIndex));
 end;
@@ -1271,5 +1273,16 @@ function TRectWindow.GetForm: integer;
 begin
   Result := FForm;
 end;
+
+procedure TRectWindow.GetPolygonVertices(var Verteces: TPointArray);
+var
+  I: Integer;
+begin
+  SetLength(Verteces, Length(PolygonVerteces));
+  for I := Low(PolygonVerteces) to High(PolygonVerteces) do
+    Verteces[I] := PolygonVerteces[I];
+end;
+
+
 
 end.

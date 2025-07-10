@@ -8,6 +8,7 @@ uses
   // Убедитесь, что используемый модуль совпадает с указанным здесь
 
 type
+  TPointArray = array of TPoint;
   TRectWindow = class
   private
     FRow, FColumn, FRectH, FRectW, FXOtstup, FYOtstup, FType, FTableIdx, FForm: integer;
@@ -67,6 +68,7 @@ type
     procedure DrawTriangle(Points: array of TPoint; FillColor: TColor);
     procedure FillPolygonIfEmpty;
     procedure DrawPolygon;
+    procedure GetPolygonVertices(var Verteces: TPointArray);
 
     function GetRow: integer;
     function GetColumn: integer;
@@ -1271,5 +1273,16 @@ function TRectWindow.GetForm: integer;
 begin
   Result := FForm;
 end;
+
+procedure TRectWindow.GetPolygonVertices(var Verteces: TPointArray);
+var
+  I: Integer;
+begin
+  SetLength(Verteces, Length(PolygonVerteces));
+  for I := Low(PolygonVerteces) to High(PolygonVerteces) do
+    Verteces[I] := PolygonVerteces[I];
+end;
+
+
 
 end.

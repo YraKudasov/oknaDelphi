@@ -1652,6 +1652,7 @@ begin
          Application.CreateForm(TForm3, Form3);  // создаём форму, если ещё не создана
          if CurrWin.GetPolygonVerticesCount = 0 then
          CurrWin.FillPolygonIfEmpty;
+         Form3.LoadWindow(CurrWin);
        Form3.ShowModal;  // показываем форму немодально
        end;
   CurrWin.SetForm(ComboBox4.ItemIndex);

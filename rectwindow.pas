@@ -69,6 +69,8 @@ type
     procedure FillPolygonIfEmpty;
     procedure DrawPolygon;
     procedure GetPolygonVertices(var Verteces: TPointArray);
+    procedure DrawTrapeciaPoint(CurrPointIdx: integer);
+    procedure SetPolygonVertices(const Verteces: TPointArray);
 
     function GetRow: integer;
     function GetColumn: integer;
@@ -694,8 +696,6 @@ end;
 
 
 
-
-
 procedure TRectWindow.DrawNeGluxar;
 var
   CenterX, CenterY, Radius, BorderRadius: integer;
@@ -1071,6 +1071,14 @@ procedure TRectWindow.DrawPolygon;
 var
   i, n: Integer;
 begin
+  //Очистка области
+    FImage.Canvas.Pen.Color:= clWhite;
+  FImage.Canvas.Brush.Color:= clWhite;
+  FImage.Canvas.FillRect(Rect(ScaledXOtstup, ScaledYOtstup,
+  ScaledRectWidth + ScaledXOtstup + Round(ZoomIndex / MaxZoom * 10), ScaledRectHeight + ScaledYOtstup + Round(ZoomIndex / MaxZoom * 10)));
+  //Линия выделения
+   FImage.Canvas.Pen.Color:= clRed;
+   DrawSelectionBorder(ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup);
   n := Length(PolygonVerteces);
   if n < 3 then Exit;  // для полигона нужно минимум 3 точки
   FImage.Canvas.Pen.Color:= clBlack;
@@ -1107,6 +1115,18 @@ begin
   else
   FImage.Canvas.LineTo(Round(PolygonVerteces[0].X* GetZoomIndex), Round(PolygonVerteces[0].Y* GetZoomIndex));
 end;
+
+procedure TRectWindow.DrawTrapeciaPoint(CurrPointIdx: integer);
+var
+CurrPoint: TPoint;
+begin
+  FImage.Canvas.Pen.Color:= clGreen;
+  FImage.Canvas.Brush.Color:= clGreen;
+  FImage.Canvas.Pen.Width:= 2;
+  CurrPoint:= PolygonVerteces[CurrPointIdx];
+  FImage.Canvas.Rectangle(Round(CurrPoint.X* GetZoomIndex)-Round(ZoomIndex / MaxZoom * 2), Round(CurrPoint.Y* GetZoomIndex)-Round(ZoomIndex / MaxZoom * 2), Round(CurrPoint.X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 10),  Round(CurrPoint.Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 10));
+   end;
+
 
 function TRectWindow.GetPolygonVerticesCount: Integer;
 begin
@@ -1283,6 +1303,21 @@ begin
     Verteces[I] := PolygonVerteces[I];
 end;
 
+procedure TRectWindow.SetPolygonVertices(const Verteces: TPointArray);
+begin
+  // Проверка: Если массив вершин пустой, очищаем текущий массив
+  if Length(Verteces) = 0 then
+  begin
+    SetLength(PolygonVerteces, 0);
+    Exit;
+  end;
 
+  // Устанавливаем длину массива, соответствующую количеству новых вершин
+  SetLength(PolygonVerteces, Length(Verteces));
+
+  // Копируем новые вершины во внутренний массив
+  Move(Verteces[Low(Verteces)], PolygonVerteces[Low(PolygonVerteces)],
+      SizeOf(TPoint) * Length(Verteces));
+end;
 
 end.

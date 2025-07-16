@@ -121,6 +121,8 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     function IsDataModified: Boolean;
     procedure DownTrianglePoint(Sender: TObject);
+    procedure Form3ComboBoxChangeHandler(Sender: TObject);
+
 
 
 
@@ -135,7 +137,8 @@ type
     FullConstrWidth: integer;
     CurrentContainerID: integer;
     FDatabase: TSQLite3Connection; // Database connection
-    FTransaction: TSQLTransaction; // Transaction object //
+    FTransaction: TSQLTransaction;
+    FSelectedWindow: TRectWindow;// Transaction object //
 
 
 
@@ -474,12 +477,12 @@ end;
 {******** ВЫДЕЛЕНИЕ ОКНА ПРИ КЛИКЕ **********}
 procedure TForm1.RectWindowSelected(Sender: TObject);
 var
-  CurrCont: TWindowContainer;
   Window: TRectWindow;
   ImpostsContainer: TImpostsContainer;
   j: integer;
 begin
   Window := TRectWindow(Sender);
+  FSelectedWindow := Window;
   if Assigned(Window) then
   begin
     Panel1.Enabled := True;
@@ -555,8 +558,23 @@ begin
   begin
     if not Assigned(Form3) then
          Application.CreateForm(TForm3, Form3);  // создаём форму, если ещё не создана
+         Form3.Edit1.Text:='';
+         Form3.Edit2.Text:='';
+         Form3.Edit3.Text:='';
+         Form3.Edit4.Text:='';
        Form3.ShowModal;  // показываем форму немодально
        end;
+end;
+
+// Обработчик изменения ComboBox1 на Form3
+procedure TForm1.Form3ComboBoxChangeHandler(Sender: TObject);
+begin
+  if Assigned(FSelectedWindow) and Assigned(Form3) then
+  begin
+    Form3.ComboBox1Change(Sender);
+     FSelectedWindow.DrawWindow;
+    FSelectedWindow.DrawTrapeciaPoint(Form3.GetCurrPoint);
+  end;
 end;
 
 {******** ОТМЕНА ВЫДЕЛЕНИЯ **********}
@@ -865,7 +883,6 @@ begin
   Button6.Enabled := False;
   Button7.Enabled := False;
   Panel5.Visible := False;
-
 
   FDatabase := TSQLite3Connection.Create(Self);
   FTransaction := TSQLTransaction.Create(Self);
@@ -1646,21 +1663,34 @@ begin
       + #13#10 +
       'Выбранное вами окно имеет отступ сверху больше 0');
   end;
-      if(SelectedIndex = 4)then
-  begin
-    if not Assigned(Form3) then
-    begin
-      Application.CreateForm(TForm3, Form3);  // создаём форму, если ещё не создана
-      Form3.OnShow := @Form3.FormShow;          // регистрировать обработчик события OnShow
-    end;
-
-    if CurrWin.GetPolygonVerticesCount = 0 then
-      CurrWin.FillPolygonIfEmpty;
-
-    Form3.LoadWindow(CurrWin);
-    Form3.ShowModal;                            // показываем форму модально
-       end;
   CurrWin.SetForm(ComboBox4.ItemIndex);
+        if(SelectedIndex = 4)then
+  begin
+    if(CurrCont.Count <> 1)then
+    begin
+     ComboBox4.ItemIndex := 0;
+       CurrWin.SetForm(0);
+    ShowMessage('Ошибка: Невозможно поменять форму окна на Трапецию:'
+      + #13#10 +
+      '- В одной конструкции должно быть только ОДНО окно'
+      + #13#10 +
+      '- В изделии должна быть только ОДНА конструкция');
+   end
+    else  begin
+    if not Assigned(Form3) then
+         Application.CreateForm(TForm3, Form3);  // создаём форму, если ещё не создана
+         if CurrWin.GetPolygonVerticesCount = 0 then
+         CurrWin.FillPolygonIfEmpty;
+         Form3.LoadWindow(CurrWin);
+         Form3.ComboBox1.OnChange := @Form3ComboBoxChangeHandler;
+         Form3.Edit1.Text:='';
+         Form3.Edit2.Text:='';
+         Form3.Edit3.Text:='';
+         Form3.Edit4.Text:='';
+         DrawWindows;
+       Form3.ShowModal;  // показываем форму модально
+       end;
+       end;
   if ((CurrWin.GetForm = 1) or (CurrWin.GetForm = 2) or (CurrWin.GetForm = 3)) then
   begin
     ComboBox1.ItemIndex := 0;

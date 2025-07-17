@@ -34,6 +34,8 @@ type
     procedure ComboBox1Change(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure ChangePointCoordinates(Sender: TObject);
+    procedure AddNewPoint(Sender: TObject);
+    procedure DeletePoint(Sender: TObject);
   private
     CurrWin: TRectWindow;
     CurrPoint: Integer;
@@ -42,6 +44,7 @@ type
         procedure LoadWindow(Value: TRectWindow);
         procedure EditKeyPress(Sender: TObject; var Key: char);
         procedure EditChange(Sender: TObject);
+        procedure EditChangeAddPoint(Sender: TObject);
   end;
 
 var
@@ -62,10 +65,17 @@ begin
   CurrWin.GetPolygonVertices(Points);
   for I := 0 to High(Points) do
     ComboBox1.Items.Add(Format('(%d, %d)', [Points[I].X, Points[I].Y]));
+    Edit1.OnKeyPress := @EditKeyPress;
+    Edit2.OnKeyPress := @EditKeyPress;
     Edit3.OnKeyPress := @EditKeyPress;
     Edit4.OnKeyPress := @EditKeyPress;
+    Edit1.OnChange := @EditChangeAddPoint;
+    Edit2.OnChange := @EditChangeAddPoint;
     Edit3.OnChange := @EditChange;
     Edit4.OnChange := @EditChange;
+    Button1.Enabled := False;
+    Button2.Enabled := False;
+    Button3.Enabled := False;
 end;
 
 procedure TForm3.ComboBox1Change(Sender: TObject);
@@ -76,6 +86,7 @@ begin
     CurrPoint := ComboBox1.ItemIndex;
     Edit3.Text:= IntToStr(Points[CurrPoint].X);
     Edit4.Text:= IntToStr(Points[CurrPoint].Y);
+    Button3.Enabled := ComboBox1.ItemIndex <> -1;
 end;
 
 {******** РЕГУЛЯРКА ДЛЯ ВВОДА РАЗМЕРОВ **********}
@@ -92,7 +103,7 @@ var
   WidthValue, HeightValue: integer;
 begin
   // Проверка на ввод корректных значений
-  if TryStrToInt(Edit3.Text, HeightValue) and TryStrToInt(Edit4.Text, WidthValue) then
+  if TryStrToInt(Edit4.Text, HeightValue) and TryStrToInt(Edit3.Text, WidthValue) then
   begin
     // Проверка на минимальное и максимальное значение для длины и ширины
     if (WidthValue >= CurrWin.GetXOtstup) and (WidthValue <= CurrWin.GetXOtstup+CurrWin.GetWidth) and (HeightValue >= CurrWin.GetYOtstup) and
@@ -103,6 +114,25 @@ begin
   end
   else
     Button2.Enabled := False;
+end;
+
+procedure TForm3.EditChangeAddPoint(Sender: TObject);
+var
+  WidthValue, HeightValue: integer;
+begin
+  if (Edit1.Text <> '') and (Edit2.Text <> '') then
+  begin
+    if TryStrToInt(Edit1.Text, HeightValue) and TryStrToInt(Edit2.Text, WidthValue) then
+    begin
+      Button1.Enabled := (ComboBox1.ItemIndex <> -1) and
+                         (WidthValue >= CurrWin.GetXOtstup) and (WidthValue <= CurrWin.GetXOtstup + CurrWin.GetWidth) and
+                         (HeightValue >= CurrWin.GetYOtstup) and (HeightValue <= CurrWin.GetYOtstup + CurrWin.GetHeight);
+    end
+    else
+      Button1.Enabled := False;
+  end
+  else
+    Button1.Enabled := False;
 end;
 
 procedure TForm3.ChangePointCoordinates(Sender: TObject);
@@ -128,8 +158,116 @@ begin
   for I := 0 to High(Points) do
     ComboBox1.Items.Add(Format('(%d, %d)', [Points[I].X, Points[I].Y]));
 
+  Edit1.Text := '';
+  Edit2.Text := '';
   Edit3.Text := '';
   Edit4.Text := '';
+end;
+
+procedure TForm3.AddNewPoint(Sender: TObject);
+var
+  Points: TPointArray;
+  NewPoints: TPointArray;
+  I, InsertIndex: Integer;
+  NewX, NewY: Integer;
+begin
+  // Получаем текущие вершины
+  CurrWin.GetPolygonVertices(Points);
+
+  // Получаем координаты новой точки с защитой от неверного ввода
+  NewX := StrToIntDef(Edit1.Text, 0);
+  NewY := StrToIntDef(Edit2.Text, 0);
+
+  // Определяем индекс вставки (после CurrPoint)
+  InsertIndex := CurrPoint + 1;
+
+  // Создаём новый массив на одну точку больше
+  SetLength(NewPoints, Length(Points) + 1);
+
+  // Копируем точки до места вставки
+  for I := 0 to InsertIndex - 1 do
+    NewPoints[I] := Points[I];
+
+  // Вставляем новую точку
+  NewPoints[InsertIndex].X := NewX;
+  NewPoints[InsertIndex].Y := NewY;
+
+  // Копируем оставшиеся точки
+  for I := InsertIndex to High(Points) do
+    NewPoints[I + 1] := Points[I];
+
+  // Сохраняем обновлённые вершины обратно в объект окна
+  CurrWin.SetPolygonVertices(NewPoints);
+
+  // Перерисовываем окно
+  CurrWin.DrawWindow;
+
+  // Обновляем ComboBox с новыми координатами
+  ComboBox1.Clear;
+  for I := 0 to High(NewPoints) do
+    ComboBox1.Items.Add(Format('(%d, %d)', [NewPoints[I].X, NewPoints[I].Y]));
+
+  // Очищаем поля ввода
+  Edit1.Text := '';
+  Edit2.Text := '';
+  Edit3.Text := '';
+  Edit4.Text := '';
+end;
+
+procedure TForm3.DeletePoint(Sender: TObject);
+var
+  Points: TPointArray;
+  NewPoints: TPointArray;
+  I, J: Integer;
+begin
+  // Получаем текущие вершины
+  CurrWin.GetPolygonVertices(Points);
+
+  // Проверяем, что CurrPoint в допустимом диапазоне
+  if (CurrPoint < 0) or (CurrPoint > High(Points)) then
+    Exit; // Индекс вне диапазона, ничего не делаем
+
+  // Проверяем, что после удаления останется не меньше 3 вершин
+  if Length(Points) <= 3 then
+  begin
+    ShowMessage('Нельзя удалить вершину: в многоугольнике должно оставаться не менее 3 вершин.');
+    Exit;
+  end;
+
+  // Создаём новый массив на одну точку меньше
+  SetLength(NewPoints, Length(Points) - 1);
+
+  // Копируем все точки, кроме той, что нужно удалить
+  J := 0;
+  for I := 0 to High(Points) do
+  begin
+    if I <> CurrPoint then
+    begin
+      NewPoints[J] := Points[I];
+      Inc(J);
+    end;
+  end;
+
+  // Сохраняем обновлённые вершины обратно в объект окна
+  CurrWin.SetPolygonVertices(NewPoints);
+
+  // Перерисовываем окно
+  CurrWin.DrawWindow;
+
+  // Обновляем ComboBox с новыми координатами
+  ComboBox1.Clear;
+  for I := 0 to High(NewPoints) do
+    ComboBox1.Items.Add(Format('(%d, %d)', [NewPoints[I].X, NewPoints[I].Y]));
+
+  // Очищаем поля ввода
+  Edit1.Text := '';
+  Edit2.Text := '';
+  Edit3.Text := '';
+  Edit4.Text := '';
+
+  // Корректируем CurrPoint, если он вышел за пределы массива
+  if CurrPoint > High(NewPoints) then
+    CurrPoint := High(NewPoints);
 end;
 
 procedure TForm3.LoadWindow(Value: TRectWindow);

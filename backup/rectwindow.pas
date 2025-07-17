@@ -70,6 +70,7 @@ type
     procedure DrawPolygon;
     procedure GetPolygonVertices(var Verteces: TPointArray);
     procedure DrawTrapeciaPoint(CurrPointIdx: integer);
+    procedure SetPolygonVertices(const Verteces: TPointArray);
 
     function GetRow: integer;
     function GetColumn: integer;
@@ -1085,13 +1086,13 @@ begin
   FImage.Canvas.Pen.Width:= 2;
   // Начинаем рисовать линию от первой точки
   if((PolygonVerteces[0].X = FXOtstup) and (PolygonVerteces[0].Y = FYOtstup))then
-  FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4), Round(PolygonVerteces[0].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4))
+  FImage.Canvas.MoveTo(ScaledXOtstup + Round(PolygonVerteces[0].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4), ScaledYOtstup + Round(PolygonVerteces[0].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4))
   else if ((PolygonVerteces[0].X = FXOtstup) and (PolygonVerteces[0].Y <> FYOtstup))then
-  FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4), Round(PolygonVerteces[0].Y* GetZoomIndex))
+  FImage.Canvas.MoveTo(ScaledXOtstup + Round(PolygonVerteces[0].X* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4), ScaledYOtstup + Round(PolygonVerteces[0].Y* GetZoomIndex))
   else if ((PolygonVerteces[0].X <> FXOtstup) and (PolygonVerteces[0].Y = FYOtstup))then
-  FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X* GetZoomIndex), Round(PolygonVerteces[0].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4))
+  FImage.Canvas.MoveTo(ScaledXOtstup + Round(PolygonVerteces[0].X* GetZoomIndex), ScaledYOtstup + Round(PolygonVerteces[0].Y* GetZoomIndex)+Round(ZoomIndex / MaxZoom * 4))
   else
-  FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X* GetZoomIndex), Round(PolygonVerteces[0].Y* GetZoomIndex));
+  FImage.Canvas.MoveTo(ScaledXOtstup + Round(PolygonVerteces[0].X* GetZoomIndex), ScaledYOtstup + Round(PolygonVerteces[0].Y* GetZoomIndex));
 
   // Рисуем линии между точками
   for i := 1 to n - 1 do
@@ -1302,6 +1303,21 @@ begin
     Verteces[I] := PolygonVerteces[I];
 end;
 
+procedure TRectWindow.SetPolygonVertices(const Verteces: TPointArray);
+begin
+  // Проверка: Если массив вершин пустой, очищаем текущий массив
+  if Length(Verteces) = 0 then
+  begin
+    SetLength(PolygonVerteces, 0);
+    Exit;
+  end;
 
+  // Устанавливаем длину массива, соответствующую количеству новых вершин
+  SetLength(PolygonVerteces, Length(Verteces));
+
+  // Копируем новые вершины во внутренний массив
+  Move(Verteces[Low(Verteces)], PolygonVerteces[Low(PolygonVerteces)],
+      SizeOf(TPoint) * Length(Verteces));
+end;
 
 end.

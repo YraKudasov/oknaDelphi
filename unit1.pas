@@ -1679,7 +1679,6 @@ begin
     else  begin
     if not Assigned(Form3) then
          Application.CreateForm(TForm3, Form3);  // создаём форму, если ещё не создана
-         if CurrWin.GetPolygonVerticesCount = 0 then
          CurrWin.FillPolygonIfEmpty;
          Form3.LoadWindow(CurrWin);
          Form3.ComboBox1.OnChange := @Form3ComboBoxChangeHandler;

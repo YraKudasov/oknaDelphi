@@ -1,7 +1,7 @@
 object Form3: TForm3
-  Left = 1268
+  Left = 1237
   Height = 220
-  Top = 108
+  Top = 118
   Width = 559
   Caption = 'Form3'
   ClientHeight = 220
@@ -35,8 +35,8 @@ object Form3: TForm3
       Left = 32
       Height = 15
       Top = 49
-      Width = 69
-      Caption = 'Высота (мм)'
+      Width = 77
+      Caption = 'Отступ X (мм)'
     end
     object Edit2: TEdit
       Left = 136
@@ -49,8 +49,8 @@ object Form3: TForm3
       Left = 136
       Height = 15
       Top = 48
-      Width = 74
-      Caption = 'Ширина (мм)'
+      Width = 77
+      Caption = 'Отступ Y (мм)'
     end
     object Button1: TButton
       Left = 88
@@ -59,6 +59,7 @@ object Form3: TForm3
       Width = 75
       Caption = 'Добавить'
       TabOrder = 2
+      OnClick = AddNewPoint
     end
   end
   object Panel2: TPanel
@@ -116,6 +117,7 @@ object Form3: TForm3
       Width = 104
       Caption = 'Удалить вершину'
       TabOrder = 4
+      OnClick = DeletePoint
     end
     object Label5: TLabel
       Left = 115

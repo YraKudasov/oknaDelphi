@@ -91,7 +91,6 @@ type
     function GetUpperPoint: integer;
     function GetDownPoint: integer;
     function GetPolygonVerticesCount: integer;
-    function PolygonArea(const Path: TPath64): int64;
 
 
   end;
@@ -514,26 +513,26 @@ begin
       //Две линии арки
       FImage.Canvas.Pen.Color := clBlack;
       // Первая арка
-      FImage.Canvas.Arc(ScaledXOtstup + CenterX -
-        (Radius - Round(ZoomIndex / MaxZoom * 2)),
-        ScaledYOtstup + (ScaledRectWidth div 2) -
-        (Radius - Round(ZoomIndex / MaxZoom * 2)),
+      FImage.Canvas.Arc(ScaledXOtstup + CenterX - (Radius -
+        Round(ZoomIndex / MaxZoom * 2)),
+        ScaledYOtstup + (ScaledRectWidth div 2) - (Radius -
+        Round(ZoomIndex / MaxZoom * 2)),
         ScaledXOtstup + CenterX + (Radius - Round(ZoomIndex / MaxZoom * 2)),
-        ScaledYOtstup + (ScaledRectWidth div 2) +
-        (Radius - Round(ZoomIndex / MaxZoom * 2)),
+        ScaledYOtstup + (ScaledRectWidth div 2) + (Radius -
+        Round(ZoomIndex / MaxZoom * 2)),
         ScaledXOtstup + CenterX + (Radius - Round(ZoomIndex / MaxZoom * 2)),
         ScaledYOtstup + (ScaledRectWidth div 2),
         ScaledXOtstup + CenterX - (Radius - Round(ZoomIndex / MaxZoom * 2)),
         ScaledYOtstup + (ScaledRectWidth div 2));
 
       // Вторая арка
-      FImage.Canvas.Arc(ScaledXOtstup + CenterX -
-        (Radius + Round(ZoomIndex / MaxZoom * 13)),
-        ScaledYOtstup + (ScaledRectWidth div 2) -
-        (Radius + Round(ZoomIndex / MaxZoom * 13)),
+      FImage.Canvas.Arc(ScaledXOtstup + CenterX - (Radius +
+        Round(ZoomIndex / MaxZoom * 13)),
+        ScaledYOtstup + (ScaledRectWidth div 2) - (Radius +
+        Round(ZoomIndex / MaxZoom * 13)),
         ScaledXOtstup + CenterX + (Radius + Round(ZoomIndex / MaxZoom * 13)),
-        ScaledYOtstup + (ScaledRectWidth div 2) +
-        (Radius + Round(ZoomIndex / MaxZoom * 13)),
+        ScaledYOtstup + (ScaledRectWidth div 2) + (Radius +
+        Round(ZoomIndex / MaxZoom * 13)),
         ScaledXOtstup + CenterX + (Radius + Round(ZoomIndex / MaxZoom * 13)),
         ScaledYOtstup + (ScaledRectWidth div 2),
         ScaledXOtstup + CenterX - (Radius + Round(ZoomIndex / MaxZoom * 13)),
@@ -598,8 +597,8 @@ begin
       FImage.Canvas.Brush.Color := clSkyBlue;
       FImage.Canvas.Pen.Color := clSkyBlue;
       FImage.Canvas.Ellipse(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22),
-        ScaledYOtstup + (ScaledRectWidth div 2) - (Radius -
-        Round(ZoomIndex / MaxZoom * 2)),
+        ScaledYOtstup + (ScaledRectWidth div 2) -
+        (Radius - Round(ZoomIndex / MaxZoom * 2)),
         ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,
         ScaledYOtstup + 2 * ScaledRectHeight - Round(ZoomIndex / MaxZoom * 55));
 
@@ -667,8 +666,8 @@ begin
       FImage.Canvas.Arc(
         // Верхний левый угол ограничивающего прямоугольника
         ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22),     // X1
-        ScaledYOtstup + (ScaledRectWidth div 2) -
-        (Radius - Round(ZoomIndex / MaxZoom * 2)), // Y1
+        ScaledYOtstup + (ScaledRectWidth div 2) - (Radius -
+        Round(ZoomIndex / MaxZoom * 2)), // Y1
 
         // Нижний правый угол ограничивающего прямоугольника
         ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,      // X2
@@ -691,8 +690,8 @@ begin
       FImage.Canvas.Arc(
         // Верхний левый угол ограничивающего прямоугольника
         ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),     // X1
-        ScaledYOtstup + (ScaledRectWidth div 2) -
-        (Radius + Round(ZoomIndex / MaxZoom * 13)), // Y1
+        ScaledYOtstup + (ScaledRectWidth div 2) - (Radius +
+        Round(ZoomIndex / MaxZoom * 13)), // Y1
 
         // Нижний правый угол ограничивающего прямоугольника
         ScaledRectWidth + ScaledXOtstup + Round(ZoomIndex / MaxZoom * 2),      // X2
@@ -1173,7 +1172,6 @@ var
   Subject, Solution: TPaths64;
   Offset: TClipperOffset;
   Delta: int64;
-  etClosedPolygon: TEndType;
   minArea: int64;
   idxInner, a: integer;
 begin
@@ -1248,6 +1246,7 @@ begin
       ScaledYOtstup + Round(PolygonVerteces[0].Y * GetZoomIndex));
 
 
+
   // Копируем исходный многоугольник
   SetLength(Subject, 1);
   SetLength(Subject[0], n);
@@ -1259,7 +1258,8 @@ begin
 
   Offset := TClipperOffset.Create;
   try
-    Offset.AddPaths(Subject, jtMiter, etClosedPolygon);
+
+    Offset.AddPaths(Subject, jtMiter, etPolygon);
 
     Delta := -90; // Внутренний отступ 90
 
@@ -1267,28 +1267,13 @@ begin
 
     if Length(Solution) = 0 then Exit;
 
-    // Находим многоугольник с минимальной абсолютной площадью (внутренний)
-    idxInner := -1;
-    minArea := MaxInt64;
-    for i := 0 to Length(Solution) - 1 do
-    begin
-      a := Abs(PolygonArea(Solution[i]));
-      if a < minArea then
-      begin
-        minArea := a;
-        idxInner := i;
-      end;
-    end;
-
-    if idxInner = -1 then Exit;
-
     // Преобразуем выбранный многоугольник в массив TPoint для отрисовки
-    n := Length(Solution[idxInner]);
+    n := Length(Solution[0]);
     SetLength(Points, n);
     for i := 0 to n - 1 do
     begin
-      Points[i].X := ScaledXOtstup + Round(Solution[idxInner][i].X * GetZoomIndex);
-      Points[i].Y := ScaledYOtstup + Round(Solution[idxInner][i].Y * GetZoomIndex);
+      Points[i].X := ScaledXOtstup + Round(Solution[0][i].X * GetZoomIndex);
+      Points[i].Y := ScaledYOtstup + Round(Solution[0][i].Y * GetZoomIndex);
     end;
 
     FImage.Canvas.Brush.Color := clSkyBlue;
@@ -1296,24 +1281,11 @@ begin
 
   finally
     Offset.Free;
+
   end;
 
 end;
 
-function TRectWindow.PolygonArea(const Path: TPath64): int64;
-var
-  i, j: integer;
-  area: int64;
-begin
-  area := 0;
-  j := High(Path);
-  for i := 0 to High(Path) do
-  begin
-    area := area + (Path[j].X + Path[i].X) * (Path[j].Y - Path[i].Y);
-    j := i;
-  end;
-  Result := area div 2;
-end;
 
 procedure TRectWindow.DrawTrapeciaPoint(CurrPointIdx: integer);
 var

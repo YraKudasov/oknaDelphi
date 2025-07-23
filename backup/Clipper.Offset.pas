@@ -636,7 +636,7 @@ begin
   end;
   SetLength(fSolution, fSolutionLen);
 
-  pathsReversed := CheckReverseOrientation();
+  pathsReversed := true;
 
   if pathsReversed then
     fillRule := frNegative else

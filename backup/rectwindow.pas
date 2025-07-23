@@ -4,7 +4,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  ComCtrls, Contnrs, ImpostsContainer, PlasticDoorImpost, Clipper, Clipper.Offset, Clipper.Core, Clipper.Engine;
+  ComCtrls, Contnrs, ImpostsContainer, PlasticDoorImpost, Clipper,
+  Clipper.Offset, Clipper.Core, Clipper.Engine;
   // Убедитесь, что используемый модуль совпадает с указанным здесь
 
 type
@@ -90,7 +91,7 @@ type
     function GetUpperPoint: integer;
     function GetDownPoint: integer;
     function GetPolygonVerticesCount: integer;
-    function PolygonArea(const Path: TPath64): Int64;
+    function PolygonArea(const Path: TPath64): int64;
 
 
   end;
@@ -1166,23 +1167,14 @@ end;
 
 procedure TRectWindow.DrawPolygon;
 var
-  DiffX, DiffY: integer;
-  PreviousCenterPoint: TPoint;
-  OutSemiangleX, InSemiangleX, OutSemiangleY, InSemiangleY: double;
-  ScaledCenterX, ScaledCenterY, CenterX, CenterY: integer;
   i, n: integer;
-  koefX, koefY: double;
   Points: array of TPoint;
-  prevIndex, nextIndex: integer;
 
-
-    Subject, Solution: TPaths64;
+  Subject, Solution: TPaths64;
   Offset: TClipperOffset;
-  Delta: Int64;
-  etClosedPolygon: TEndType;
-    Success: Boolean;
-      minArea: Int64;
-      idxInner, a:integer;
+  Delta: int64;
+  minArea: int64;
+  idxInner, a: integer;
 begin
   //Очистка области
   FImage.Canvas.Pen.Color := clWhite;
@@ -1255,73 +1247,46 @@ begin
       ScaledYOtstup + Round(PolygonVerteces[0].Y * GetZoomIndex));
 
 
+
   // Копируем исходный многоугольник
-   SetLength(Subject, 1);
-   SetLength(Subject[0], n);
-   for i := 0 to n - 1 do
-   begin
-     Subject[0][i].X := PolygonVerteces[i].X;
-     Subject[0][i].Y := PolygonVerteces[i].Y;
-   end;
-
-   Offset := TClipperOffset.Create;
-   try
-     Offset.AddPaths(Subject, jtMiter, etClosedPolygon);
-
-     Delta := -90; // Внутренний отступ 90
-
-     Offset.Execute(Delta, Solution);
-
-     if Length(Solution) = 0 then Exit;
-
-     // Находим многоугольник с минимальной абсолютной площадью (внутренний)
-     idxInner := -1;
-     minArea := MaxInt64;
-     for i := 0 to Length(Solution) - 1 do
-     begin
-        a := Abs(PolygonArea(Solution[i]));
-       if a < minArea then
-       begin
-         minArea := a;
-         idxInner := i;
-       end;
-     end;
-
-     if idxInner = -1 then Exit;
-
-     // Преобразуем выбранный многоугольник в массив TPoint для отрисовки
-     n := Length(Solution[idxInner]);
-     SetLength(Points, n);
-     for i := 0 to n - 1 do
-     begin
-       Points[i].X := ScaledXOtstup + Round(Solution[idxInner][i].X * GetZoomIndex);
-       Points[i].Y := ScaledYOtstup + Round(Solution[idxInner][i].Y * GetZoomIndex);
-     end;
-
-     FImage.Canvas.Brush.Color := clSkyBlue;
-     FImage.Canvas.Polygon(Points);
-
-   finally
-     Offset.Free;
-   end;
-
-
-end;
-
-function TRectWindow.PolygonArea(const Path: TPath64): Int64;
-var
-  i, j: Integer;
-  area: Int64;
-begin
-  area := 0;
-  j := High(Path);
-  for i := 0 to High(Path) do
+  SetLength(Subject, 1);
+  SetLength(Subject[0], n);
+  for i := 0 to n - 1 do
   begin
-    area := area + (Path[j].X + Path[i].X) * (Path[j].Y - Path[i].Y);
-    j := i;
+    Subject[0][i].X := PolygonVerteces[i].X;
+    Subject[0][i].Y := PolygonVerteces[i].Y;
   end;
-  Result := area div 2;
+
+  Offset := TClipperOffset.Create;
+  try
+
+    Offset.AddPaths(Subject, jtMiter, etPolygon);
+
+    Delta := -90; // Внутренний отступ 90
+
+    Offset.Execute(Delta, Solution);
+
+    if Length(Solution) = 0 then Exit;
+
+    // Преобразуем выбранный многоугольник в массив TPoint для отрисовки
+    n := Length(Solution[0]);
+    SetLength(Points, n);
+    for i := 0 to n - 1 do
+    begin
+      Points[i].X := ScaledXOtstup + Round(Solution[0][i].X * GetZoomIndex);
+      Points[i].Y := ScaledYOtstup + Round(Solution[0][i].Y * GetZoomIndex);
+    end;
+
+    FImage.Canvas.Brush.Color := clSkyBlue;
+    FImage.Canvas.Polygon(Points);
+
+  finally
+    Offset.Free;
+
+  end;
+
 end;
+
 
 procedure TRectWindow.DrawTrapeciaPoint(CurrPointIdx: integer);
 var

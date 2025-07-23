@@ -1,0 +1,4 @@
+{"version":1,"strings":[
+{"hash":44796942,"name":"clipper.engine.rsclipper_polytreeerr","sourcebytes":[84,104,101,32,84,80,111,108,121,84,114,101,101,32,112,97,114,97,109,101,116,101,114,32,109,117,115,116,32,98,101,32,97,115,115,105,103,110,101,100,46],"value":"The TPolyTree parameter must be assigned."},
+{"hash":65289282,"name":"clipper.engine.rsclipper_clippingerr","sourcebytes":[85,110,100,101,102,105,110,101,100,32,99,108,105,112,112,105,110,103,32,101,114,114,111,114],"value":"Undefined clipping error"}
+]}

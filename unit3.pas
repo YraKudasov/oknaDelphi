@@ -122,7 +122,7 @@ var
 begin
   if (Edit1.Text <> '') and (Edit2.Text <> '') then
   begin
-    if TryStrToInt(Edit1.Text, HeightValue) and TryStrToInt(Edit2.Text, WidthValue) then
+    if TryStrToInt(Edit1.Text, WidthValue) and TryStrToInt(Edit2.Text, HeightValue) then
     begin
       Button1.Enabled := (ComboBox1.ItemIndex <> -1) and
                          (WidthValue >= CurrWin.GetXOtstup) and (WidthValue <= CurrWin.GetXOtstup + CurrWin.GetWidth) and
@@ -138,22 +138,86 @@ end;
 procedure TForm3.ChangePointCoordinates(Sender: TObject);
 var
   Points: TPointArray;
-  I: integer;
+  I, CountX, CountY: Integer;
+  NewX, NewY: Integer;
+  MaxWidth, MaxHeight: Integer;
+  XChanged, YChanged: Boolean;
 begin
-  // Шаг 1: Извлекаем существующие вершины
+  MaxWidth := CurrWin.GetWidth;
+  MaxHeight := CurrWin.GetHeight;
+
   CurrWin.GetPolygonVertices(Points);
 
-  // Шаг 2: Изменяем координаты указанной вершины
-  Points[CurrPoint].X := StrToIntDef(Edit3.Text, Points[CurrPoint].X); // защита от неверного ввода
-  Points[CurrPoint].Y := StrToIntDef(Edit4.Text, Points[CurrPoint].Y); // защита от неверного ввода
+  // Проверяем, изменена ли координата X
+  XChanged := StrToInt(Edit3.Text) <> Points[CurrPoint].X;
+  // Проверяем, изменена ли координата Y
+  YChanged := StrToInt(Edit4.Text) <> Points[CurrPoint].Y;
 
-  // Шаг 3: Сохраняем обновлённые вершины обратно в объект окна
+  // Если изменены обе координаты — запрещаем
+  if XChanged and YChanged then
+  begin
+    ShowMessage('Можно изменить только одну координату: либо X, либо Y.');
+    Edit3.Text := IntToStr(Points[CurrPoint].X);
+    Edit4.Text := IntToStr(Points[CurrPoint].Y);
+    Exit;
+  end;
+
+  // Получаем новые координаты с защитой от неверного ввода
+  if XChanged then
+    NewX := StrToIntDef(Edit3.Text, Points[CurrPoint].X)
+  else
+    NewX := Points[CurrPoint].X;
+
+  if YChanged then
+    NewY := StrToIntDef(Edit4.Text, Points[CurrPoint].Y)
+  else
+    NewY := Points[CurrPoint].Y;
+
+  // Проверяем условие: хотя бы одна координата должна быть на грани
+  if not ((NewX = 0) or (NewX = MaxWidth) or (NewY = 0) or (NewY = MaxHeight)) then
+  begin
+    ShowMessage(Format('Хотя бы одна из координат новой точки должна находиться на грани: X = 0 или %d, либо Y = 0 или %d.',
+      [MaxWidth, MaxHeight]));
+    Edit3.Text := IntToStr(Points[CurrPoint].X);
+    Edit4.Text := IntToStr(Points[CurrPoint].Y);
+    Exit;
+  end;
+
+  // Проверяем, что не существует 3 и более точек с одинаковой координатой X или Y
+  CountX := 1;
+  CountY := 1;
+  for I := 0 to High(Points) do
+  begin
+    if I <> CurrPoint then
+    begin
+      if Points[I].X = NewX then Inc(CountX);
+      if Points[I].Y = NewY then Inc(CountY);
+    end;
+  end;
+
+  if CountX >= 3 then
+  begin
+    ShowMessage('Ошибка: три и более вершины не могут иметь одинаковую координату X.');
+    Edit3.Text := IntToStr(Points[CurrPoint].X);
+    Edit4.Text := IntToStr(Points[CurrPoint].Y);
+    Exit;
+  end;
+
+  if CountY >= 3 then
+  begin
+    ShowMessage('Ошибка: три и более вершины не могут иметь одинаковую координату Y.');
+    Edit3.Text := IntToStr(Points[CurrPoint].X);
+    Edit4.Text := IntToStr(Points[CurrPoint].Y);
+    Exit;
+  end;
+
+  // Обновляем координаты
+  Points[CurrPoint].X := NewX;
+  Points[CurrPoint].Y := NewY;
+
   CurrWin.SetPolygonVertices(Points);
-
-  // Шаг 4: Перерисовка окна с учётом новых координат
   CurrWin.DrawWindow;
 
-  // Шаг 5: Обновляем комбобокс с новыми координатами
   ComboBox1.Clear;
   for I := 0 to High(Points) do
     ComboBox1.Items.Add(Format('(%d, %d)', [Points[I].X, Points[I].Y]));
@@ -170,49 +234,73 @@ var
   NewPoints: TPointArray;
   I, InsertIndex: Integer;
   NewX, NewY: Integer;
+  MaxWidth, MaxHeight: Integer;
+  CountX, CountY: Integer;
 begin
-  // Получаем текущие вершины
   CurrWin.GetPolygonVertices(Points);
 
-  // Получаем координаты новой точки с защитой от неверного ввода
-  NewX := StrToIntDef(Edit1.Text, 0);
-  NewY := StrToIntDef(Edit2.Text, 0);
+  MaxWidth := CurrWin.GetWidth;
+  MaxHeight := CurrWin.GetHeight;
 
-  // Определяем индекс вставки (после CurrPoint)
+  NewX := StrToIntDef(Edit1.Text, -1);
+  NewY := StrToIntDef(Edit2.Text, -1);
+
+  // Проверяем, что координаты валидны и точка находится на грани
+  if (NewX < 0) or (NewY < 0) or
+     not ((NewX = 0) or (NewX = MaxWidth) or (NewY = 0) or (NewY = MaxHeight)) then
+  begin
+    ShowMessage(Format('Хотя бы одна из координат новой точки должна находиться на грани: X = 0 или %d, либо Y = 0 или %d.',
+      [MaxWidth, MaxHeight]));
+    Exit;
+  end;
+
+  // Проверяем, что не будет 3 и более точек с одинаковой координатой X или Y после добавления
+  CountX := 1; // учитываем новую точку
+  CountY := 1;
+  for I := 0 to High(Points) do
+  begin
+    if Points[I].X = NewX then Inc(CountX);
+    if Points[I].Y = NewY then Inc(CountY);
+  end;
+
+  if CountX >= 3 then
+  begin
+    ShowMessage('Ошибка: три и более вершины не могут иметь одинаковую координату X.');
+    Exit;
+  end;
+
+  if CountY >= 3 then
+  begin
+    ShowMessage('Ошибка: три и более вершины не могут иметь одинаковую координату Y.');
+    Exit;
+  end;
+
   InsertIndex := CurrPoint + 1;
 
-  // Создаём новый массив на одну точку больше
   SetLength(NewPoints, Length(Points) + 1);
 
-  // Копируем точки до места вставки
   for I := 0 to InsertIndex - 1 do
     NewPoints[I] := Points[I];
 
-  // Вставляем новую точку
   NewPoints[InsertIndex].X := NewX;
   NewPoints[InsertIndex].Y := NewY;
 
-  // Копируем оставшиеся точки
   for I := InsertIndex to High(Points) do
     NewPoints[I + 1] := Points[I];
 
-  // Сохраняем обновлённые вершины обратно в объект окна
   CurrWin.SetPolygonVertices(NewPoints);
-
-  // Перерисовываем окно
   CurrWin.DrawWindow;
 
-  // Обновляем ComboBox с новыми координатами
   ComboBox1.Clear;
   for I := 0 to High(NewPoints) do
     ComboBox1.Items.Add(Format('(%d, %d)', [NewPoints[I].X, NewPoints[I].Y]));
 
-  // Очищаем поля ввода
   Edit1.Text := '';
   Edit2.Text := '';
   Edit3.Text := '';
   Edit4.Text := '';
 end;
+
 
 procedure TForm3.DeletePoint(Sender: TObject);
 var
@@ -228,9 +316,9 @@ begin
     Exit; // Индекс вне диапазона, ничего не делаем
 
   // Проверяем, что после удаления останется не меньше 3 вершин
-  if Length(Points) <= 3 then
+  if Length(Points) <= 4 then
   begin
-    ShowMessage('Нельзя удалить вершину: в многоугольнике должно оставаться не менее 3 вершин.');
+    ShowMessage('Нельзя удалить вершину: в многоугольнике должно оставаться не менее 4 вершин.');
     Exit;
   end;
 

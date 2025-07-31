@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2,Unit3,
+  ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2, Unit3,
   PlasticDoorImpost, ImpostsContainer, FullContainer,
   LCLType, Grids, ActnList, Generics.Collections, SQLite3, SQLite3Conn, SQLDB;
 
@@ -118,8 +118,8 @@ type
     function ChooseProfileOtstup(Row, Col: integer): integer;
     procedure ResetAllWindowSelections;
     procedure SaveWindowsToDatabase;
-    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    function IsDataModified: Boolean;
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
+    function IsDataModified: boolean;
     procedure DownTrianglePoint(Sender: TObject);
     procedure Form3ComboBoxChangeHandler(Sender: TObject);
 
@@ -250,8 +250,8 @@ begin
         for I := 0 to CurrCont.Count - 1 do
         begin
           Window := TRectWindow(CurrCont.GetWindow(I));
-           if(Window.GetForm = 2) then
-           Window.SetType(0);
+          if (Window.GetForm = 2) then
+            Window.SetType(0);
           DiffY := StrToInt(Edit3.Text) - FRectHeight;
           DiffX := StrToInt(Edit4.Text) - FRectWidth;
           if (Window.GetYOtstup = 0) then
@@ -374,8 +374,8 @@ begin
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetHeight(ChangedWindow.GetHeight + DiffY);
                 ChangedWindow.SetYOtstup(ChangedWindow.GetYOtstup - DiffY);
-                if(ChangedWindow.GetForm = 2) then
-                ChangedWindow.SetType(0);
+                if (ChangedWindow.GetForm = 2) then
+                  ChangedWindow.SetType(0);
               end;
             end
             else if (WidthUp = Window.GetWidth) then
@@ -388,8 +388,8 @@ begin
                 ind := integer(WUpCont.Items[a]);
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetHeight(ChangedWindow.GetHeight + DiffY);
-                if(ChangedWindow.GetForm = 2) then
-                ChangedWindow.SetType(0);
+                if (ChangedWindow.GetForm = 2) then
+                  ChangedWindow.SetType(0);
               end;
             end
             else
@@ -439,8 +439,8 @@ begin
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetWidth(ChangedWindow.GetWidth + DiffX);
                 ChangedWindow.SetXOtstup(ChangedWindow.GetXOtstup - DiffX);
-                if(ChangedWindow.GetForm = 2) then
-                ChangedWindow.SetType(0);
+                if (ChangedWindow.GetForm = 2) then
+                  ChangedWindow.SetType(0);
               end;
             end
             else if (HeightLeft = Window.GetHeight) then
@@ -453,8 +453,8 @@ begin
                 ind := integer(HLeftCont.Items[a]);
                 ChangedWindow := TRectWindow(CurrCont.GetWindow(ind));
                 ChangedWindow.SetWidth(ChangedWindow.GetWidth + DiffX);
-                if(ChangedWindow.GetForm = 2) then
-                ChangedWindow.SetType(0);
+                if (ChangedWindow.GetForm = 2) then
+                  ChangedWindow.SetType(0);
               end;
             end
             else
@@ -462,8 +462,8 @@ begin
                 'ШИРИНУ окна НЕ удалось изменить. Возможно размеры СОСЕДНИХ окон становятся МЕНЬШЕ минимально допустимых при изменении размеров данного.');
           end;
         end;
-        if(Window.GetForm = 2) then
-        Window.SetType(0);
+        if (Window.GetForm = 2) then
+          Window.SetType(0);
         Window.Select(Self);
         ResetAllWindowSelections;
         Image1.Canvas.Brush.Color := clWhite;
@@ -554,16 +554,20 @@ begin
     Panel5.Visible := True;
     BitBtn5.Enabled := False;
   end;
-    if(Window.GetForm = 4)then
+  if (Window.GetForm = 4) then
   begin
     if not Assigned(Form3) then
-         Application.CreateForm(TForm3, Form3);  // создаём форму, если ещё не создана
-         Form3.Edit1.Text:='';
-         Form3.Edit2.Text:='';
-         Form3.Edit3.Text:='';
-         Form3.Edit4.Text:='';
-       Form3.ShowModal;  // показываем форму немодально
-       end;
+      Application.CreateForm(TForm3, Form3);
+    // создаём форму, если ещё не создана
+    Form3.Edit1.Text := '';
+    Form3.Edit2.Text := '';
+    Form3.Edit3.Text := '';
+    Form3.Edit4.Text := '';
+    ComboBox1.Enabled := False;
+    Panel1.Enabled := False;
+    Panel2.Enabled := False;
+    Form3.ShowModal;  // показываем форму немодально
+  end;
 end;
 
 // Обработчик изменения ComboBox1 на Form3
@@ -572,7 +576,7 @@ begin
   if Assigned(FSelectedWindow) and Assigned(Form3) then
   begin
     Form3.ComboBox1Change(Sender);
-     FSelectedWindow.DrawWindow;
+    FSelectedWindow.DrawWindow;
     FSelectedWindow.DrawTrapeciaPoint(Form3.GetCurrPoint);
   end;
 end;
@@ -693,17 +697,18 @@ begin
           ShowMessage(
             'Предупреждение: На окно уже добавлен импост. Уберите его перед добавлением створки');
         end
-        else if((Window.GetForm = 2) and (ComboBox1.ItemIndex = 3)) then
+        else if ((Window.GetForm = 2) and (ComboBox1.ItemIndex = 3)) then
         begin
-                if((Window.GetWidth div Window.GetHeight <> 2) or (Window.GetWidth mod Window.GetHeight <> 0))then
-               begin
-               Window.SetType(0);
-          ComboBox1.ItemIndex := 0;
-          ShowMessage(
-            'Предупреждение: Для добавления створки ВЫСОТА арки должны быть равна ПОЛОВИНЕ ШИРИНЫ');
-               end;
+          if ((Window.GetWidth div Window.GetHeight <> 2) or
+            (Window.GetWidth mod Window.GetHeight <> 0)) then
+          begin
+            Window.SetType(0);
+            ComboBox1.ItemIndex := 0;
+            ShowMessage(
+              'Предупреждение: Для добавления створки ВЫСОТА арки должны быть равна ПОЛОВИНЕ ШИРИНЫ');
+          end;
 
-         end;
+        end;
         Label8.Visible := False;
         CheckBox1.Visible := False;
 
@@ -923,22 +928,24 @@ begin
 
 end;
 
- function TForm1.IsDataModified: Boolean;
+function TForm1.IsDataModified: boolean;
 var
   Query: TSQLQuery;
-  i, j, dbHeight, dbWidth: Integer;
+  i, j, dbHeight, dbWidth: integer;
   Container: TWindowContainer;
   Window: TRectWindow;
 begin
   Result := False;
-  if CurrentContainerID = 0 then Exit; // Нет сохранённых данных для сравнения
+  if CurrentContainerID = 0 then Exit;
+  // Нет сохранённых данных для сравнения
 
   Query := TSQLQuery.Create(nil);
   try
     Query.SQLConnection := FDatabase;
 
     // Загружаем конструкции, связанные с текущим контейнером
-    Query.SQL.Text := 'SELECT ID FROM Constructions WHERE ContainerID = :ContainerID ORDER BY ID';
+    Query.SQL.Text :=
+      'SELECT ID FROM Constructions WHERE ContainerID = :ContainerID ORDER BY ID';
     Query.ParamByName('ContainerID').AsInteger := CurrentContainerID;
     Query.Open;
 
@@ -949,7 +956,7 @@ begin
     end;
 
     i := 0;
-    while not Query.Eof do
+    while not Query.EOF do
     begin
       Container := TWindowContainer(FullContainer.GetContainer(i));
 
@@ -957,7 +964,8 @@ begin
       with TSQLQuery.Create(nil) do
       try
         SQLConnection := FDatabase;
-        SQL.Text := 'SELECT Height, Width FROM Windows WHERE ConstructionID = :CID ORDER BY ID';
+        SQL.Text :=
+          'SELECT Height, Width FROM Windows WHERE ConstructionID = :CID ORDER BY ID';
         ParamByName('CID').AsInteger := Query.Fields[0].AsInteger;
         Open;
 
@@ -969,7 +977,7 @@ begin
         end;
 
         j := 0;
-        while not Eof do
+        while not EOF do
         begin
           Window := Container.GetWindow(j);
           dbHeight := FieldByName('Height').AsInteger;
@@ -1004,12 +1012,13 @@ begin
 end;
 
 
-procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
   // Если данные не были сохранены (ID = 0) или изменены — выдаём предупреждение
   if (CurrentContainerID = 0) or IsDataModified then
   begin
-    if MessageDlg('Обнаружены несохранённые изменения. Закрыть программу без сохранения?',
+    if MessageDlg(
+      'Обнаружены несохранённые изменения. Закрыть программу без сохранения?',
       mtWarning, [mbYes, mbNo], 0) = mrNo then
     begin
       CanClose := False;
@@ -1664,34 +1673,59 @@ begin
       'Выбранное вами окно имеет отступ сверху больше 0');
   end;
   CurrWin.SetForm(ComboBox4.ItemIndex);
-        if(SelectedIndex = 4)then
+  if (SelectedIndex = 4) then
   begin
-    if(CurrCont.Count <> 1)then
+    if (CurrCont.Count <> 1) then
     begin
-     ComboBox4.ItemIndex := 0;
-       CurrWin.SetForm(0);
-    ShowMessage('Ошибка: Невозможно поменять форму окна на Трапецию:'
-      + #13#10 +
-      '- В одной конструкции должно быть только ОДНО окно'
-      + #13#10 +
-      '- В изделии должна быть только ОДНА конструкция');
-   end
-    else  begin
-    if not Assigned(Form3) then
-         Application.CreateForm(TForm3, Form3);  // создаём форму, если ещё не создана
-         CurrWin.FillPolygonIfEmpty;
-         Form3.LoadWindow(CurrWin);
-         Form3.ComboBox1.OnChange := @Form3ComboBoxChangeHandler;
-         Form3.Edit1.Text:='';
-         Form3.Edit2.Text:='';
-         Form3.Edit3.Text:='';
-         Form3.Edit4.Text:='';
-         DrawWindows;
-       Form3.ShowModal;  // показываем форму модально
-       end;
-       end;
-  if ((CurrWin.GetForm = 1) or (CurrWin.GetForm = 2) or (CurrWin.GetForm = 3)) then
+      ComboBox4.ItemIndex := 0;
+      CurrWin.SetForm(0);
+      ShowMessage('Ошибка: Невозможно поменять форму окна на Трапецию:'
+        + #13#10 +
+        '- В одной конструкции должно быть только ОДНО окно'
+        + #13#10 +
+        '- В изделии должна быть только ОДНА конструкция');
+    end
+    else
+    begin
+      if not Assigned(Form3) then
+        Application.CreateForm(TForm3, Form3);
+      // создаём форму, если ещё не создана
+      CurrWin.FillPolygonIfEmpty;
+      Form3.LoadWindow(CurrWin);
+      Form3.ComboBox1.OnChange := @Form3ComboBoxChangeHandler;
+      Form3.Edit1.Text := '';
+      Form3.Edit2.Text := '';
+      Form3.Edit3.Text := '';
+      Form3.Edit4.Text := '';
+      DrawWindows;
+      Form3.ShowModal;  // показываем форму модально
+    end;
+  end;
+  if ((CurrWin.GetForm = 1) or (CurrWin.GetForm = 2) or (CurrWin.GetForm = 3) or
+    (CurrWin.GetForm = 4)) then
   begin
+    if (CurrWin.GetForm = 4) then
+    begin
+      ComboBox1.Enabled := False;
+      Panel1.Enabled := False;
+      Panel2.Enabled := False;
+    end
+    else
+    begin
+      ComboBox1.Enabled := True;
+      Panel1.Enabled := True;
+      Panel2.Enabled := True;
+    end;
+    if (CurrWin.GetForm <> 1) then
+    begin
+      MenuItem1.Enabled := False;
+      MenuItem4.Enabled := False;
+    end
+    else
+    begin
+      MenuItem1.Enabled := True;
+      MenuItem4.Enabled := True;
+    end;
     ComboBox1.ItemIndex := 0;
     CurrWin.SetType(0);
     CurrWin.SetMoskit(False);
@@ -1709,7 +1743,7 @@ begin
     begin
       if (CurrWin.GetUpperPoint = 0) then
         CurrWin.SetUpperPoint(CurrWin.GetWidth div 2);
-      if(CurrWin.GetDownPoint = 0) then
+      if (CurrWin.GetDownPoint = 0) then
         CurrWin.SetDownPoint(CurrWin.GetHeight);
     end;
     Edit5.Caption := IntToStr(CurrWin.GetUpperPoint);
@@ -1718,6 +1752,15 @@ begin
   end
   else
   begin
+    ComboBox1.Enabled := True;
+    Panel1.Enabled := True;
+    Panel2.Enabled := True;
+    MenuItem1.Enabled := True;
+    MenuItem2.Enabled := True;
+    MenuItem3.Enabled := True;
+    MenuItem4.Enabled := True;
+    MenuItem5.Enabled := True;
+    MenuItem6.Enabled := True;
     ComboBox1.Items[1] := 'Лев. п/о';
     ComboBox1.Items[2] := 'Лев. повор.';
     ComboBox1.Items[4] := 'Прав. п/о';

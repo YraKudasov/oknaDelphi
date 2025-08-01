@@ -21,7 +21,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <IsVisibleTab Value="True"/>
         <TopLine Value="1678"/>
         <CursorPos X="77" Y="1712"/>
         <UsageCount Value="202"/>
@@ -32,9 +31,10 @@
         <Filename Value="rectwindow.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RectWindow"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="1210"/>
-        <CursorPos X="26" Y="1196"/>
+        <TopLine Value="1263"/>
+        <CursorPos X="10" Y="1295"/>
         <UsageCount Value="205"/>
         <Loaded Value="True"/>
       </Unit>
@@ -142,7 +142,7 @@
         <EditorIndex Value="1"/>
         <TopLine Value="125"/>
         <CursorPos X="15" Y="151"/>
-        <UsageCount Value="192"/>
+        <UsageCount Value="197"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -167,7 +167,7 @@
         <EditorIndex Value="7"/>
         <TopLine Value="59"/>
         <CursorPos X="25" Y="78"/>
-        <UsageCount Value="26"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -175,7 +175,7 @@
         <EditorIndex Value="5"/>
         <TopLine Value="8"/>
         <CursorPos X="7" Y="25"/>
-        <UsageCount Value="26"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -189,7 +189,7 @@
         <EditorIndex Value="6"/>
         <TopLine Value="263"/>
         <CursorPos X="53" Y="284"/>
-        <UsageCount Value="26"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit>
     </Units>

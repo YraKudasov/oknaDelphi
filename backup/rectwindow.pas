@@ -91,7 +91,6 @@ type
     function GetUpperPoint: integer;
     function GetDownPoint: integer;
     function GetPolygonVerticesCount: integer;
-    function PolygonArea(const Path: TPath64): int64;
 
 
   end;
@@ -1194,57 +1193,57 @@ begin
 
   // Начинаем рисовать линию от первой точки
   if ((PolygonVerteces[0].X = FXOtstup) and (PolygonVerteces[0].Y = FYOtstup)) then
-    FImage.Canvas.MoveTo(ScaledXOtstup + Round(PolygonVerteces[0].X *
-      GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4), ScaledYOtstup +
+    FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X *
+      GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4),
       Round(PolygonVerteces[0].Y * GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4))
   else if ((PolygonVerteces[0].X = FXOtstup) and (PolygonVerteces[0].Y <> FYOtstup)) then
-    FImage.Canvas.MoveTo(ScaledXOtstup + Round(PolygonVerteces[0].X *
-      GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4), ScaledYOtstup +
+    FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X *
+      GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4),
       Round(PolygonVerteces[0].Y * GetZoomIndex))
   else if ((PolygonVerteces[0].X <> FXOtstup) and (PolygonVerteces[0].Y = FYOtstup)) then
-    FImage.Canvas.MoveTo(ScaledXOtstup + Round(PolygonVerteces[0].X * GetZoomIndex),
-      ScaledYOtstup + Round(PolygonVerteces[0].Y * GetZoomIndex) +
+    FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X * GetZoomIndex),
+       Round(PolygonVerteces[0].Y * GetZoomIndex) +
       Round(ZoomIndex / MaxZoom * 4))
   else
-    FImage.Canvas.MoveTo(ScaledXOtstup + Round(PolygonVerteces[0].X * GetZoomIndex),
-      ScaledYOtstup + Round(PolygonVerteces[0].Y * GetZoomIndex));
+    FImage.Canvas.MoveTo(Round(PolygonVerteces[0].X * GetZoomIndex),
+      Round(PolygonVerteces[0].Y * GetZoomIndex));
 
   // Рисуем линии между точками
   for i := 1 to n - 1 do
     if ((PolygonVerteces[i].X = FXOtstup) and (PolygonVerteces[i].Y = FYOtstup)) then
-      FImage.Canvas.LineTo(ScaledXOtstup + Round(PolygonVerteces[i].X *
-        GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4), ScaledYOtstup +
+      FImage.Canvas.LineTo(Round(PolygonVerteces[i].X *
+        GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4),
         Round(PolygonVerteces[i].Y * GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4))
     else if ((PolygonVerteces[i].X = FXOtstup) and
       (PolygonVerteces[i].Y <> FYOtstup)) then
-      FImage.Canvas.LineTo(ScaledXOtstup + Round(PolygonVerteces[i].X *
-        GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4), ScaledYOtstup +
+      FImage.Canvas.LineTo( Round(PolygonVerteces[i].X *
+        GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4),
         Round(PolygonVerteces[i].Y * GetZoomIndex))
     else if ((PolygonVerteces[i].X <> FXOtstup) and
       (PolygonVerteces[i].Y = FYOtstup)) then
-      FImage.Canvas.LineTo(ScaledXOtstup + Round(PolygonVerteces[i].X * GetZoomIndex),
-        ScaledYOtstup + Round(PolygonVerteces[i].Y * GetZoomIndex) +
+      FImage.Canvas.LineTo( Round(PolygonVerteces[i].X * GetZoomIndex),
+        Round(PolygonVerteces[i].Y * GetZoomIndex) +
         Round(ZoomIndex / MaxZoom * 4))
     else
-      FImage.Canvas.LineTo(ScaledXOtstup + Round(PolygonVerteces[i].X * GetZoomIndex),
-        ScaledYOtstup + Round(PolygonVerteces[i].Y * GetZoomIndex));
+      FImage.Canvas.LineTo( Round(PolygonVerteces[i].X * GetZoomIndex),
+         Round(PolygonVerteces[i].Y * GetZoomIndex));
 
   // Замыкаем многоугольник линией от последней точки к первой
   if ((PolygonVerteces[0].X = FXOtstup) and (PolygonVerteces[0].Y = FYOtstup)) then
-    FImage.Canvas.LineTo(ScaledXOtstup + Round(PolygonVerteces[0].X *
-      GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4), ScaledYOtstup +
+    FImage.Canvas.LineTo(Round(PolygonVerteces[0].X *
+      GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4),
       Round(PolygonVerteces[0].Y * GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4))
   else if ((PolygonVerteces[0].X = FXOtstup) and (PolygonVerteces[0].Y <> FYOtstup)) then
-    FImage.Canvas.LineTo(ScaledXOtstup + Round(PolygonVerteces[0].X *
-      GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4), ScaledYOtstup +
+    FImage.Canvas.LineTo(Round(PolygonVerteces[0].X *
+      GetZoomIndex) + Round(ZoomIndex / MaxZoom * 4),
       Round(PolygonVerteces[0].Y * GetZoomIndex))
   else if ((PolygonVerteces[0].X <> FXOtstup) and (PolygonVerteces[0].Y = FYOtstup)) then
-    FImage.Canvas.LineTo(ScaledXOtstup + Round(PolygonVerteces[0].X * GetZoomIndex),
-      ScaledYOtstup + Round(PolygonVerteces[0].Y * GetZoomIndex) +
+    FImage.Canvas.LineTo(Round(PolygonVerteces[0].X * GetZoomIndex),
+      Round(PolygonVerteces[0].Y * GetZoomIndex) +
       Round(ZoomIndex / MaxZoom * 4))
   else
-    FImage.Canvas.LineTo(ScaledXOtstup + Round(PolygonVerteces[0].X * GetZoomIndex),
-      ScaledYOtstup + Round(PolygonVerteces[0].Y * GetZoomIndex));
+    FImage.Canvas.LineTo(Round(PolygonVerteces[0].X * GetZoomIndex),
+      Round(PolygonVerteces[0].Y * GetZoomIndex));
 
 
 
@@ -1273,8 +1272,8 @@ begin
     SetLength(Points, n);
     for i := 0 to n - 1 do
     begin
-      Points[i].X := ScaledXOtstup + Round(Solution[0][i].X * GetZoomIndex);
-      Points[i].Y := ScaledYOtstup + Round(Solution[0][i].Y * GetZoomIndex);
+      Points[i].X := Round(Solution[0][i].X * GetZoomIndex);
+      Points[i].Y := Round(Solution[0][i].Y * GetZoomIndex);
     end;
 
     FImage.Canvas.Brush.Color := clSkyBlue;

@@ -489,6 +489,8 @@ begin
     Panel3.Enabled := True;
     Edit1.Text := IntToStr(Window.GetHeight);
     Edit2.Text := IntToStr(Window.GetWidth);
+      MenuItem1.Enabled := True;
+        MenuItem4.Enabled := True;
     MenuItem2.Enabled := True;
     MenuItem2.Visible := True;
     MenuItem3.Enabled := True;
@@ -549,13 +551,22 @@ begin
     Label8.Visible := False;
     CheckBox1.Visible := False;
   end;
+    if (Window.GetForm = 2) then
+  begin
+     MenuItem1.Enabled:=False;
+    MenuItem4.Enabled:=False;
+  end;
   if (Window.GetForm = 3) then
   begin
+    MenuItem1.Enabled:=False;
+    MenuItem4.Enabled:=False;
     Panel5.Visible := True;
     BitBtn5.Enabled := False;
   end;
   if (Window.GetForm = 4) then
   begin
+  MenuItem1.Enabled:=False;
+    MenuItem4.Enabled:=False;
     if not Assigned(Form3) then
       Application.CreateForm(TForm3, Form3);
     // создаём форму, если ещё не создана
@@ -564,6 +575,8 @@ begin
     Form3.Edit3.Text := '';
     Form3.Edit4.Text := '';
     ComboBox1.Enabled := False;
+    Panel1.Enabled := False;
+    Panel2.Enabled := False;
     Form3.ShowModal;  // показываем форму немодально
   end;
 end;
@@ -1189,6 +1202,12 @@ begin
     Combobox3.Clear;
     FullConstrHeight := 0;
     FullConstrWidth := 0;
+    MenuItem1.Enabled:=True;
+    MenuItem2.Enabled:=True;
+    MenuItem3.Enabled:=True;
+    MenuItem4.Enabled:=True;
+    MenuItem5.Enabled:=True;
+    MenuItem6.Enabled:=True;
   end;
 
   // Создаем новый экземпляр FullContainer
@@ -1223,6 +1242,12 @@ begin
     end;
 
   end;
+  MenuItem1.Enabled:=True;
+    MenuItem2.Enabled:=True;
+    MenuItem3.Enabled:=True;
+    MenuItem4.Enabled:=True;
+    MenuItem5.Enabled:=True;
+    MenuItem6.Enabled:=True;
 end;
 
 procedure TForm1.DeleteConstr(Sender: TObject);
@@ -1329,6 +1354,12 @@ begin
   Edit1.Text := '0';
   Edit2.Text := '0';
   Panel3.Visible := False;
+      MenuItem1.Enabled:=True;
+    MenuItem2.Enabled:=True;
+    MenuItem3.Enabled:=True;
+    MenuItem4.Enabled:=True;
+    MenuItem5.Enabled:=True;
+    MenuItem6.Enabled:=True;
 end;
 
 procedure TForm1.DrawFullConstruction(Sender: TObject);
@@ -1663,7 +1694,7 @@ begin
       #13#10 +
       '- Ширина и высота окна должны быть ОДИНАКОВЫМИ');
   end;
-  if (((SelectedIndex = 2) or (SelectedIndex = 3)) and (CurrWin.GetYOtstup <> 0)) then
+  if (((SelectedIndex = 2) or (SelectedIndex = 3)or((SelectedIndex = 4))) and (CurrWin.GetYOtstup <> 0)) then
   begin
     ComboBox4.ItemIndex := 0;
     ShowMessage('Ошибка: Невозможно поменять форму окна на АРКУ:'
@@ -1671,19 +1702,7 @@ begin
       'Выбранное вами окно имеет отступ сверху больше 0');
   end;
   CurrWin.SetForm(ComboBox4.ItemIndex);
-  if (SelectedIndex = 4) then
-  begin
-    if (CurrCont.Count <> 1) then
-    begin
-      ComboBox4.ItemIndex := 0;
-      CurrWin.SetForm(0);
-      ShowMessage('Ошибка: Невозможно поменять форму окна на Трапецию:'
-        + #13#10 +
-        '- В одной конструкции должно быть только ОДНО окно'
-        + #13#10 +
-        '- В изделии должна быть только ОДНА конструкция');
-    end
-    else
+  if (SelectedIndex = 4)and (CurrWin.GetYOtstup = 0) then
     begin
       if not Assigned(Form3) then
         Application.CreateForm(TForm3, Form3);
@@ -1698,7 +1717,6 @@ begin
       DrawWindows;
       Form3.ShowModal;  // показываем форму модально
     end;
-  end;
   if ((CurrWin.GetForm = 1) or (CurrWin.GetForm = 2) or (CurrWin.GetForm = 3) or
     (CurrWin.GetForm = 4)) then
   begin
@@ -1886,6 +1904,12 @@ begin
       end;
 
     end;
+        MenuItem1.Enabled:=True;
+    MenuItem2.Enabled:=True;
+    MenuItem3.Enabled:=True;
+    MenuItem4.Enabled:=True;
+    MenuItem5.Enabled:=True;
+    MenuItem6.Enabled:=True;
     DrawWindows;
   end;
 end;

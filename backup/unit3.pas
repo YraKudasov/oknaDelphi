@@ -38,6 +38,7 @@ type
     procedure DeletePoint(Sender: TObject);
   private
     CurrWin: TRectWindow;
+    ScaledRectH, ScaledRectW:integer;
     CurrPoint: Integer;
   public
         function GetCurrPoint: integer;
@@ -122,7 +123,7 @@ var
 begin
   if (Edit1.Text <> '') and (Edit2.Text <> '') then
   begin
-    if TryStrToInt(Edit1.Text, HeightValue) and TryStrToInt(Edit2.Text, WidthValue) then
+    if TryStrToInt(Edit1.Text, WidthValue) and TryStrToInt(Edit2.Text, HeightValue) then
     begin
       Button1.Enabled := (ComboBox1.ItemIndex <> -1) and
                          (WidthValue >= CurrWin.GetXOtstup) and (WidthValue <= CurrWin.GetXOtstup + CurrWin.GetWidth) and
@@ -226,6 +227,7 @@ begin
   Edit2.Text := '';
   Edit3.Text := '';
   Edit4.Text := '';
+  CurrWin.PaintSizePolygonPoints(ScaledRectH, ScaledRectW);
 end;
 
 procedure TForm3.AddNewPoint(Sender: TObject);

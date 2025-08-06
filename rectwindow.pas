@@ -25,6 +25,7 @@ type
     DownPoint: integer;
     FImpostsContainer: TImpostsContainer;
     PolygonVerteces: array of TPoint;
+    ScaledConstrHeight, ScaledConstrWidth: integer;
   public
     FSelected: boolean;
     MaxZoom: double;
@@ -73,6 +74,8 @@ type
     procedure GetPolygonVertices(var Verteces: TPointArray);
     procedure DrawTrapeciaPoint(CurrPointIdx: integer);
     procedure SetPolygonVertices(const Verteces: TPointArray);
+    procedure PaintSizePolygonPoints(ScaledConstructH, ScaledConstructW: integer);
+    procedure LoadSizeConstr(ScaledConstrHe, ScaledConstrWi:integer);
 
     function GetRow: integer;
     function GetColumn: integer;
@@ -91,6 +94,7 @@ type
     function GetUpperPoint: integer;
     function GetDownPoint: integer;
     function GetPolygonVerticesCount: integer;
+
 
 
   end;
@@ -242,11 +246,15 @@ begin
   end;
   if (GetForm = 1) then
     DrawImposts;
+  if(GetForm = 4) then
+  PaintSizePolygonPoints(ScaledConstrHeight, ScaledConstrWidth);
 end;
 
 
 procedure TRectWindow.PaintSize(ScaledConstructW, ScaledConstructH,
   ScaledXOt, ScaledYOt: integer; NoOneW, NoOneH: boolean);
+var
+  i, n: integer;
 begin
   FImage.Canvas.Pen.Width := 1;
   FImage.Canvas.Pen.Color := clBlack;
@@ -275,7 +283,7 @@ begin
 
   if (NoOneW = True) then
   begin
-    //Линия высоты
+    //Линия ширины
     FImage.Canvas.MoveTo(Round(ZoomIndex / MaxZoom * 3),
       ScaledConstructH + Round(ZoomIndex / MaxZoom * 7));
     FImage.Canvas.LineTo(ScaledXOt + ScaledRectWidth,
@@ -284,16 +292,68 @@ begin
       Round(ZoomIndex / MaxZoom * 10), ScaledConstructH +
       Round(ZoomIndex / MaxZoom * 12),
       IntToStr(FRectW));
-    //Маленькая линия высоты (сверху)
+    //Маленькая линия ширины (слева)
     FImage.Canvas.MoveTo(ScaledXOt + Round(ZoomIndex / MaxZoom * 3), ScaledConstructH);
     FImage.Canvas.LineTo(ScaledXOt + Round(ZoomIndex / MaxZoom * 3),
       ScaledConstructH + Round(ZoomIndex / MaxZoom * 15));
-    //Маленькая линия высоты (снизу)
+    //Маленькая линия высоты (справа)
     FImage.Canvas.MoveTo(ScaledXOt + ScaledRectWidth, ScaledConstructH);
     FImage.Canvas.LineTo(ScaledXOt + ScaledRectWidth, ScaledConstructH +
       Round(ZoomIndex / MaxZoom * 15));
+
   end;
 
+end;
+
+procedure TRectWindow.PaintSizePolygonPoints(ScaledConstructH, ScaledConstructW: integer);
+var
+  i, n: integer;
+begin
+  FImage.Canvas.Pen.Width := 1;
+  FImage.Canvas.Pen.Color := clBlack;
+  FImage.Canvas.Font.Size := 8;
+  FImage.Canvas.Brush.Style := bsClear;
+  n := Length(PolygonVerteces);
+  for i := 0 to n - 1 do
+  begin
+    if ((PolygonVerteces[i].X > 0) and (PolygonVerteces[i].X < GetWidth)) then
+    begin
+      //Линия ширины
+      FImage.Canvas.MoveTo(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 3),
+        ScaledConstructH + Round(ZoomIndex / MaxZoom * 7));
+      FImage.Canvas.LineTo(ScaledXOtstup + Round(PolygonVerteces[i].X * GetZoomIndex) +
+        Round(ZoomIndex / MaxZoom * 3),
+        ScaledConstructH + Round(ZoomIndex / MaxZoom * 7));
+      //Надпись размер  ширина
+          FImage.Canvas.TextOut(ScaledXOtstup + Round(PolygonVerteces[i].X * GetZoomIndex) div 2 -
+      Round(ZoomIndex / MaxZoom * 10), ScaledConstructH +
+      Round(ZoomIndex / MaxZoom * 12),
+      IntToStr(PolygonVerteces[i].X));
+     //Маленькая линия ширины (справа)
+       FImage.Canvas.MoveTo(ScaledXOtstup + Round(PolygonVerteces[i].X * GetZoomIndex) +
+        Round(ZoomIndex / MaxZoom * 3),ScaledConstructH);
+              FImage.Canvas.LineTo(ScaledXOtstup + Round(PolygonVerteces[i].X * GetZoomIndex) +
+        Round(ZoomIndex / MaxZoom * 3),ScaledConstructH + Round(ZoomIndex / MaxZoom * 15));
+    end;
+    if ((PolygonVerteces[i].Y > 0) and (PolygonVerteces[i].Y < GetWidth)) then
+    begin
+      //Линия высоты
+       FImage.Canvas.MoveTo(ScaledConstructW + Round(ZoomIndex / MaxZoom * 10),
+         Round(ZoomIndex / MaxZoom * 3)+ Round(PolygonVerteces[i].Y * GetZoomIndex));
+       FImage.Canvas.LineTo(ScaledConstructW + Round(ZoomIndex / MaxZoom * 10),
+         ScaledYOtstup + Round(ZoomIndex / MaxZoom * 3));
+       //Надпись размер высота
+               FImage.Canvas.TextOut(ScaledConstructW + Round(ZoomIndex / MaxZoom * 15),
+      ScaledYOtstup + Round(PolygonVerteces[i].Y * GetZoomIndex) div 2 - Round(ZoomIndex / MaxZoom * 10),
+      IntToStr(PolygonVerteces[i].Y));
+           //Маленькая линия высоты (снизу)
+    FImage.Canvas.MoveTo(ScaledConstructW, ScaledYOtstup + Round(PolygonVerteces[i].Y * GetZoomIndex)+ Round(ZoomIndex / MaxZoom * 3));
+    FImage.Canvas.LineTo(ScaledConstructW + Round(ZoomIndex / MaxZoom * 20),
+      ScaledYOtstup + Round(PolygonVerteces[i].Y * GetZoomIndex)+ Round(ZoomIndex / MaxZoom * 3));
+
+
+    end;
+  end;
 end;
 
 procedure TRectWindow.DrawCircleWinFramuga;
@@ -513,26 +573,26 @@ begin
       //Две линии арки
       FImage.Canvas.Pen.Color := clBlack;
       // Первая арка
-      FImage.Canvas.Arc(ScaledXOtstup + CenterX -
-        (Radius - Round(ZoomIndex / MaxZoom * 2)),
-        ScaledYOtstup + (ScaledRectWidth div 2) -
-        (Radius - Round(ZoomIndex / MaxZoom * 2)),
+      FImage.Canvas.Arc(ScaledXOtstup + CenterX - (Radius -
+        Round(ZoomIndex / MaxZoom * 2)),
+        ScaledYOtstup + (ScaledRectWidth div 2) - (Radius -
+        Round(ZoomIndex / MaxZoom * 2)),
         ScaledXOtstup + CenterX + (Radius - Round(ZoomIndex / MaxZoom * 2)),
-        ScaledYOtstup + (ScaledRectWidth div 2) +
-        (Radius - Round(ZoomIndex / MaxZoom * 2)),
+        ScaledYOtstup + (ScaledRectWidth div 2) + (Radius -
+        Round(ZoomIndex / MaxZoom * 2)),
         ScaledXOtstup + CenterX + (Radius - Round(ZoomIndex / MaxZoom * 2)),
         ScaledYOtstup + (ScaledRectWidth div 2),
         ScaledXOtstup + CenterX - (Radius - Round(ZoomIndex / MaxZoom * 2)),
         ScaledYOtstup + (ScaledRectWidth div 2));
 
       // Вторая арка
-      FImage.Canvas.Arc(ScaledXOtstup + CenterX -
-        (Radius + Round(ZoomIndex / MaxZoom * 13)),
-        ScaledYOtstup + (ScaledRectWidth div 2) -
-        (Radius + Round(ZoomIndex / MaxZoom * 13)),
+      FImage.Canvas.Arc(ScaledXOtstup + CenterX - (Radius +
+        Round(ZoomIndex / MaxZoom * 13)),
+        ScaledYOtstup + (ScaledRectWidth div 2) - (Radius +
+        Round(ZoomIndex / MaxZoom * 13)),
         ScaledXOtstup + CenterX + (Radius + Round(ZoomIndex / MaxZoom * 13)),
-        ScaledYOtstup + (ScaledRectWidth div 2) +
-        (Radius + Round(ZoomIndex / MaxZoom * 13)),
+        ScaledYOtstup + (ScaledRectWidth div 2) + (Radius +
+        Round(ZoomIndex / MaxZoom * 13)),
         ScaledXOtstup + CenterX + (Radius + Round(ZoomIndex / MaxZoom * 13)),
         ScaledYOtstup + (ScaledRectWidth div 2),
         ScaledXOtstup + CenterX - (Radius + Round(ZoomIndex / MaxZoom * 13)),
@@ -597,8 +657,8 @@ begin
       FImage.Canvas.Brush.Color := clSkyBlue;
       FImage.Canvas.Pen.Color := clSkyBlue;
       FImage.Canvas.Ellipse(ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22),
-        ScaledYOtstup + (ScaledRectWidth div 2) - (Radius -
-        Round(ZoomIndex / MaxZoom * 2)),
+        ScaledYOtstup + (ScaledRectWidth div 2) -
+        (Radius - Round(ZoomIndex / MaxZoom * 2)),
         ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,
         ScaledYOtstup + 2 * ScaledRectHeight - Round(ZoomIndex / MaxZoom * 55));
 
@@ -666,8 +726,8 @@ begin
       FImage.Canvas.Arc(
         // Верхний левый угол ограничивающего прямоугольника
         ScaledXOtstup + Round(ZoomIndex / MaxZoom * 22),     // X1
-        ScaledYOtstup + (ScaledRectWidth div 2) -
-        (Radius - Round(ZoomIndex / MaxZoom * 2)), // Y1
+        ScaledYOtstup + (ScaledRectWidth div 2) - (Radius -
+        Round(ZoomIndex / MaxZoom * 2)), // Y1
 
         // Нижний правый угол ограничивающего прямоугольника
         ScaledRectWidth - Round(ZoomIndex / MaxZoom * 14) + ScaledXOtstup,      // X2
@@ -690,8 +750,8 @@ begin
       FImage.Canvas.Arc(
         // Верхний левый угол ограничивающего прямоугольника
         ScaledXOtstup + Round(ZoomIndex / MaxZoom * 4),     // X1
-        ScaledYOtstup + (ScaledRectWidth div 2) -
-        (Radius + Round(ZoomIndex / MaxZoom * 13)), // Y1
+        ScaledYOtstup + (ScaledRectWidth div 2) - (Radius +
+        Round(ZoomIndex / MaxZoom * 13)), // Y1
 
         // Нижний правый угол ограничивающего прямоугольника
         ScaledRectWidth + ScaledXOtstup + Round(ZoomIndex / MaxZoom * 2),      // X2
@@ -1172,8 +1232,6 @@ var
   Subject, Solution: TPaths64;
   Offset: TClipperOffset;
   Delta: int64;
-  minArea: int64;
-  idxInner, a: integer;
 begin
   //Очистка области
   FImage.Canvas.Pen.Color := clWhite;
@@ -1274,24 +1332,24 @@ begin
     begin
       if ((PolygonVerteces[0].X = FXOtstup) and (PolygonVerteces[0].Y = FYOtstup)) then
       begin
-        Points[i].X := ScaledXOtstup + Round(Solution[0][i].X *
-          GetZoomIndex) + Round(ZoomIndex / MaxZoom * 2);
-        Points[i].Y := ScaledYOtstup + Round(Solution[0][i].Y *
-          GetZoomIndex) + Round(ZoomIndex / MaxZoom * 2);
+        Points[i].X := ScaledXOtstup + Round(Solution[0][i].X * GetZoomIndex) +
+          Round(ZoomIndex / MaxZoom * 2);
+        Points[i].Y := ScaledYOtstup + Round(Solution[0][i].Y * GetZoomIndex) +
+          Round(ZoomIndex / MaxZoom * 2);
       end
       else if ((PolygonVerteces[0].X = FXOtstup) and
         (PolygonVerteces[0].Y <> FYOtstup)) then
       begin
-        Points[i].X := ScaledXOtstup + Round(Solution[0][i].X *
-          GetZoomIndex) + Round(ZoomIndex / MaxZoom * 2);
+        Points[i].X := ScaledXOtstup + Round(Solution[0][i].X * GetZoomIndex) +
+          Round(ZoomIndex / MaxZoom * 2);
         Points[i].Y := ScaledYOtstup + Round(Solution[0][i].Y * GetZoomIndex);
       end
       else if ((PolygonVerteces[0].X <> FXOtstup) and
         (PolygonVerteces[0].Y = FYOtstup)) then
       begin
         Points[i].X := ScaledXOtstup + Round(Solution[0][i].X * GetZoomIndex);
-        Points[i].Y := ScaledYOtstup + Round(Solution[0][i].Y *
-          GetZoomIndex) + Round(ZoomIndex / MaxZoom * 2);
+        Points[i].Y := ScaledYOtstup + Round(Solution[0][i].Y * GetZoomIndex) +
+          Round(ZoomIndex / MaxZoom * 2);
       end
       else
       begin
@@ -1491,6 +1549,12 @@ end;
 function TRectWindow.GetForm: integer;
 begin
   Result := FForm;
+end;
+
+procedure TRectWindow.LoadSizeConstr(ScaledConstrHe, ScaledConstrWi:integer);
+begin
+  ScaledConstrHeight := ScaledConstrHe;
+  ScaledConstrWidth := ScaledConstrWi;
 end;
 
 procedure TRectWindow.GetPolygonVertices(var Verteces: TPointArray);

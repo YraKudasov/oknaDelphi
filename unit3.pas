@@ -38,6 +38,7 @@ type
     procedure DeletePoint(Sender: TObject);
   private
     CurrWin: TRectWindow;
+    ScaledRectH, ScaledRectW:integer;
     CurrPoint: Integer;
   public
         function GetCurrPoint: integer;

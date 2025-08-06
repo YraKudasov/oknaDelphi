@@ -1677,6 +1677,7 @@ var
   CurrWin: TRectWindow;
   CurrCont: TWindowContainer;
   SelectedIndex: integer;
+  ScaledWidth, ScaledHeight: integer;
 begin
   SelectedIndex := ComboBox4.ItemIndex;
   CurrCont := FullContainer.GetContainer(CurrentContainer);
@@ -1694,21 +1695,30 @@ begin
       #13#10 +
       '- Ширина и высота окна должны быть ОДИНАКОВЫМИ');
   end;
-  if (((SelectedIndex = 2) or (SelectedIndex = 3)or((SelectedIndex = 4))) and (CurrWin.GetYOtstup <> 0)) then
+  if (((SelectedIndex = 2) or (SelectedIndex = 3)) and (CurrWin.GetYOtstup <> 0)) then
   begin
     ComboBox4.ItemIndex := 0;
-    ShowMessage('Ошибка: Невозможно поменять форму окна на АРКУ:'
+    ShowMessage('Ошибка: Невозможно поменять форму окна:'
       + #13#10 +
       'Выбранное вами окно имеет отступ сверху больше 0');
   end;
+  if((SelectedIndex = 4)and((CurrWin.GetYOtstup <> 0)or(CurrWin.GetXOtstup <> 0)))then
+  begin
+        ComboBox4.ItemIndex := 0;
+    ShowMessage('Ошибка: Невозможно поменять форму окна:'
+      + #13#10 +
+      'Выбранное вами окно имеет отступ сверху или слева больше 0');
+  end;
   CurrWin.SetForm(ComboBox4.ItemIndex);
-  if (SelectedIndex = 4)and (CurrWin.GetYOtstup = 0) then
+  if ((SelectedIndex = 4)and(CurrWin.GetYOtstup = 0)and(CurrWin.GetXOtstup = 0)) then
     begin
       if not Assigned(Form3) then
         Application.CreateForm(TForm3, Form3);
       // создаём форму, если ещё не создана
+        ScaledWidth := Round((DrawingIndex) * CurrCont.GetConstrWidth);
+  ScaledHeight := Round((DrawingIndex) * CurrCont.GetConstrHeight);
       CurrWin.FillPolygonIfEmpty;
-      Form3.LoadWindow(CurrWin);
+      Form3.LoadWindow(CurrWin, ScaledHeight, ScaledWidth);
       Form3.ComboBox1.OnChange := @Form3ComboBoxChangeHandler;
       Form3.Edit1.Text := '';
       Form3.Edit2.Text := '';
@@ -2006,7 +2016,7 @@ begin
   //Маленькая линия ширины (справа)
   Image1.Canvas.MoveTo(ScaledWidth, ScaledHeight);
   Image1.Canvas.LineTo(ScaledWidth, ScaledHeight + 35);
-
+  Window := TRectWindow(CurrCont.GetWindow(0));
   if (CurrCont.Count > 1) then
   begin
     for i := 0 to CurrCont.Count - 1 do

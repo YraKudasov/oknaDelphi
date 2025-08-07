@@ -1994,29 +1994,29 @@ begin
   Image1.Canvas.Font.Size := 11;
   Image1.Canvas.Brush.Style := bsClear;
   //Линия высоты
-  Image1.Canvas.MoveTo(ScaledWidth + 45, 3);
-  Image1.Canvas.LineTo(ScaledWidth + 45, ScaledHeight);
-  Image1.Canvas.TextOut(ScaledWidth + 65, ScaledHeight div 2 - 10,
+  Image1.Canvas.MoveTo(ScaledWidth + 55, 3);
+  Image1.Canvas.LineTo(ScaledWidth + 55, ScaledHeight);
+  Image1.Canvas.TextOut(ScaledWidth + 75, ScaledHeight div 2 - 10,
     IntToStr(CurrCont.GetConstrHeight));
   //Маленькая линия высоты (сверху)
   Image1.Canvas.MoveTo(ScaledWidth, 3);
-  Image1.Canvas.LineTo(ScaledWidth + 55, 3);
+  Image1.Canvas.LineTo(ScaledWidth + 65, 3);
   //Маленькая линия высоты (снизу)
   Image1.Canvas.MoveTo(ScaledWidth, ScaledHeight);
-  Image1.Canvas.LineTo(ScaledWidth + 55, ScaledHeight);
+  Image1.Canvas.LineTo(ScaledWidth + 65, ScaledHeight);
 
 
   //Линия ширины
-  Image1.Canvas.MoveTo(3, ScaledHeight + 30);
-  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight + 30);
-  Image1.Canvas.TextOut(ScaledWidth div 2 - 10, ScaledHeight + 42,
+  Image1.Canvas.MoveTo(3, ScaledHeight + 40);
+  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight + 40);
+  Image1.Canvas.TextOut(ScaledWidth div 2 - 10, ScaledHeight + 52,
     IntToStr(CurrCont.GetConstrWidth));
   //Маленькая линия ширины (слева)
   Image1.Canvas.MoveTo(3, ScaledHeight);
-  Image1.Canvas.LineTo(3, ScaledHeight + 35);
+  Image1.Canvas.LineTo(3, ScaledHeight + 45);
   //Маленькая линия ширины (справа)
   Image1.Canvas.MoveTo(ScaledWidth, ScaledHeight);
-  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight + 35);
+  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight + 45);
   Window := TRectWindow(CurrCont.GetWindow(0));
   if (CurrCont.Count > 1) then
   begin
@@ -2526,7 +2526,9 @@ begin
   MaxRow := -1;
   MaxCol := -1;
   CurCont := FullContainer.GetContainer(CurrentContainer);
-  for i := 0 to CurCont.Count - 1 do
+
+
+    for i := 0 to CurCont.Count - 1 do
   begin
     Window := TRectWindow(CurCont.GetWindow(i));
     if (Window.GetRow > MaxRow) then

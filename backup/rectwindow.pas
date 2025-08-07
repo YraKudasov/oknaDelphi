@@ -226,11 +226,6 @@ begin
   ScaledXOtstup := Round(FXOtstup * GetZoomIndex);
   ScaledYOtstup := Round(FYOtstup * GetZoomIndex);
 
-  FImage.Canvas.Brush.Color := clWhite; // Задайте цвет фона окна
-
-  FImage.Canvas.FillRect(Rect(ScaledXOtstup + 4, ScaledYOtstup + 4,
-    ScaledConstrWidth + ScaledXOtstup + Round(ZoomIndex / MaxZoom * 33), ScaledConstrHeight + ScaledYOtstup +  Round(ZoomIndex / MaxZoom * 25)));
-
   // Отрисовка окна с учетом коэффициентов пропорциональности
 
   if (FType = 0) then
@@ -330,17 +325,19 @@ begin
         Round(ZoomIndex / MaxZoom * 3),
         ScaledConstructH + Round(ZoomIndex / MaxZoom * 7));
       //Надпись размер  ширина
+
           FImage.Canvas.TextOut(ScaledXOtstup + Round(PolygonVerteces[i].X * GetZoomIndex) div 2 -
       Round(ZoomIndex / MaxZoom * 10), ScaledConstructH +
-      Round(ZoomIndex / MaxZoom * 12),
+      Round(ZoomIndex / MaxZoom * 22),
       IntToStr(PolygonVerteces[i].X));
+
      //Маленькая линия ширины (справа)
        FImage.Canvas.MoveTo(ScaledXOtstup + Round(PolygonVerteces[i].X * GetZoomIndex) +
         Round(ZoomIndex / MaxZoom * 3),ScaledConstructH);
               FImage.Canvas.LineTo(ScaledXOtstup + Round(PolygonVerteces[i].X * GetZoomIndex) +
         Round(ZoomIndex / MaxZoom * 3),ScaledConstructH + Round(ZoomIndex / MaxZoom * 15));
     end;
-    if ((PolygonVerteces[i].Y > 0) and (PolygonVerteces[i].Y < GetWidth)) then
+    if ((PolygonVerteces[i].Y > 0) and (PolygonVerteces[i].Y < GetHeight)) then
     begin
       //Линия высоты
        FImage.Canvas.MoveTo(ScaledConstructW + Round(ZoomIndex / MaxZoom * 10),
@@ -348,9 +345,11 @@ begin
        FImage.Canvas.LineTo(ScaledConstructW + Round(ZoomIndex / MaxZoom * 10),
          ScaledYOtstup + Round(ZoomIndex / MaxZoom * 3));
        //Надпись размер высота
-               FImage.Canvas.TextOut(ScaledConstructW + Round(ZoomIndex / MaxZoom * 15),
+
+               FImage.Canvas.TextOut(ScaledConstructW + Round(ZoomIndex / MaxZoom * 18),
       ScaledYOtstup + Round(PolygonVerteces[i].Y * GetZoomIndex) div 2 - Round(ZoomIndex / MaxZoom * 10),
       IntToStr(PolygonVerteces[i].Y));
+
            //Маленькая линия высоты (снизу)
     FImage.Canvas.MoveTo(ScaledConstructW, ScaledYOtstup + Round(PolygonVerteces[i].Y * GetZoomIndex)+ Round(ZoomIndex / MaxZoom * 3));
     FImage.Canvas.LineTo(ScaledConstructW + Round(ZoomIndex / MaxZoom * 20),
@@ -1244,6 +1243,15 @@ begin
   FImage.Canvas.FillRect(Rect(ScaledXOtstup, ScaledYOtstup, ScaledRectWidth +
     ScaledXOtstup + Round(ZoomIndex / MaxZoom * 10), ScaledRectHeight +
     ScaledYOtstup + Round(ZoomIndex / MaxZoom * 10)));
+
+    FImage.Canvas.FillRect(Rect(ScaledXOtstup, ScaledYOtstup+ScaledConstrHeight, ScaledConstrWidth +
+    ScaledXOtstup, ScaledConstrHeight +
+    ScaledYOtstup + Round(ZoomIndex / MaxZoom * 32)));
+
+        FImage.Canvas.FillRect(Rect(ScaledXOtstup+ScaledConstrWidth, ScaledYOtstup, ScaledConstrWidth +
+    ScaledXOtstup + Round(ZoomIndex / MaxZoom * 54), ScaledConstrHeight +
+    ScaledYOtstup));
+
   //Линия выделения
   FImage.Canvas.Pen.Color := clRed;
   DrawSelectionBorder(ScaledRectWidth, ScaledRectHeight, ScaledXOtstup, ScaledYOtstup);

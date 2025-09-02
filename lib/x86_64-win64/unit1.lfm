@@ -1,12 +1,12 @@
 object Form1: TForm1
-  Left = -8
+  Left = 961
   Height = 881
-  Top = 54
-  Width = 1918
+  Top = 229
+  Width = 1841
   Align = alClient
   Caption = 'Form1'
   ClientHeight = 881
-  ClientWidth = 1918
+  ClientWidth = 1841
   DesignTimePPI = 120
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -17,12 +17,12 @@ object Form1: TForm1
     Left = 0
     Height = 881
     Top = 0
-    Width = 1918
+    Width = 1841
     HorzScrollBar.Page = 1368
     VertScrollBar.Page = 877
     Align = alClient
     ClientHeight = 877
-    ClientWidth = 1893
+    ClientWidth = 1816
     TabOrder = 0
     object Panel4: TPanel
       Left = 0
@@ -52,9 +52,9 @@ object Form1: TForm1
         OnClick = DrawFullConstruction
       end
       object Button3: TButton
-        Left = 900
+        Left = 904
         Height = 31
-        Top = 1
+        Top = 2
         Width = 184
         Caption = 'Удалить конструкцию'
         TabOrder = 2
@@ -116,7 +116,7 @@ object Form1: TForm1
       object Button2: TButton
         Left = 700
         Height = 31
-        Top = 1
+        Top = 2
         Width = 194
         Caption = 'Добавить конструкцию'
         TabOrder = 6
@@ -530,9 +530,9 @@ object Form1: TForm1
         OnClick = AlignForSun
       end
       object Button7: TButton
-        Left = 280
+        Left = 208
         Height = 31
-        Top = 4
+        Top = 2
         Width = 94
         Caption = 'Сохранить'
         TabOrder = 12
@@ -681,6 +681,14 @@ object Form1: TForm1
           Caption = 'Нижн. верш. (мм)'
         end
       end
+      object SpeedButton1: TSpeedButton
+        Left = 312
+        Height = 30
+        Top = 2
+        Width = 189
+        Caption = 'Сформировать отчет... ∨'
+        OnClick = SpeedButton1Click
+      end
     end
   end
   object PopupMenu1: TPopupMenu
@@ -707,6 +715,15 @@ object Form1: TForm1
         Caption = 'Горизонтальный импост'
         OnClick = DeleteHorizontalImpost
       end
+    end
+  end
+  object PopupMenu2: TPopupMenu
+    Left = 512
+    object MenuItem7: TMenuItem
+      Caption = 'MenuItem7'
+    end
+    object MenuItem8: TMenuItem
+      Caption = 'MenuItem8'
     end
   end
 end

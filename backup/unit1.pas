@@ -7,8 +7,9 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
   ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2, Unit3,
-  PlasticDoorImpost, ImpostsContainer, FullContainer,ImpostBetweenWindows,
-  LCLType, Grids, ActnList, Generics.Collections, SQLite3, SQLite3Conn, SQLDB;
+  PlasticDoorImpost, ImpostsContainer, FullContainer, ImpostBetweenWindows,
+  LCLType, Grids, ActnList, ValEdit, CheckLst, Generics.Collections, SQLite3,
+  SQLite3Conn, SQLDB;
 
 const
   tfInputMask = 'InputMask';
@@ -62,15 +63,20 @@ type
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
+    MenuItem7: TMenuItem;
+    MenuItem8: TMenuItem;
     Panel1: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
     Panel4: TPanel;
     Panel5: TPanel;
     PopupMenu1: TPopupMenu;
+    PopupMenu2: TPopupMenu;
     ScrollBox1: TScrollBox;
     ScrollBox2: TScrollBox;
     ScrollBox3: TScrollBox;
+    SpeedButton1: TSpeedButton;
+
 
 
 
@@ -88,6 +94,7 @@ type
     procedure CreateNewFullConstr(Sender: TObject; IsPlasticDoor: boolean);
     procedure CheckBox1Change(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
     procedure UpperTrianglePoint(Sender: TObject);
     procedure SizeConstruction(Sender: TObject);
     procedure SizeWindow(Sender: TObject);
@@ -731,6 +738,15 @@ begin
   end;
 end;
 
+procedure TForm1.SpeedButton1Click(Sender: TObject);
+  var
+  P: TPoint;
+begin
+  // получаем экранные координаты кнопки
+  P := SpeedButton1.ClientToScreen(Point(0, SpeedButton1.Height));
+  PopupMenu2.PopUp(P.X, P.Y);
+end;
+
 procedure TForm1.UpperTrianglePoint(Sender: TObject);
 var
   IntEdit: integer;
@@ -899,6 +915,7 @@ begin
   Button6.Enabled := False;
   Button7.Enabled := False;
   Panel5.Visible := False;
+
 
   FDatabase := TSQLite3Connection.Create(Self);
   FTransaction := TSQLTransaction.Create(Self);
@@ -2155,7 +2172,7 @@ begin
         CurrCont.AddWindow(Window1);
         CurrCont.AddWindow(Window2);
 
-        CurrCont.Imposts.AddImpost(TImpostBetweenWindow.Create(1, VertImpost, Window.GetSize.X,CurrCont.IndexOf(Window1), CurrCont.IndexOf(Window2)));
+
 
         RectWindowDeselected(Self);
         Window1.OnWindowSelected := @RectWindowSelected;

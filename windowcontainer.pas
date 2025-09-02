@@ -3,7 +3,7 @@ unit WindowContainer;
 interface
 
 uses
-  Classes, SysUtils, Contnrs, RectWindow;
+  Classes, SysUtils, Contnrs, RectWindow, Graphics, ExtCtrls, ImpostBetweenWindowsContainer;
 
 type
   TWindowContainer = class
@@ -12,12 +12,14 @@ type
     FCommonXOtstup: integer;
     FConstrWidth: integer;
     FConstrHeight: integer;
+    FImposts: TImpostBetweenWindowsContainer;
   public
     constructor Create;
     destructor Destroy; override;
     procedure AddWindow(Window: TRectWindow);
     procedure RemoveWindow(Index: integer);
     procedure Clear;
+    procedure DrawBorder(Image: TImage; ZoomIndex: double);
     function GetWindow(index: integer): TRectWindow;
     function Count: integer;
     function GetWindows: TObjectList;
@@ -34,6 +36,8 @@ type
     function GetMaxRow: integer;
     function GetMaxColumn: integer;
     // Другие методы, если необходимо
+
+     property Imposts: TImpostBetweenWindowsContainer read FImposts;
   end;
 
 implementation
@@ -41,10 +45,12 @@ implementation
 constructor TWindowContainer.Create;
 begin
   FWindows := TObjectList.Create(True);
+   FImposts := TImpostBetweenWindowsContainer.Create;
 end;
 
 destructor TWindowContainer.Destroy;
 begin
+    FImposts.Free;
   FWindows.Free;
   inherited;
 end;
@@ -78,6 +84,15 @@ begin
   end;
 end;
 
+procedure TWindowContainer.DrawBorder(Image: TImage; ZoomIndex: double);
+  begin
+  Image.Canvas.Pen.Width := 2;
+  Image.Canvas.Brush.Color := clWhite;
+  Image.Canvas.Pen.Color := clBlack;
+  Image.Canvas.Brush.Style := bsClear;
+  Image.Canvas.Rectangle(Round(FCommonXOtstup*ZoomIndex+4),4,Round((FCommonXOtstup+FConstrWidth)*ZoomIndex), Round((FConstrHeight)*ZoomIndex))
+  end;
+
 function TWindowContainer.Count: integer;
 begin
   Result := FWindows.Count;
@@ -102,6 +117,7 @@ end;
 procedure TWindowContainer.Clear;
 begin
   FWindows.Clear;
+  FImposts.Clear;
 end;
 
 function TWindowContainer.IndexOf(const AWindow: TRectWindow): integer;

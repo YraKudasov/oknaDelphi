@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
   ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2, Unit3,
-  PlasticDoorImpost, ImpostsContainer, FullContainer,
+  PlasticDoorImpost, ImpostsContainer, FullContainer,ImpostBetweenWindows,
   LCLType, Grids, ActnList, Generics.Collections, SQLite3, SQLite3Conn, SQLDB;
 
 const
@@ -2000,10 +2000,10 @@ begin
     IntToStr(CurrCont.GetConstrHeight));
   //Маленькая линия высоты (сверху)
   Image1.Canvas.MoveTo(ScaledWidth, 3);
-  Image1.Canvas.LineTo(ScaledWidth + 55, 3);
+  Image1.Canvas.LineTo(ScaledWidth + 65, 3);
   //Маленькая линия высоты (снизу)
   Image1.Canvas.MoveTo(ScaledWidth, ScaledHeight);
-  Image1.Canvas.LineTo(ScaledWidth + 55, ScaledHeight);
+  Image1.Canvas.LineTo(ScaledWidth + 65, ScaledHeight);
 
 
   //Линия ширины
@@ -2013,10 +2013,10 @@ begin
     IntToStr(CurrCont.GetConstrWidth));
   //Маленькая линия ширины (слева)
   Image1.Canvas.MoveTo(3, ScaledHeight);
-  Image1.Canvas.LineTo(3, ScaledHeight + 35);
+  Image1.Canvas.LineTo(3, ScaledHeight + 45);
   //Маленькая линия ширины (справа)
   Image1.Canvas.MoveTo(ScaledWidth, ScaledHeight);
-  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight + 35);
+  Image1.Canvas.LineTo(ScaledWidth, ScaledHeight + 45);
   Window := TRectWindow(CurrCont.GetWindow(0));
   if (CurrCont.Count > 1) then
   begin
@@ -2155,7 +2155,7 @@ begin
         CurrCont.AddWindow(Window1);
         CurrCont.AddWindow(Window2);
 
-
+        CurrCont.Imposts.AddImpost(TImpostBetweenWindow.Create(1, VertImpost, Window.GetSize.X,CurrCont.IndexOf(Window1), CurrCont.IndexOf(Window2)));
 
         RectWindowDeselected(Self);
         Window1.OnWindowSelected := @RectWindowSelected;
@@ -2527,7 +2527,6 @@ begin
   MaxCol := -1;
   CurCont := FullContainer.GetContainer(CurrentContainer);
 
-
     for i := 0 to CurCont.Count - 1 do
   begin
     Window := TRectWindow(CurCont.GetWindow(i));
@@ -2558,6 +2557,7 @@ begin
     end;
   end;
   PaintSizes;
+    CurCont.DrawBorder(Image1, DrawingIndex);
 end;
 
 {******** ПРОВЕРКА ВЫДЕЛЕНИЯ ОКНА **********}

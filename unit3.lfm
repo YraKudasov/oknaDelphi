@@ -1,136 +1,137 @@
 object Form3: TForm3
-  Left = 1237
-  Height = 220
+  Left = 1211
+  Height = 275
   Top = 118
-  Width = 559
+  Width = 699
   Caption = 'Form3'
-  ClientHeight = 220
-  ClientWidth = 559
+  ClientHeight = 275
+  ClientWidth = 699
+  DesignTimePPI = 120
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '3.2.0.0'
+  LCLVersion = '3.0.0.3'
   object Panel1: TPanel
-    Left = 288
-    Height = 158
-    Top = 24
-    Width = 248
-    ClientHeight = 158
-    ClientWidth = 248
+    Left = 360
+    Height = 198
+    Top = 30
+    Width = 310
+    ClientHeight = 198
+    ClientWidth = 310
     TabOrder = 0
     object Label1: TLabel
-      Left = 48
-      Height = 15
-      Top = 16
-      Width = 144
+      Left = 60
+      Height = 20
+      Top = 20
+      Width = 182
       Caption = 'Добавить новую вершину'
     end
     object Edit1: TEdit
-      Left = 32
-      Height = 23
-      Top = 64
-      Width = 80
+      Left = 40
+      Height = 28
+      Top = 80
+      Width = 100
       TabOrder = 0
     end
     object Label2: TLabel
-      Left = 32
-      Height = 15
-      Top = 49
-      Width = 77
+      Left = 40
+      Height = 20
+      Top = 61
+      Width = 95
       Caption = 'Отступ X (мм)'
     end
     object Edit2: TEdit
-      Left = 136
-      Height = 23
-      Top = 64
-      Width = 80
+      Left = 170
+      Height = 28
+      Top = 80
+      Width = 100
       TabOrder = 1
     end
     object Label3: TLabel
-      Left = 136
-      Height = 15
-      Top = 48
-      Width = 77
+      Left = 170
+      Height = 20
+      Top = 60
+      Width = 94
       Caption = 'Отступ Y (мм)'
     end
     object Button1: TButton
-      Left = 88
-      Height = 25
-      Top = 112
-      Width = 75
+      Left = 110
+      Height = 31
+      Top = 140
+      Width = 94
       Caption = 'Добавить'
       TabOrder = 2
       OnClick = AddNewPoint
     end
   end
   object Panel2: TPanel
-    Left = 48
-    Height = 153
-    Top = 24
-    Width = 203
-    ClientHeight = 153
-    ClientWidth = 203
+    Left = 60
+    Height = 191
+    Top = 30
+    Width = 254
+    ClientHeight = 191
+    ClientWidth = 254
     TabOrder = 1
     object ComboBox1: TComboBox
-      Left = 48
-      Height = 23
-      Top = 32
-      Width = 100
-      ItemHeight = 15
+      Left = 60
+      Height = 28
+      Top = 40
+      Width = 125
+      ItemHeight = 20
       Style = csDropDownList
       TabOrder = 0
       OnChange = ComboBox1Change
     end
     object Label4: TLabel
-      Left = 72
-      Height = 15
-      Top = 8
-      Width = 54
+      Left = 90
+      Height = 20
+      Top = 10
+      Width = 67
       Caption = 'Вершины'
     end
     object Edit3: TEdit
-      Left = 8
-      Height = 23
-      Top = 80
-      Width = 80
+      Left = 10
+      Height = 28
+      Top = 100
+      Width = 100
       TabOrder = 1
     end
     object Edit4: TEdit
-      Left = 112
-      Height = 23
-      Top = 80
-      Width = 80
+      Left = 140
+      Height = 28
+      Top = 100
+      Width = 100
       TabOrder = 2
     end
     object Button2: TButton
-      Left = 8
-      Height = 25
-      Top = 112
-      Width = 80
+      Left = 10
+      Height = 31
+      Top = 140
+      Width = 100
       Caption = 'Изменить'
       TabOrder = 3
       OnClick = ChangePointCoordinates
     end
     object Button3: TButton
-      Left = 96
-      Height = 25
-      Top = 112
-      Width = 104
+      Left = 120
+      Height = 31
+      Top = 140
+      Width = 130
       Caption = 'Удалить вершину'
       TabOrder = 4
       OnClick = DeletePoint
     end
     object Label5: TLabel
-      Left = 115
-      Height = 15
-      Top = 62
-      Width = 77
+      Left = 144
+      Height = 20
+      Top = 78
+      Width = 94
       Caption = 'Отступ Y (мм)'
     end
     object Label6: TLabel
-      Left = 14
-      Height = 15
-      Top = 62
-      Width = 77
+      Left = 18
+      Height = 20
+      Top = 78
+      Width = 95
       Caption = 'Отступ X (мм)'
     end
   end

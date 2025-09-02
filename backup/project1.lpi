@@ -178,6 +178,16 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit3"/>
       </Unit>
+      <Unit>
+        <Filename Value="impostbetweenwindows.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ImpostBetweenWindows"/>
+      </Unit>
+      <Unit>
+        <Filename Value="impostbetweenwindowscontainer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ImpostBetweenWindowsContainer"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

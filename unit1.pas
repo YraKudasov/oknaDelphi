@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
   ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2, Unit3,
-  PlasticDoorImpost, ImpostsContainer, FullContainer,
+  PlasticDoorImpost, ImpostsContainer, FullContainer,ImpostBetweenWindows,
   LCLType, Grids, ActnList, Generics.Collections, SQLite3, SQLite3Conn, SQLDB;
 
 const
@@ -2527,7 +2527,6 @@ begin
   MaxCol := -1;
   CurCont := FullContainer.GetContainer(CurrentContainer);
 
-
     for i := 0 to CurCont.Count - 1 do
   begin
     Window := TRectWindow(CurCont.GetWindow(i));
@@ -2558,6 +2557,7 @@ begin
     end;
   end;
   PaintSizes;
+    CurCont.DrawBorder(Image1, DrawingIndex);
 end;
 
 {******** ПРОВЕРКА ВЫДЕЛЕНИЯ ОКНА **********}

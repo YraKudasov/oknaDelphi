@@ -227,7 +227,6 @@ begin
   Edit2.Text := '';
   Edit3.Text := '';
   Edit4.Text := '';
-  CurrWin.PaintSizePolygonPoints(ScaledRectH, ScaledRectW);
 end;
 
 procedure TForm3.AddNewPoint(Sender: TObject);

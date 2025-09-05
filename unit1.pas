@@ -9,7 +9,7 @@ uses
   ComCtrls, Buttons, Menus, RectWindow, WindowContainer, Unit2, Unit3,
   PlasticDoorImpost, ImpostsContainer, FullContainer, ImpostBetweenWindows,
   LCLType, Grids, ActnList, ValEdit, CheckLst, Generics.Collections, SQLite3,
-  SQLite3Conn, SQLDB;
+  SQLite3Conn, SQLDB, Process;
 
 const
   tfInputMask = 'InputMask';
@@ -94,6 +94,7 @@ type
     procedure CreateNewFullConstr(Sender: TObject; IsPlasticDoor: boolean);
     procedure CheckBox1Change(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
+    procedure MenuItem7Click(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure UpperTrianglePoint(Sender: TObject);
     procedure SizeConstruction(Sender: TObject);
@@ -129,6 +130,9 @@ type
     function IsDataModified: boolean;
     procedure DownTrianglePoint(Sender: TObject);
     procedure Form3ComboBoxChangeHandler(Sender: TObject);
+    procedure MenuCustomerClick(Sender: TObject);
+    procedure MenuProductionClick(Sender: TObject);
+    procedure GenerateHTMLDocument(ForCustomer: Boolean);
 
 
 
@@ -738,6 +742,12 @@ begin
   end;
 end;
 
+procedure TForm1.MenuItem7Click(Sender: TObject);
+begin
+
+end;
+
+
 procedure TForm1.SpeedButton1Click(Sender: TObject);
   var
   P: TPoint;
@@ -746,6 +756,71 @@ begin
   P := SpeedButton1.ClientToScreen(Point(0, SpeedButton1.Height));
   PopupMenu2.PopUp(P.X, P.Y);
 end;
+
+procedure TForm1.MenuCustomerClick(Sender: TObject);
+begin
+  GenerateHTMLDocument(True);  // true = заказчик
+end;
+
+procedure TForm1.MenuProductionClick(Sender: TObject);
+begin
+  GenerateHTMLDocument(False); // false = производство
+end;
+
+
+procedure TForm1.GenerateHTMLDocument(ForCustomer: Boolean);
+var
+  Doc: TStringList;
+  DirName, FileName: string;
+  OrderNumber: Integer;
+  Text1, ImgPath: string;
+begin
+  // Директория для документов
+  DirName := ExtractFilePath(ParamStr(0)) + 'documents' + DirectorySeparator;
+  ForceDirectories(DirName);
+
+  Doc := TStringList.Create;
+  try
+    // Генерация уникального номера заказа
+    OrderNumber := 1;
+    repeat
+      if ForCustomer then
+        FileName := DirName + Format('doc_customer_%d.html', [OrderNumber])
+      else
+        FileName := DirName + Format('doc_production_%d.html', [OrderNumber]);
+      Inc(OrderNumber);
+    until not FileExists(FileName);
+
+    // Текст документа
+    if ForCustomer then
+      Text1 := 'Документ для заказчика'
+    else
+      Text1 := 'Документ для производства';
+
+    // Путь к картинке (относительно exe, можно сделать абсолютный)
+    ImgPath := 'file:///' + StringReplace(ExpandFileName('img/logo.png'), '\', '/', [rfReplaceAll]);
+
+    // Формируем HTML
+    Doc.Add('<!DOCTYPE html>');
+    Doc.Add('<html><head><meta charset="UTF-8"><title>Документ</title></head><body>');
+    Doc.Add('<h1>' + Text1 + '</h1>');
+    Doc.Add('<p>Дата: ' + DateToStr(Now) + '</p>');
+    Doc.Add('<p>Номер заказа: ' + IntToStr(OrderNumber-1) + '</p>');
+
+    // Вставка картинки
+    Doc.Add('<img src="' + ImgPath + '" alt="Логотип" style="max-width:400px;max-height:200px;">');
+
+    Doc.Add('</body></html>');
+
+    // Сохраняем HTML
+    Doc.SaveToFile(FileName);
+    ShowMessage('HTML документ создан: ' + FileName);
+  finally
+    Doc.Free;
+  end;
+end;
+
+
 
 procedure TForm1.UpperTrianglePoint(Sender: TObject);
 var

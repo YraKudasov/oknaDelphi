@@ -1,12 +1,12 @@
 object Form1: TForm1
-  Left = 961
+  Left = 76
   Height = 881
-  Top = 229
+  Top = 134
   Width = 1841
   Align = alClient
   Caption = 'Form1'
-  ClientHeight = 881
-  ClientWidth = 1841
+  ClientHeight = 0
+  ClientWidth = 0
   DesignTimePPI = 120
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -720,10 +720,12 @@ object Form1: TForm1
   object PopupMenu2: TPopupMenu
     Left = 512
     object MenuItem7: TMenuItem
-      Caption = 'MenuItem7'
+      Caption = 'для заказчика'
+      OnClick = MenuCustomerClick
     end
     object MenuItem8: TMenuItem
-      Caption = 'MenuItem8'
+      Caption = 'для производства'
+      OnClick = MenuProductionClick
     end
   end
 end

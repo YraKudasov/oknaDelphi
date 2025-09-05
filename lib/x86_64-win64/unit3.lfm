@@ -1,11 +1,11 @@
 object Form3: TForm3
-  Left = 1211
-  Height = 275
+  Left = 1210
+  Height = 276
   Top = 118
-  Width = 699
+  Width = 700
   Caption = 'Form3'
-  ClientHeight = 275
-  ClientWidth = 699
+  ClientHeight = 276
+  ClientWidth = 700
   DesignTimePPI = 120
   OnShow = FormShow
   Position = poScreenCenter
